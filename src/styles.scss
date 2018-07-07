@@ -1,0 +1,30 @@
+@import '~@angular/material/theming';
+$gd-colors:( "base": #FF6600, "cyan": #36cde8, "hover": #18bc9c);
+$gd-colors-arr:( 'gd-primary': map-get($gd-colors, 'base'), 'gd-cyan': map-get($gd-colors, 'cyan'), 'gd-hover': map-get($gd-colors, 'hover'));
+@each $key,
+$value in $gd-colors-arr {
+  .#{$key} {
+    background-color: $value !important;
+  }
+  .#{$key}-text {
+    color: $value !important;
+  }
+  .#{$key}-border {
+    border-color: $value !important;
+  }
+  button {
+    outline: none !important;
+  }
+  input[type=text].#{$key}-input {
+    &:focus {
+      border: 1px solid $value !important;
+      border-bottom: 1px solid $value !important;
+      -webkit-box-shadow: 0 1px 0 0 $value !important;
+      box-shadow: 0 1px 0 0 $value !important;
+    }
+  }
+}
+
+* {
+  margin: 0px auto;
+}
