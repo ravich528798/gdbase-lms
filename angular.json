@@ -24,7 +24,9 @@
             "tsConfig": "src/tsconfig.app.json",
             "assets": [
               "src/favicon.ico",
-              "src/assets"
+              "src/assets",
+              "src/server",
+              "src/.htaccess"
             ],
             "styles": [
               "node_modules/font-awesome/scss/font-awesome.scss",
@@ -61,7 +63,8 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "gdbase-lms:build"
+            "browserTarget": "gdbase-lms:build",
+            "proxyConfig": "src/proxy.config.json"
           },
           "configurations": {
             "production": {
@@ -95,7 +98,9 @@
             ],
             "assets": [
               "src/favicon.ico",
-              "src/assets"
+              "src/assets",
+              "src/server",
+              "src/.htaccess"
             ]
           }
         },

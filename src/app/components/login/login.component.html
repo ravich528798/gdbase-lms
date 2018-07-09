@@ -1,81 +1,47 @@
 <div class="container-fluid container-login">
-  <h3>Basic Buttons</h3>
-  <div class="button-row">
-    <button mat-button>Basic</button>
-    <button mat-button color="primary">Primary</button>
-    <button mat-button color="accent">Accent</button>
-    <button mat-button color="warn">Warn</button>
-    <button mat-button disabled>Disabled</button>
-    <a mat-button routerLink=".">Link</a>
+  <div class="login-holder">
+    <div class="container-fluid" style="height: 100%; padding:0px">
+      <div class="row no-gutters" style="height: 100%;">
+        <div class="col-lg-6" style="padding:15px;">
+          <h3>
+            <b>Welcome to</b> GDBase LMS</h3>
+          <hr>
+          <form class="loginForm">
+            <mat-form-field>
+              <input matInput type="text" placeholder="Username" [(ngModel)]="username" name="username" required>
+            </mat-form-field>
+            <br>
+            <mat-form-field>
+              <input matInput type="password" placeholder="Password" [(ngModel)]="password" name="password" required>
+            </mat-form-field>
+            <div class="container-fluid">
+              <div class="row no-gutters">
+                <div class="col-lg-8">
+                  <a href="" style="text-decoration: underline">Can't login?</a>
+                </div>
+                <div class="col-lg-4">
+                  <button mat-raised-button class="gd-primary-gradient" (click)="loginHandler()">LOGIN</button>
+                </div>
+              </div>
+            </div>
+          </form>
+          <div class="container-fluid footer">
+            <div class="row">
+              <hr>
+              <div class="col-sm-12 text-center">
+                <b style="color: #ff6600">Having Questions?</b>
+                <p>Send us an email and we will get back to you</p>
+                <button mat-raised-button class="gd-white" style="color: #454545;width: 150px;">Send</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-6" style="height: 100%;overflow: hidden;border-bottom-right-radius: 15px;border-top-right-radius: 15px;">
+          <video autoplay style="height: 100%;width: 900px;margin-left: -220px;">
+            <source src="assets/vid/intro.mp4" type="video/mp4">
+          </video>
+        </div>
+      </div>
+    </div>
   </div>
-  
-  <h3>Raised Buttons</h3>
-  <div class="button-row">
-    <button mat-raised-button>Basic</button>
-    <button mat-raised-button color="primary">Primary</button>
-    <button mat-raised-button color="accent">Accent</button>
-    <button mat-raised-button color="warn">Warn</button>
-    <button mat-raised-button disabled>Disabled</button>
-    <a mat-raised-button routerLink=".">Link</a>
-  </div>
-  
-  <h3>Stroked Buttons</h3>
-  <div class="button-row">
-    <button mat-stroked-button>Basic</button>
-    <button mat-stroked-button color="primary">Primary</button>
-    <button mat-stroked-button color="accent">Accent</button>
-    <button mat-stroked-button color="warn">Warn</button>
-    <button mat-stroked-button disabled>Disabled</button>
-    <a mat-stroked-button routerLink=".">Link</a>
-  </div>
-  
-  <h3>Icon Buttons</h3>
-  <div class="button-row">
-    <button mat-icon-button>
-      <mat-icon aria-label="Example icon-button with a heart icon">favorite</mat-icon>
-    </button>
-    <button mat-icon-button color="primary">
-      <mat-icon aria-label="Example icon-button with a heart icon">favorite</mat-icon>
-    </button>
-    <button mat-icon-button color="accent">
-      <mat-icon aria-label="Example icon-button with a heart icon">favorite</mat-icon>
-    </button>
-    <button mat-icon-button color="warn">
-      <mat-icon aria-label="Example icon-button with a heart icon">favorite</mat-icon>
-    </button>
-    <button mat-icon-button disabled>
-      <mat-icon aria-label="Example icon-button with a heart icon">favorite</mat-icon>
-    </button>
-  </div>
-  
-  <h3>Fab Buttons</h3>
-  <div class="button-row">
-    <button mat-fab>Basic</button>
-    <button mat-fab color="primary">Primary</button>
-    <button mat-fab color="accent">Accent</button>
-    <button mat-fab color="warn">Warn</button>
-    <button mat-fab disabled>Disabled</button>
-    <button mat-fab>
-      <mat-icon aria-label="Example icon-button with a heart icon">favorite</mat-icon>
-    </button>
-    <a mat-fab routerLink=".">Link</a>
-  </div>
-  
-  <h3>Mini Fab Buttons</h3>
-  <div class="button-row">
-    <button mat-mini-fab>Basic</button>
-    <button mat-mini-fab color="primary">Primary</button>
-    <button mat-mini-fab color="accent">Accent</button>
-    <button mat-mini-fab color="warn">Warn</button>
-    <button mat-mini-fab disabled>Disabled</button>
-    <button mat-mini-fab>
-      <mat-icon aria-label="Example icon-button with a heart icon">favorite</mat-icon>
-    </button>
-    <a mat-mini-fab routerLink=".">Link</a>
-  </div>
-  
-  
-  <!-- Copyright 2018 Google Inc. All Rights Reserved.
-      Use of this source code is governed by an MIT-style license that
-      can be found in the LICENSE file at http://angular.io/license -->
 </div>

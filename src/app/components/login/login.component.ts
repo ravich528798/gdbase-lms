@@ -1,4 +1,10 @@
 import { Component, OnInit } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
+
+interface loginRes {
+  data: string;
+}
 
 @Component({
   selector: 'app-login',
@@ -6,10 +12,19 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit {
-
-  constructor() { }
+  public username: string;
+  public password: string;
+  constructor(private http: HttpClient, private router: Router) { }
 
   ngOnInit() {
+    document.querySelector('video').muted = false;
   }
-
+  public loginHandler() {
+    this.http.post('./server/login.php', { username: this.username, password: this.password }).subscribe((data) => {
+      console.log(data);
+      if (data !== 'ERROR'){
+        this.router.navigateByUrl('/dashboard/home');
+      }
+    })
+  }
 }

@@ -6,3 +6,28 @@
   height: 100%;
   background-image: linear-gradient(120deg, #f6d365 0%, #fda085 100%);
 }
+
+.login-holder{
+  position: absolute;
+  top: 15%;
+  width: 70%;
+  left: 15%;
+  height: 500px;
+  background-color: white;
+  border-radius: 15px;
+  box-shadow: 0 22px 70px 4px rgba(0, 0, 0, 0.56);
+ *{
+   width: 100%;
+ }
+ .footer{
+   position: absolute;
+   bottom: 20px;
+   width: 100%;
+ }
+}
+
+* { box-sizing: border-box; }
+.loginForm{
+  margin-top: 60px;
+}
+

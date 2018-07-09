@@ -1,0 +1,20 @@
+@import '../../../styles';
+h3 {
+  font-weight: bold;
+  font-size: 19px;
+  margin: 0px 15px 15px 15px;
+}
+
+mat-card {
+  border-top: 5px solid $primary;
+  border-radius: 5px;
+  padding: 10px;
+  .btn-xs {
+    font-size: 11px;
+    padding: 3px 10px;
+    line-height: 24px;
+  }
+  mat-icon[lg] {
+    @include md-icon-size(54px);
+  }
+}
