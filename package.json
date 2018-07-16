@@ -5,7 +5,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build --prod",
+    "build": "ng build --base-href=\"http://192.168.31.186/gdbase-lms/dist/gdbase-lms/\" --watch",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"

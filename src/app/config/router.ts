@@ -1,5 +1,5 @@
 import { LoginComponent } from "../components/login/login.component";
-import { DashboardComponent } from "../components/dashboard/dashboard.component";
+import { AdminShellComponent } from "../components/admin-shell/admin-shell.component";
 import { DashboardTabComponent } from "../components/dashboard-tab/dashboard-tab.component";
 import { UsersTabComponent } from "../components/users-tab/users-tab.component";
 import { CoursesTabComponent } from "../components/courses-tab/courses-tab.component";
@@ -9,11 +9,11 @@ export const LMSRouter = [{
     component: LoginComponent
 },
 {
-    path: 'dashboard',
-    component: DashboardComponent,
+    path: 'admin',
+    component: AdminShellComponent,
     children: [
         {
-            path: 'home',
+            path: 'dashboard',
             component: DashboardTabComponent
         },
         {
