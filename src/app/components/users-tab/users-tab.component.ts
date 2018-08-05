@@ -1,6 +1,6 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, Inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import {MatPaginator, MatSort, MatTableDataSource} from '@angular/material';
+import {MatPaginator, MatSort, MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
 import {animate, state, style, transition, trigger} from '@angular/animations';
 import { Observable } from 'rxjs/Observable';
 
@@ -9,6 +9,11 @@ interface UserData {
   lastname: string;
   email: string;
   mobile: string;
+  username: string;
+}
+
+interface ConfirmDeleteDialogData {
+  username: string;
 }
 
 @Component({
@@ -31,11 +36,11 @@ export class UsersTabComponent implements OnInit {
   totalUsers: any[];
   expandedElement: UserData;
   today: number = Date.now();
-
+  currentUser: UserData;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
-  constructor(private http: HttpClient) { 
+  constructor(private http: HttpClient, public dialog: MatDialog) { 
     this.dataSource  = new MatTableDataSource();
   }
 
@@ -53,4 +58,47 @@ export class UsersTabComponent implements OnInit {
     }
   }
   getAllUsers = ():Observable<UserData[]> => this.http.get<UserData[]>('server/get_all_users.php');
+
+  deleteUser = (userData) =>{
+    this.dataSource.data = this.dataSource.data.filter(el => el.username !== userData.username);
+  }
+
+  openDeleteConfirmDialog(): void {
+    const deleteDialogRef = this.dialog.open(ConfirmDeleteDialog, {
+      width: '250px',
+      data: {user: this.currentUser, deleteUser: this.deleteUser.bind(this)}
+    });
+
+    deleteDialogRef.beforeClose().subscribe(res =>  {
+      if(res){
+        deleteDialogRef.disableClose = true;
+      }
+    })
+  }
+
+  toggleExpandRow(currrentUser){
+    this.currentUser = currrentUser;
+  }
+}
+
+@Component({
+  selector: 'confrim-delete-dialog',
+  templateUrl: 'confrim-delete.dialog.html',
+})
+
+export class ConfirmDeleteDialog {
+
+  constructor(
+    public dialogRef: MatDialogRef<ConfirmDeleteDialog>,
+    @Inject(MAT_DIALOG_DATA) public data: ConfirmDeleteDialogData) {
+    }
+
+  onNoClick(): void {
+    this.dialogRef.close();
+  }
+
+  onYesClick(data): void{
+    data.deleteUser(data.user);
+  }
+
 }

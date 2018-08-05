@@ -77,14 +77,22 @@ tr.user-element-row:not(.user-expanded-row):active {
   padding: 5px;
   border-radius: 5px;
   border: 1px solid #eee;
+  margin: 20px 0px;
   mat-icon {
     border-radius: 50%;
     border: 1px solid #e0e0e0;
-    width: 50px;
-    height: 50px;
+    width: 60px;
+    height: 60px;
     text-align: center;
-    line-height: 46px;
+    line-height: 49px;
     font-size: 37px;
-    color: #454545;
+    color: rgba(69, 69, 69, .58);
+    margin-top: 12px;
+    margin-left: 15px;
+    float: left;
+  }
+  .details{
+    line-height: 25px;
+    padding-top: 7px;
   }
 }

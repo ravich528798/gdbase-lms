@@ -21,9 +21,8 @@ export class LoginComponent implements OnInit {
   }
   public loginHandler() {
     this.http.post('./server/login.php', { username: this.username, password: this.password }).subscribe((data) => {
-      console.log(data);
       if (data !== 'ERROR'){
-        this.router.navigateByUrl('/dashboard/home');
+        this.router.navigateByUrl('/admin/dashboard');
       }
     })
   }
