@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { URL_LOGIN } from '../../api';
 
 interface loginRes {
   data: string;
@@ -20,7 +21,7 @@ export class LoginComponent implements OnInit {
     document.querySelector('video').muted = false;
   }
   public loginHandler() {
-    this.http.post('./server/login.php', { username: this.username, password: this.password }).subscribe((data) => {
+    this.http.post(URL_LOGIN, { username: this.username, password: this.password }).subscribe((data) => {
       if (data !== 'ERROR'){
         this.router.navigateByUrl('/admin/dashboard');
       }

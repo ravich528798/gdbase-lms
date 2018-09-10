@@ -2,8 +2,8 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { HttpClientModule } from '@angular/common/http';
-import { FormsModule } from '@angular/forms';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { MaterialModule } from './material.module';
 import { LMSRouter } from "./config/router";
@@ -14,6 +14,7 @@ import { DashboardTabComponent } from './components/dashboard-tab/dashboard-tab.
 import { UsersTabComponent, ConfirmDeleteDialog } from './components/users-tab/users-tab.component';
 import { ManageTabComponent } from './components/manage-tab/manage-tab.component';
 import { CoursesTabComponent } from './components/courses-tab/courses-tab.component';
+import { GlobalInterceptor } from './config/HttpInterceptor';
 
 const lmsRoutes: Routes = LMSRouter;
 
@@ -24,7 +25,8 @@ const lmsRoutes: Routes = LMSRouter;
     BrowserAnimationsModule,
     FormsModule,
     HttpClientModule,
-    RouterModule.forRoot(lmsRoutes)
+    RouterModule.forRoot(lmsRoutes),
+    ReactiveFormsModule
   ],
   declarations: [
     AppComponent,
@@ -37,7 +39,13 @@ const lmsRoutes: Routes = LMSRouter;
     ConfirmDeleteDialog
   ],
   entryComponents: [ConfirmDeleteDialog],
-  providers: [],
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: GlobalInterceptor,
+      multi: true
+    }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

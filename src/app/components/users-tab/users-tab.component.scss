@@ -96,3 +96,9 @@ tr.user-element-row:not(.user-expanded-row):active {
     padding-top: 7px;
   }
 }
+
+.addUserForm{
+ .error-msg-container{
+   height: 50px;
+ }
+}

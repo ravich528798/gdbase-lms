@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { URL_GET_ALL_USERS, URL_GET_ACTIVE_USERS } from '../../api';
 
 @Component({
   selector: 'app-dashboard-tab',
@@ -17,6 +18,6 @@ export class DashboardTabComponent implements OnInit {
     this.getActiveUsers().subscribe((data: any[]) => { this.activeUsers = data.length });
   }
 
-  getAllUsers = () => this.http.get('server/get_all_users.php');
-  getActiveUsers = () => this.http.get('server/get_active_users.php');
+  getAllUsers = () => this.http.get(URL_GET_ALL_USERS);
+  getActiveUsers = () => this.http.get(URL_GET_ACTIVE_USERS);
 }
