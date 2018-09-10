@@ -1,109 +1,136 @@
 <div class="container-fluid container-user">
   <h3>Users</h3>
   <mat-card class="no-padding mat-card">
-    <div class="container-fluid">
+    <div class="container-fluid" style="padding-top: 15px;">
       <div class="col-sm-12">
         <h5>
           <b>Add user</b>
         </h5>
       </div>
       <div class="col-sm-12" class="addUserForm">
-        <form name="addUser">
+        <form name="addUser" [formGroup]="addUserFG">
           <div class="container-fluid">
             <div class="row">
               <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
                 <mat-form-field>
-                  <input matInput placeholder="First name" required ngModel name="firstname" #firstname="ngModel">
+                  <input matInput placeholder="First name" required name="firstname" formControlName="firstname">
                 </mat-form-field>
                 <div class="error-msg-container">
                   <div class="alert alert-danger" *ngIf="firstname.touched && !firstname.valid">
-                    <p>First name is required</p>
+                    <small>First name is required</small>
                   </div>
                 </div>
               </div>
               <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
                 <mat-form-field>
-                  <input matInput placeholder="Last name" required ngModel name="lastname" #lastname="ngModel">
+                  <input matInput placeholder="Last name" required name="lastname" formControlName="lastname">
                 </mat-form-field>
                 <div class="error-msg-container">
                   <div class="alert alert-danger" *ngIf="lastname.touched && !lastname.valid">
-                    <p>Last name is required</p>
+                    <small>Last name is required</small>
                   </div>
                 </div>
               </div>
             </div>
 
-            <div class="row" [formGroup]="usernameEmailFG">
+            <div class="row">
               <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
                 <mat-form-field>
                   <input matInput placeholder="Username" required name="username" formControlName="username">
                 </mat-form-field>
                 <div class="error-msg-container">
                   <div class="alert alert-danger" *ngIf="username.touched && username.invalid">
-                    <p *ngIf="username.errors && username.errors.unique === false">{{username.value}} already taken</p>
-                    <p *ngIf="username.value === ''">Username is required</p>
+                    <small *ngIf="username.errors && username.errors.unique === false">{{username.value}} already taken</small>
+                    <small *ngIf="username.value === ''">Username is required</small>
                   </div>
                 </div>
               </div>
 
               <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
                 <mat-form-field>
-                  <input matInput type="email" placeholder="Email Address" required name="email" formControlName="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$">
+                  <input matInput type="email" placeholder="Email Address" required name="email" formControlName="email"
+                    pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$">
                 </mat-form-field>
                 <div class="error-msg-container">
                   <div *ngIf="email.touched && !email.valid" class="alert alert-danger">
-                    <p *ngIf="email.errors && email.errors.unique === false">Email address already exits</p>
-                    <p *ngIf="email.value === ''|| (email.errors && email.errors.pattern)">Please enter a valid email
-                      address</p>
+                    <small *ngIf="email.errors && email.errors.unique === false">Email address already exits</small>
+                    <small *ngIf="email.value === ''|| (email.errors && email.errors.pattern)">Please enter a valid
+                      email
+                      address</small>
                   </div>
                 </div>
               </div>
             </div>
-
-
-
-
-            <mat-form-field>
-              <input matInput type="password" placeholder="Create new password" required>
-            </mat-form-field>
-
-
-            <mat-form-field>
-              <input matInput type="password" placeholder="Confirm Password" required>
-            </mat-form-field>
-            <p class="text-danger">Password did not match</p>
-
-
-
-
-
-
-            <mat-form-field>
-              <mat-select placeholder="User Type" [(value)]="userType" name="userType">
-                <mat-option value="admin">
-                  Admin
-                </mat-option>
-                <mat-option value="student">
-                  Student
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
-
-
-            <mat-form-field>
-              <input matInput type="tel" placeholder="Mobile Number">
-            </mat-form-field>
-
-
-            <button mat-raised-button color="primary" class="btn-xs btn-block">
-              <mat-icon>add</mat-icon> Add User {{userType}}
-            </button>
-
+            <div class="row">
+              <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                <mat-form-field>
+                  <input matInput type="password" placeholder="Create new password" required name="newPassword"
+                    formControlName="newPassword">
+                </mat-form-field>
+                <div class="error-msg-container">
+                  <div *ngIf="newPassword.touched && newPassword.invalid" class="alert alert-danger">
+                    <small *ngIf="newPassword.errors && newPassword.errors.matched === false">
+                      Password must be atleast 6 charecters long with at least 1 uppercase and lowercase alphabetical
+                      character and a special character
+                    </small>
+                    <small *ngIf="newPassword.value === ''">Please provide a new password</small>
+                  </div>
+                </div>
+              </div>
+              <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                <mat-form-field>
+                  <input matInput type="password" placeholder="Confirm Password" required name="confirmPassword"
+                    formControlName="confirmPassword">
+                </mat-form-field>
+                <div class="error-msg-container">
+                  <div class="alert alert-danger" *ngIf="confirmPassword.touched && confirmPassword.invalid">
+                    <small *ngIf="confirmPassword.errors && confirmPassword.errors.matched === false">Password dosen't
+                      match</small>
+                    <small *ngIf="confirmPassword.errors && confirmPassword.errors.required">Please confrim the
+                      password</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xs-12 col-sm-12 col-md-3 col-lg-5">
+                <mat-form-field>
+                  <mat-select placeholder="User Type" [(value)]="userType" name="userType" formControlName="userType">
+                    <mat-option value="admin">
+                      Admin
+                    </mat-option>
+                    <mat-option value="student">
+                      Student
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+                <div class="error-msg-container"></div>
+              </div>
+              <div class="col-xs-12 col-sm-12 col-md-3 col-lg-5">
+                <mat-form-field>
+                  <input matInput type="tel" placeholder="Mobile Number" name="mobileNumber" formControlName="mobileNumber"
+                    minlength="0">
+                </mat-form-field>
+                <div class="error-msg-container">
+                  <div class="alert alert-danger" *ngIf="mobileNumber.touched && mobileNumber.errors && mobileNumber.errors.matched === false">
+                    <small>Please eneter a valid mobile number</small>
+                  </div>
+                </div>
+              </div>
+              <div class="col-xs-12 col-sm-12 col-md-3 col-lg-2">
+                <button mat-raised-button color="primary" class="btn-xs btn-block" [disabled]="firstname.invalid || lastname.invalid || username.invalid || email.invalid || newPassword.invalid || confirmPassword.invalid || mobileNumber.invalid"
+                  (click)="addNewUser()">
+                  <mat-icon>add</mat-icon> Add User
+                </button>
+                <div class="error-msg-container"></div>
+              </div>
+            </div>
           </div>
         </form>
       </div>
     </div>
   </mat-card>
+  <br>
   <mat-card class="no-padding mat-card">
     <div class="container-fluid" style="padding-top: 15px;">
       <div class="row">
@@ -191,4 +218,5 @@
     </table>
     <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" showFirstLastButtons></mat-paginator>
   </mat-card>
+  <br>
 </div>

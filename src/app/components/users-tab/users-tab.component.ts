@@ -6,6 +6,7 @@ import { Observable } from 'rxjs/Observable';
 import { URL_GET_ALL_USERS, URL_DELETE_USER, URL_CHECK_USERNAME_AVAILABILITY, URL_CHECK_EMAIL_AVAILABILITY } from '../../api';
 import { FormBuilder, FormGroup, Validators, AbstractControl, AsyncValidator, ValidationErrors } from '@angular/forms';
 import { debounceTime, map, take, catchError } from "rxjs/operators";
+import { resolve } from 'url';
 
 interface UserData {
   firstname: string;
@@ -13,6 +14,8 @@ interface UserData {
   email: string;
   mobile: string;
   username: string;
+  usertype: string;
+  password: string;
 }
 
 interface ConfirmDeleteDialogData {
@@ -41,8 +44,10 @@ export class UsersTabComponent implements OnInit {
   public today: number = Date.now();
   public currentUser: UserData;
   // create user form 
-  public userType = 'student';
-  public usernameEmailFG: FormGroup;
+  public addUserFG: FormGroup;
+
+  private pattern = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{6,})");
+  private mobileNumPattern = new RegExp(/^(?:(?:\+|00)33|0)\s*[1-9](?:[\s.-]*\d{2}){4}$/);
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
@@ -55,7 +60,13 @@ export class UsersTabComponent implements OnInit {
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
     this.getAllUsers().subscribe((data: any[]) => { this.dataSource.data = data; });
-    this.usernameEmailFG = this.fb.group({
+    this.addUserFG = this.fb.group({
+      firstname: ['',
+        Validators.required
+      ],
+      lastname: ['',
+        Validators.required
+      ],
       username: ['',
         Validators.required,
         AlreadyExistsValidator.validate(this.http, URL_CHECK_USERNAME_AVAILABILITY)
@@ -63,19 +74,53 @@ export class UsersTabComponent implements OnInit {
       email: ['',
         Validators.required,
         AlreadyExistsValidator.validate(this.http, URL_CHECK_EMAIL_AVAILABILITY)
+      ],
+      newPassword: ['',
+        Validators.required,
+        PatternValidator.validate(this.pattern)
+      ],
+      confirmPassword: ['',
+        Validators.required,
+        MatchPassword.validate()
+      ],
+      userType: ['student'],
+      mobileNumber: ['',
+        Validators.minLength,
+        PatternValidator.validate(this.mobileNumPattern)
       ]
     })
   }
-  log(dsf) {
-    console.log(dsf);
+
+  get firstname() {
+    return this.addUserFG.get('firstname');
+  }
+  get lastname() {
+    return this.addUserFG.get('lastname');
   }
   get username() {
-    return this.usernameEmailFG.get('username')
+    return this.addUserFG.get('username');
   }
 
   get email() {
-    return this.usernameEmailFG.get('email')
+    return this.addUserFG.get('email');
   }
+
+  get newPassword() {
+    return this.addUserFG.get('newPassword');
+  }
+
+  get confirmPassword() {
+    return this.addUserFG.get('confirmPassword');
+  }
+
+  get userType() {
+    return this.addUserFG.get('userType');
+  }
+  get mobileNumber() {
+    return this.addUserFG.get('mobileNumber');
+  }
+
+  log(res) { console.log(res); }
 
   applyFilter(filterValue: string) {
     this.dataSource.filter = filterValue.trim().toLowerCase();
@@ -108,6 +153,9 @@ export class UsersTabComponent implements OnInit {
 
   toggleExpandRow(currrentUser) {
     this.currentUser = currrentUser;
+  }
+  addNewUser() {
+    console.log(this.addUserFG.value);
   }
 }
 
@@ -142,3 +190,10 @@ export class AlreadyExistsValidator {
   )
 }
 
+export class MatchPassword {
+  static validate = () => (crtl: AbstractControl) => new Promise(resolve => crtl.parent.get('newPassword').value === crtl.value ? resolve(null) : resolve({ matched: false }));
+}
+
+export class PatternValidator {
+  static validate = (pattern: RegExp) => (ctrl: AbstractControl) => new Promise(resolve => pattern.test(ctrl.value) || ctrl.value === "" ? resolve(null) : resolve({ matched: false }));
+}
