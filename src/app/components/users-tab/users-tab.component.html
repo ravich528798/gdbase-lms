@@ -65,7 +65,7 @@
               <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
                 <mat-form-field>
                   <input matInput type="password" placeholder="Create new password" required name="newPassword"
-                    formControlName="newPassword">
+                    formControlName="newPassword" (change)="clearMatchedPassword()">
                 </mat-form-field>
                 <div class="error-msg-container">
                   <div *ngIf="newPassword.touched && newPassword.invalid" class="alert alert-danger">
@@ -113,7 +113,7 @@
                 </mat-form-field>
                 <div class="error-msg-container">
                   <div class="alert alert-danger" *ngIf="mobileNumber.touched && mobileNumber.errors && mobileNumber.errors.matched === false">
-                    <small>Please eneter a valid mobile number</small>
+                    <small>Please eneter a valid mobile number <i>eg: +33 410 20 30 40 or 04 01 02 03 04 </i></small>
                   </div>
                 </div>
               </div>

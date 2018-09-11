@@ -1,12 +1,11 @@
 import { Component, OnInit, ViewChild, Inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { MatPaginator, MatSort, MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { MatPaginator, MatSort, MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatSnackBar } from '@angular/material';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { Observable } from 'rxjs/Observable';
-import { URL_GET_ALL_USERS, URL_DELETE_USER, URL_CHECK_USERNAME_AVAILABILITY, URL_CHECK_EMAIL_AVAILABILITY } from '../../api';
-import { FormBuilder, FormGroup, Validators, AbstractControl, AsyncValidator, ValidationErrors } from '@angular/forms';
+import { URL_GET_ALL_USERS, URL_DELETE_USER, URL_CHECK_USERNAME_AVAILABILITY, URL_CHECK_EMAIL_AVAILABILITY, URL_ADD_USER } from '../../api';
+import { FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { debounceTime, map, take, catchError } from "rxjs/operators";
-import { resolve } from 'url';
 
 interface UserData {
   firstname: string;
@@ -47,12 +46,12 @@ export class UsersTabComponent implements OnInit {
   public addUserFG: FormGroup;
 
   private pattern = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{6,})");
-  private mobileNumPattern = new RegExp(/^(?:(?:\+|00)33|0)\s*[1-9](?:[\s.-]*\d{2}){4}$/);
+  private mobileNumPattern = new RegExp(/^(?:(?:\+)(33|32)|0)\s*[1-9](?:[\s.-]*\d{2}){4}$/);
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
-  constructor(private http: HttpClient, public dialog: MatDialog, private fb: FormBuilder) {
+  constructor(private http: HttpClient, public dialog: MatDialog, private fb: FormBuilder, public snackBar: MatSnackBar) {
     this.dataSource = new MatTableDataSource();
   }
 
@@ -91,6 +90,9 @@ export class UsersTabComponent implements OnInit {
     })
   }
 
+  clearMatchedPassword() {
+    this.confirmPassword.setValue('');
+  }
   get firstname() {
     return this.addUserFG.get('firstname');
   }
@@ -100,7 +102,6 @@ export class UsersTabComponent implements OnInit {
   get username() {
     return this.addUserFG.get('username');
   }
-
   get email() {
     return this.addUserFG.get('email');
   }
@@ -119,8 +120,6 @@ export class UsersTabComponent implements OnInit {
   get mobileNumber() {
     return this.addUserFG.get('mobileNumber');
   }
-
-  log(res) { console.log(res); }
 
   applyFilter(filterValue: string) {
     this.dataSource.filter = filterValue.trim().toLowerCase();
@@ -155,7 +154,28 @@ export class UsersTabComponent implements OnInit {
     this.currentUser = currrentUser;
   }
   addNewUser() {
-    console.log(this.addUserFG.value);
+    this.http.post(URL_ADD_USER, this.addUserFG.value)
+      .subscribe(
+        res => {
+          if (res === 'ADDED') {
+            this.addUserFG.reset();
+            this.openSnackBar(`Added ${this.firstname.value} as ${this.userType.value}`);
+            this.http.get(URL_GET_ALL_USERS).subscribe((res: any[]) => { this.dataSource.data = res; }, err => { console.log(err) });
+          }
+        },
+        error => {
+          this.openSnackBar(`Something went wrong. Please try again`);
+          console.log(error);
+        }
+      );
+  }
+
+  openSnackBar(msg) {
+    this.snackBar.open(msg, "", {
+      duration: 5000,
+      verticalPosition: 'bottom',
+      horizontalPosition: 'right'
+    });
   }
 }
 

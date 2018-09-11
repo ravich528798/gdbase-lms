@@ -1,6 +1,6 @@
 import { GLOBALS } from "../utils";
 
-export const URL_API = GLOBALS.environment === 'dev'? 'http://localhost/gdbase-lms/src/server':'http://training.gdbase.be/server';
+export const URL_API = GLOBALS.environment === 'dev'? 'http://localhost/gdbase-lms/server':'http://training.gdbase.be/server';
 
 export const URL_LOGIN = `${URL_API}/login.php`;
 
@@ -13,3 +13,5 @@ export const URL_GET_ALL_USERS = `${URL_API}/get_all_users.php`;
 export const URL_CHECK_USERNAME_AVAILABILITY = `${URL_API}/username-avalibility.php`;
 
 export const URL_CHECK_EMAIL_AVAILABILITY = `${URL_API}/email-avalibility.php`;
+
+export const URL_ADD_USER = `${URL_API}/add-user.php`;
