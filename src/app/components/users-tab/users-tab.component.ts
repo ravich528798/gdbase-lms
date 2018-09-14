@@ -154,20 +154,27 @@ export class UsersTabComponent implements OnInit {
     this.currentUser = currrentUser;
   }
   addNewUser() {
-    this.http.post(URL_ADD_USER, this.addUserFG.value)
-      .subscribe(
-        res => {
-          if (res === 'ADDED') {
-            this.addUserFG.reset();
-            this.openSnackBar(`Added ${this.firstname.value} as ${this.userType.value}`);
-            this.http.get(URL_GET_ALL_USERS).subscribe((res: any[]) => { this.dataSource.data = res; }, err => { console.log(err) });
+    if (this.addUserFG.valid) {
+      this.http.post<String>(URL_ADD_USER, this.addUserFG.value)
+        .subscribe(
+          res => {
+            if (res === 'ADDED') {
+              this.openSnackBar(`Added ${this.firstname.value} as ${this.userType.value}`);
+              this.addUserFG.reset();
+              this.addUserFG.markAsUntouched();
+              Object.keys(this.addUserFG.controls).forEach((name) => {
+                let control = this.addUserFG.controls[name];
+                control.setErrors(null);
+              });
+              this.getAllUsers().subscribe((data: any[]) => { this.dataSource.data = data; });
+            }
+          },
+          error => {
+            this.openSnackBar(`Something went wrong. Please try again`);
+            console.log(error);
           }
-        },
-        error => {
-          this.openSnackBar(`Something went wrong. Please try again`);
-          console.log(error);
-        }
-      );
+        );
+    }
   }
 
   openSnackBar(msg) {
@@ -215,5 +222,5 @@ export class MatchPassword {
 }
 
 export class PatternValidator {
-  static validate = (pattern: RegExp) => (ctrl: AbstractControl) => new Promise(resolve => pattern.test(ctrl.value) || ctrl.value === "" ? resolve(null) : resolve({ matched: false }));
+  static validate = (pattern: RegExp) => (ctrl: AbstractControl) => new Promise(resolve => pattern.test(ctrl.value) || ctrl.value === "" || ctrl.value === null ? resolve(null) : resolve({ matched: false }));
 }
