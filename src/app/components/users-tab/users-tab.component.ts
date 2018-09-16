@@ -20,7 +20,16 @@ interface UserData {
 interface ConfirmDeleteDialogData {
   username: string;
 }
-
+const defaultValues = {
+  firstname: '',
+  lastname: '',
+  username: '',
+  email: '',
+  newPassword: '',
+  confirmPassword: '',
+  userType: 'student',
+  mobileNumber: ''
+}
 @Component({
   selector: 'app-users-tab',
   templateUrl: './users-tab.component.html',
@@ -33,7 +42,6 @@ interface ConfirmDeleteDialogData {
     ]),
   ],
 })
-
 export class UsersTabComponent implements OnInit {
 
   public displayedColumns: string[] = ['name', 'email', 'mobile'];
@@ -50,6 +58,7 @@ export class UsersTabComponent implements OnInit {
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
+  @ViewChild('adduserFromRoot') adduserFrom;
 
   constructor(private http: HttpClient, public dialog: MatDialog, private fb: FormBuilder, public snackBar: MatSnackBar) {
     this.dataSource = new MatTableDataSource();
@@ -59,35 +68,7 @@ export class UsersTabComponent implements OnInit {
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
     this.getAllUsers().subscribe((data: any[]) => { this.dataSource.data = data; });
-    this.addUserFG = this.fb.group({
-      firstname: ['',
-        Validators.required
-      ],
-      lastname: ['',
-        Validators.required
-      ],
-      username: ['',
-        Validators.required,
-        AlreadyExistsValidator.validate(this.http, URL_CHECK_USERNAME_AVAILABILITY)
-      ],
-      email: ['',
-        Validators.required,
-        AlreadyExistsValidator.validate(this.http, URL_CHECK_EMAIL_AVAILABILITY)
-      ],
-      newPassword: ['',
-        Validators.required,
-        PatternValidator.validate(this.pattern)
-      ],
-      confirmPassword: ['',
-        Validators.required,
-        MatchPassword.validate()
-      ],
-      userType: ['student'],
-      mobileNumber: ['',
-        Validators.minLength,
-        PatternValidator.validate(this.mobileNumPattern)
-      ]
-    })
+    this.createFormGroup();
   }
 
   clearMatchedPassword() {
@@ -129,6 +110,39 @@ export class UsersTabComponent implements OnInit {
     }
   }
   getAllUsers = (): Observable<UserData[]> => this.http.get<UserData[]>(URL_GET_ALL_USERS);
+  postNewUser = (data): Observable<any> => this.http.post<any>(URL_ADD_USER, data);
+
+  createFormGroup() {
+    this.addUserFG = this.fb.group({
+      firstname: ['',
+        Validators.required
+      ],
+      lastname: ['',
+        Validators.required
+      ],
+      username: ['',
+        Validators.required,
+        AlreadyExistsValidator.validate(this.http, URL_CHECK_USERNAME_AVAILABILITY)
+      ],
+      email: ['',
+        Validators.required,
+        AlreadyExistsValidator.validate(this.http, URL_CHECK_EMAIL_AVAILABILITY)
+      ],
+      newPassword: ['',
+        Validators.required,
+        PatternValidator.validate(this.pattern)
+      ],
+      confirmPassword: ['',
+        Validators.required,
+        MatchPassword.validate()
+      ],
+      userType: ['student'],
+      mobileNumber: ['',
+        Validators.minLength,
+        PatternValidator.validate(this.mobileNumPattern)
+      ]
+    })
+  }
 
   deleteUser = (userData) => {
     this.http.post(URL_DELETE_USER, userData)
@@ -155,17 +169,14 @@ export class UsersTabComponent implements OnInit {
   }
   addNewUser() {
     if (this.addUserFG.valid) {
-      this.http.post<String>(URL_ADD_USER, this.addUserFG.value)
+      this.postNewUser(this.addUserFG.value)
         .subscribe(
           res => {
             if (res === 'ADDED') {
               this.openSnackBar(`Added ${this.firstname.value} as ${this.userType.value}`);
+              this.adduserFrom.resetForm();
               this.addUserFG.reset();
-              this.addUserFG.markAsUntouched();
-              Object.keys(this.addUserFG.controls).forEach((name) => {
-                let control = this.addUserFG.controls[name];
-                control.setErrors(null);
-              });
+              this.addUserFG.controls.userType.setValue('student');
               this.getAllUsers().subscribe((data: any[]) => { this.dataSource.data = data; });
             }
           },
