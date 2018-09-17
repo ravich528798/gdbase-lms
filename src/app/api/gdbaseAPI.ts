@@ -15,3 +15,9 @@ export const URL_CHECK_USERNAME_AVAILABILITY = `${URL_API}/username-avalibility.
 export const URL_CHECK_EMAIL_AVAILABILITY = `${URL_API}/email-avalibility.php`;
 
 export const URL_ADD_USER = `${URL_API}/add-user.php`;
+
+export const URL_GET_USER = `${URL_API}/get-user.php`;
+
+export const URL_CHANGE_PASSWORD = `${URL_API}/change-password.php`;
+
+export const URL_SEND_PASSWORD_REST_MAIL = `${URL_API}/password-reset-mail.php`;

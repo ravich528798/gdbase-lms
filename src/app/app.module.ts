@@ -15,6 +15,7 @@ import { UsersTabComponent, ConfirmDeleteDialog } from './components/users-tab/u
 import { ManageTabComponent } from './components/manage-tab/manage-tab.component';
 import { CoursesTabComponent } from './components/courses-tab/courses-tab.component';
 import { GlobalInterceptor } from './config/HttpInterceptor';
+import { ResetPasswordBottomsheetComponent } from './components/reset-password-bottomsheet/reset-password-bottomsheet.component';
 
 const lmsRoutes: Routes = LMSRouter;
 
@@ -36,9 +37,10 @@ const lmsRoutes: Routes = LMSRouter;
     UsersTabComponent,
     ManageTabComponent,
     CoursesTabComponent,
-    ConfirmDeleteDialog
+    ConfirmDeleteDialog,
+    ResetPasswordBottomsheetComponent
   ],
-  entryComponents: [ConfirmDeleteDialog],
+  entryComponents: [ConfirmDeleteDialog, ResetPasswordBottomsheetComponent],
   providers: [
     {
       provide: HTTP_INTERCEPTORS,

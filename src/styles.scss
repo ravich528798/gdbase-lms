@@ -1,7 +1,8 @@
 @import '~@angular/material/theming';
-$gd-colors:( "base": #FF6600, "cyan": #36cde8, "hover": #18bc9c, "white": #FFFFFF);
+$gd-colors:("base": #FF6600, "cyan": #36cde8, "hover": #18bc9c, "white": #FFFFFF);
 $primary: #FF6600;
-$gd-colors-arr:( 'gd-primary': map-get($gd-colors, 'base'), 'gd-cyan': map-get($gd-colors, 'cyan'), 'gd-hover': map-get($gd-colors, 'hover'), 'gd-white': map-get($gd-colors, 'white'));
+$gd-colors-arr:('gd-primary': map-get($gd-colors, 'base'), 'gd-cyan': map-get($gd-colors, 'cyan'), 'gd-hover': map-get($gd-colors, 'hover'), 'gd-white': map-get($gd-colors, 'white'));
+
 .gd-primary-gradient {
   background-image: linear-gradient(-60deg, #ff5858 0%, #f09819 100%);
   color: white !important;
@@ -9,20 +10,25 @@ $gd-colors-arr:( 'gd-primary': map-get($gd-colors, 'base'), 'gd-cyan': map-get($
 
 $boxShadow:0 10px 30px 4px rgba(0, 0, 0, 0.2);
 $boxShadowHover:0 22px 70px 8px rgba(0, 0, 0, 0.3);
+
 @each $key,
 $value in $gd-colors-arr {
   .#{$key} {
     background-color: $value !important;
   }
+
   .#{$key}-text {
     color: $value !important;
   }
+
   .#{$key}-border {
     border-color: $value !important;
   }
+
   button {
     outline: none !important;
   }
+
   input[type=text].#{$key}-input {
     &:focus {
       border: 1px solid $value !important;
@@ -50,6 +56,7 @@ $value in $gd-colors-arr {
   letter-spacing: 1px;
   transition: all .3s ease-in-out !important;
   top: 0;
+
   &:hover {
     top: -0.2rem;
     box-shadow: $boxShadowHover !important;
@@ -62,11 +69,23 @@ $value in $gd-colors-arr {
 
 a {
   color: $primary;
+
   &:hover {
     color: $primary;
   }
 }
 
-.no-padding{
-  padding:0px;
+.no-padding {
+  padding: 0px;
+}
+
+.error-msg-container {
+  height: 50px;
+
+  .alert {
+    padding: 0.25rem 1.25rem;
+  }
+}
+.input-text{
+  width: 100%;
 }
