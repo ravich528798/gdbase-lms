@@ -1,7 +1,7 @@
 @import "~@angular/material/prebuilt-themes/pink-bluegrey.css";
 @import '~@angular/material/theming';
 $gd-primary: mat-palette($mat-amber, 900);
-$gd-accent : mat-palette($mat-brown, 900);
+$gd-accent : mat-palette($mat-amber, 900);
 $gd-warn : mat-palette($mat-red);
 $gd-theme: mat-light-theme($gd-primary, $gd-accent, $gd-warn);
 @include angular-material-theme($gd-theme);

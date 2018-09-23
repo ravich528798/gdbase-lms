@@ -122,7 +122,7 @@ export class ResetPasswordBottomsheetComponent {
       this.passRestTimer.secs = Math.floor((distance % (1000 * 60)) / 1000);
       if (distance < 1000) {
         this.OTPState = "expired";
-        localStorage.removeItem('gdbaseOTP');
+        localStorage.removeItem('gdbaseLMSOTP');
         this.stopTimer();
       }
     }, 1000);
@@ -134,7 +134,7 @@ export class ResetPasswordBottomsheetComponent {
   }
 
   checkOTP() {
-    if (this.passOTP == localStorage.getItem('gdbaseOTP')) {
+    if (this.passOTP == localStorage.getItem('gdbaseLMSOTP')) {
       this.OTPState = 'approved';
       this.resetStage = 3;
       this.stopTimer();
@@ -144,13 +144,22 @@ export class ResetPasswordBottomsheetComponent {
     }
   }
 
+  // stage 3
+  changePassword(){
+    console.log("Wroking");
+  }
+
   onSubmit() {
     switch (this.resetStage) {
       case 1:
         this.checkEmail();
         break;
       case 2:
-
+        this.checkOTP();
+        break;
+      case 3:
+        this.changePassword();
+        break;
       default:
         break;
     }
