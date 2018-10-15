@@ -4,6 +4,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {QuillModule} from 'ngx-quill';
 
 import { MaterialModule } from './material.module';
 import { LMSRouter } from "./config/router";
@@ -27,7 +28,8 @@ const lmsRoutes: Routes = LMSRouter;
     FormsModule,
     HttpClientModule,
     RouterModule.forRoot(lmsRoutes),
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    QuillModule
   ],
   declarations: [
     AppComponent,

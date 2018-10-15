@@ -7,12 +7,14 @@
           <b>Add user</b>
         </h5>
       </div>
+      <br>
       <div class="col-sm-12" class="addUserForm">
         <form name="addUser" [formGroup]="addUserFG" #adduserFromRoot="ngForm">
           <div class="container-fluid">
             <div class="row">
               <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-                <mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>First Name</mat-label>
                   <input matInput placeholder="First name" required name="firstname" formControlName="firstname">
                 </mat-form-field>
                 <div class="error-msg-container">
@@ -22,7 +24,8 @@
                 </div>
               </div>
               <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-                <mat-form-field>
+                <mat-form-field appearance="outline">
+                  <mat-label>Last name</mat-label>
                   <input matInput placeholder="Last name" required name="lastname" formControlName="lastname">
                 </mat-form-field>
                 <div class="error-msg-container">
@@ -35,7 +38,8 @@
 
             <div class="row">
               <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-                <mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Username</mat-label>
                   <input matInput placeholder="Username" required name="username" formControlName="username">
                 </mat-form-field>
                 <div class="error-msg-container">
@@ -47,7 +51,8 @@
               </div>
 
               <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-                <mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Email Address</mat-label>
                   <input matInput type="email" placeholder="Email Address" required name="email" formControlName="email"
                     pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$">
                 </mat-form-field>
@@ -63,7 +68,8 @@
             </div>
             <div class="row">
               <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-                <mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Password</mat-label>
                   <input matInput type="password" placeholder="Create new password" required name="newPassword"
                     formControlName="newPassword" (change)="clearMatchedPassword()">
                 </mat-form-field>
@@ -78,7 +84,8 @@
                 </div>
               </div>
               <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-                <mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Confirm Password</mat-label>
                   <input matInput type="password" placeholder="Confirm Password" required name="confirmPassword"
                     formControlName="confirmPassword">
                 </mat-form-field>
@@ -94,7 +101,8 @@
             </div>
             <div class="row">
               <div class="col-xs-12 col-sm-12 col-md-3 col-lg-5">
-                <mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>User Type</mat-label>
                   <mat-select placeholder="User Type" [(value)]="userType" name="userType" formControlName="userType">
                     <mat-option value="admin">
                       Admin
@@ -107,7 +115,8 @@
                 <div class="error-msg-container"></div>
               </div>
               <div class="col-xs-12 col-sm-12 col-md-3 col-lg-5">
-                <mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Mobile Number</mat-label>
                   <input matInput type="tel" placeholder="Mobile Number" name="mobileNumber" formControlName="mobileNumber"
                     minlength="0">
                 </mat-form-field>
@@ -140,7 +149,7 @@
           </h5>
         </div>
         <div class="col-sm-4">
-          <mat-form-field>
+          <mat-form-field appearance="outline">
             <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Search for users" type="ext">
             <mat-icon matSuffix>search</mat-icon>
           </mat-form-field>

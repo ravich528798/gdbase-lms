@@ -34,7 +34,8 @@
     "popper.js": "^1.14.3",
     "rxjs": "^6.2.0",
     "zone.js": "^0.8.19",
-    "rxjs-compat": "^6.0.0-rc.0"
+    "rxjs-compat": "^6.0.0-rc.0",
+    "ngx-quill": "3.4.0"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.6.1",

@@ -7,9 +7,6 @@ import { Component, OnInit } from '@angular/core';
 })
 export class CoursesTabComponent implements OnInit {
 
-  constructor() { }
-
-  ngOnInit() {
-  }
-
+  constructor() {}
+  ngOnInit() {}
 }

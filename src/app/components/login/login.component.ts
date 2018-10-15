@@ -71,7 +71,9 @@ export class LoginComponent implements OnInit {
     })
   }
   openResetPasswordBottomSheet(): void {
-    this.resetPasswordSheet.open(ResetPasswordBottomsheetComponent);
+    this.resetPasswordSheet.open(ResetPasswordBottomsheetComponent, {
+      disableClose: true
+    });
   }
   passwordRest = function (stage) {
 

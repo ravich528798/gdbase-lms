@@ -1,13 +1,13 @@
-import { Component, ChangeDetectorRef } from '@angular/core';
+import { Component, ChangeDetectorRef, OnInit } from '@angular/core';
 import { MatBottomSheetRef } from '@angular/material';
-import { URL_GET_USER, URL_SEND_PASSWORD_REST_MAIL } from '../../api';
+import { URL_GET_USER, URL_SEND_PASSWORD_REST_MAIL, URL_CHANGE_PASSWORD } from '../../api';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 interface PassRestTimer {
-  hours: Number;
-  mins: Number;
-  secs: Number;
+  hours: number;
+  mins: number;
+  secs: number;
 }
 
 @Component({
@@ -15,33 +15,42 @@ interface PassRestTimer {
   templateUrl: './reset-password-bottomsheet.component.html',
   styleUrls: ['./reset-password-bottomsheet.component.scss']
 })
-export class ResetPasswordBottomsheetComponent {
-  public resetEmail: String;
-  public loading: Boolean;
-  public showError: Boolean;
-  public msgError: String;
+export class ResetPasswordBottomsheetComponent implements OnInit {
+  public resetEmail: string;
+  public loading: boolean;
+  public showError: boolean;
+  public msgError: string;
   public userdata: any;
   public passRestTimer: PassRestTimer;
-  public OTPState: String;
-  public passOTP: String;
-  public resetStage: Number;
+  public OTPState: string;
+  public passOTP: string;
+  public resetStage: number;
+  public incorrectOTP: boolean = false;
+  public newPass: string;
 
   private Timeloop: any;
- 
+
   constructor(
-    private bottomSheetRef: MatBottomSheetRef<ResetPasswordBottomsheetComponent>,
+    public bottomSheetRef: MatBottomSheetRef<ResetPasswordBottomsheetComponent>,
     private http: HttpClient,
     private changeDetectorRef: ChangeDetectorRef
   ) {
-    this.resetStage = 2;
+    this.resetStage = 1;
     this.loading = false;
     this.showError = false;
     this.userdata = {
       firstname: 'Godwin VC',
       email: 'godwin@godwinvc.com',
-      OTP:  '1234'
+      OTP: '1234'
+    }
+    this.passRestTimer = {
+      hours: 0,
+      mins: 0,
+      secs: 0
     }
   }
+
+  ngOnInit() { }
 
   // Stage  1
   onResetEmailChange() {
@@ -53,27 +62,33 @@ export class ResetPasswordBottomsheetComponent {
     this.http.post(URL_GET_USER, { action: 'email', payload: this.resetEmail })
       .subscribe(
         res => {
-          this.loading = false;
           if (Array.isArray(res)) {
             if (res.length === 0) {
               this.showError = true;
               this.msgError = "Sorry, we don't recognize this email address";
+              this.loading = false;
             } else {
               this.userdata = res[0];
               this.sendMailWithOTP()
                 .then(res => {
+                  console.log(res);
                   if (res === 'MailDelivered') {
+                    this.loading = false;
                     this.resetStage = 2;
+                    setTimeout(() => { this.startTimer(); }, 10);
                   } else {
                     alert("Failed to Send OTP. Please try again");
                   }
+                  this.changeDetectorRef.detectChanges();
                 })
                 .catch(err => {
                   alert("Failed to Send OTP. Please try again");
                   console.log(err);
+                  this.loading = false;
                 })
             }
           } else {
+            this.loading = false;
             alert('Something went wrong. Please try again');
           }
           this.changeDetectorRef.detectChanges();
@@ -81,7 +96,6 @@ export class ResetPasswordBottomsheetComponent {
         err => {
           this.loading = false;
           alert('Network Error. Please try again');
-          console.log(err);
           this.changeDetectorRef.detectChanges();
         }
       )
@@ -113,8 +127,7 @@ export class ResetPasswordBottomsheetComponent {
   startTimer() {
     const date = new Date();
     const countDownDate: number = new Date(date.setTime(date.getTime() + (0 * 60 * 60 * 1000) + (5 * 60 * 1000) + (0 * 1000))).getTime();
-
-    this.Timeloop = setInterval(function () {
+    this.Timeloop = setInterval(() => {
       const now: number = new Date().getTime();
       const distance: number = countDownDate - now;
       this.passRestTimer.hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
@@ -125,6 +138,7 @@ export class ResetPasswordBottomsheetComponent {
         localStorage.removeItem('gdbaseLMSOTP');
         this.stopTimer();
       }
+      this.changeDetectorRef.detectChanges();
     }, 1000);
   }
 
@@ -134,19 +148,38 @@ export class ResetPasswordBottomsheetComponent {
   }
 
   checkOTP() {
+    this.incorrectOTP = false;
     if (this.passOTP == localStorage.getItem('gdbaseLMSOTP')) {
       this.OTPState = 'approved';
       this.resetStage = 3;
       this.stopTimer();
     } else {
-      console.log("Incorrect ran");
+      this.incorrectOTP = true;
       this.OTPState = 'incorrect';
     }
   }
 
   // stage 3
-  changePassword(){
-    console.log("Wroking");
+  changePassword() {
+    this.loading = true;
+    this.http.post(URL_CHANGE_PASSWORD, {
+      email: this.userdata.email,
+      password: this.newPass
+    })
+      .subscribe(res => {
+        this.loading = false;
+        if (res === 'changedSucessfully') {
+          this.resetStage = 4;
+        } else {
+          alert('Something went wrong. Please try again');
+        }
+      },
+        err => {
+          this.loading = false;
+          alert('Network Error. Please try again');
+          console.log(err);
+        }
+      )
   }
 
   onSubmit() {
@@ -160,6 +193,8 @@ export class ResetPasswordBottomsheetComponent {
       case 3:
         this.changePassword();
         break;
+      case 4:
+        this.bottomSheetRef.dismiss();
       default:
         break;
     }
