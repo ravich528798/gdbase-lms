@@ -1,8 +1,9 @@
-import { Component, ChangeDetectorRef, OnInit } from '@angular/core';
+import { Component, ChangeDetectorRef, OnInit, ViewChild } from '@angular/core';
 import { MatBottomSheetRef } from '@angular/material';
 import { URL_GET_USER, URL_SEND_PASSWORD_REST_MAIL, URL_CHANGE_PASSWORD } from '../../api';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { NgModel } from '@angular/forms';
 
 interface PassRestTimer {
   hours: number;
@@ -27,8 +28,9 @@ export class ResetPasswordBottomsheetComponent implements OnInit {
   public resetStage: number;
   public incorrectOTP: boolean = false;
   public newPass: string;
-
   private Timeloop: any;
+
+  @ViewChild('resetEmailTag') resetEmailTag: NgModel;
 
   constructor(
     public bottomSheetRef: MatBottomSheetRef<ResetPasswordBottomsheetComponent>,
@@ -39,9 +41,9 @@ export class ResetPasswordBottomsheetComponent implements OnInit {
     this.loading = false;
     this.showError = false;
     this.userdata = {
-      firstname: 'Godwin VC',
-      email: 'godwin@godwinvc.com',
-      OTP: '1234'
+      firstname: '',
+      email: '',
+      OTP: ''
     }
     this.passRestTimer = {
       hours: 0,
@@ -50,12 +52,11 @@ export class ResetPasswordBottomsheetComponent implements OnInit {
     }
   }
 
-  ngOnInit() { }
+  ngOnInit() {}
 
   // Stage  1
   onResetEmailChange() {
-    this.showError = false;
-    this.msgError = "";
+   setTimeout(()=>{this.resetEmailTag.control.errors && this.resetEmailTag.control.setErrors(null)});
   }
   checkEmail() {
     this.loading = true;
@@ -64,8 +65,8 @@ export class ResetPasswordBottomsheetComponent implements OnInit {
         res => {
           if (Array.isArray(res)) {
             if (res.length === 0) {
-              this.showError = true;
-              this.msgError = "Sorry, we don't recognize this email address";
+              this.resetEmailTag.control.setErrors({'custom': "Sorry, we don't recognize this email address"});
+              console.log(this.resetEmailTag);
               this.loading = false;
             } else {
               this.userdata = res[0];

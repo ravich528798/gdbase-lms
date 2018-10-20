@@ -19,6 +19,7 @@ interface UserData {
 
 interface ConfirmDeleteDialogData {
   username: string;
+  user:any;
 }
 const defaultValues = {
   firstname: '',

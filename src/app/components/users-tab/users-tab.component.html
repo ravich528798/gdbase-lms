@@ -11,99 +11,87 @@
       <div class="col-sm-12" class="addUserForm">
         <form name="addUser" [formGroup]="addUserFG" #adduserFromRoot="ngForm">
           <div class="container-fluid">
-            <div class="row">
+            <div class="row mb-3">
               <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
                 <mat-form-field appearance="outline">
                     <mat-label>First Name</mat-label>
                   <input matInput placeholder="First name" required name="firstname" formControlName="firstname">
+                  <mat-error *ngIf="firstname.touched && !firstname.valid">
+                    First name is required
+                  </mat-error>
                 </mat-form-field>
-                <div class="error-msg-container">
-                  <div class="alert alert-danger" *ngIf="firstname.touched && !firstname.valid">
-                    <small>First name is required</small>
-                  </div>
-                </div>
               </div>
               <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
                 <mat-form-field appearance="outline">
                   <mat-label>Last name</mat-label>
                   <input matInput placeholder="Last name" required name="lastname" formControlName="lastname">
+                  <mat-error *ngIf="lastname.touched && !lastname.valid">
+                    Last name is required
+                  </mat-error>
                 </mat-form-field>
-                <div class="error-msg-container">
-                  <div class="alert alert-danger" *ngIf="lastname.touched && !lastname.valid">
-                    <small>Last name is required</small>
-                  </div>
-                </div>
               </div>
             </div>
-
-            <div class="row">
+            <div class="row mb-3">
               <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
                 <mat-form-field appearance="outline">
                     <mat-label>Username</mat-label>
                   <input matInput placeholder="Username" required name="username" formControlName="username">
+                  <mat-error *ngIf="username.errors && username.errors.unique === false">
+                    {{username.value}} already taken
+                  </mat-error>
+                  <mat-error *ngIf="username.value === ''">
+                    Username is required
+                  </mat-error>  
                 </mat-form-field>
-                <div class="error-msg-container">
-                  <div class="alert alert-danger" *ngIf="username.touched && username.invalid">
-                    <small *ngIf="username.errors && username.errors.unique === false">{{username.value}} already taken</small>
-                    <small *ngIf="username.value === ''">Username is required</small>
-                  </div>
-                </div>
               </div>
-
               <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
                 <mat-form-field appearance="outline">
                     <mat-label>Email Address</mat-label>
                   <input matInput type="email" placeholder="Email Address" required name="email" formControlName="email"
                     pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$">
+                    <mat-error *ngIf="email.errors && email.errors.unique === false">
+                      Email address already exits
+                    </mat-error>
+                    <mat-error *ngIf="email.value === ''|| (email.errors && email.errors.pattern)">
+                      Please enter a valid email address
+                    </mat-error>
                 </mat-form-field>
-                <div class="error-msg-container">
-                  <div *ngIf="email.touched && !email.valid" class="alert alert-danger">
-                    <small *ngIf="email.errors && email.errors.unique === false">Email address already exits</small>
-                    <small *ngIf="email.value === ''|| (email.errors && email.errors.pattern)">Please enter a valid
-                      email
-                      address</small>
-                  </div>
-                </div>
               </div>
             </div>
-            <div class="row">
+            <div class="row mb-3">
               <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
                 <mat-form-field appearance="outline">
                     <mat-label>Password</mat-label>
                   <input matInput type="password" placeholder="Create new password" required name="newPassword"
                     formControlName="newPassword" (change)="clearMatchedPassword()">
-                </mat-form-field>
-                <div class="error-msg-container">
-                  <div *ngIf="newPassword.touched && newPassword.invalid" class="alert alert-danger">
-                    <small *ngIf="newPassword.errors && newPassword.errors.matched === false">
+                    <mat-error *ngIf="newPassword.errors && newPassword.errors.matched === false">
                       Password must be atleast 6 charecters long with at least 1 uppercase and lowercase alphabetical
                       character and a special character
-                    </small>
-                    <small *ngIf="newPassword.value === ''">Please provide a new password</small>
-                  </div>
-                </div>
+                    </mat-error>
+                    <mat-error *ngIf="newPassword.value === ''">
+                      Please provide a new password
+                    </mat-error>
+                </mat-form-field>
               </div>
               <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
                 <mat-form-field appearance="outline">
                     <mat-label>Confirm Password</mat-label>
                   <input matInput type="password" placeholder="Confirm Password" required name="confirmPassword"
                     formControlName="confirmPassword">
+                    <mat-error *ngIf="confirmPassword.errors && confirmPassword.errors.matched === false">
+                      Password dosen't match
+                    </mat-error>
+                    <mat-error *ngIf="confirmPassword.errors && confirmPassword.errors.required">
+                      Please confrim the password
+                    </mat-error>
                 </mat-form-field>
-                <div class="error-msg-container">
-                  <div class="alert alert-danger" *ngIf="confirmPassword.touched && confirmPassword.invalid">
-                    <small *ngIf="confirmPassword.errors && confirmPassword.errors.matched === false">Password dosen't
-                      match</small>
-                    <small *ngIf="confirmPassword.errors && confirmPassword.errors.required">Please confrim the
-                      password</small>
-                  </div>
-                </div>
               </div>
             </div>
-            <div class="row">
+            <div class="row mb-3">
               <div class="col-xs-12 col-sm-12 col-md-3 col-lg-5">
                 <mat-form-field appearance="outline">
                     <mat-label>User Type</mat-label>
-                  <mat-select placeholder="User Type" [(value)]="userType" name="userType" formControlName="userType">
+                  <mat-select placeholder="User Type" value="userType" name="userType" formControlName="userType">
                     <mat-option value="admin">
                       Admin
                     </mat-option>
@@ -112,26 +100,22 @@
                     </mat-option>
                   </mat-select>
                 </mat-form-field>
-                <div class="error-msg-container"></div>
               </div>
               <div class="col-xs-12 col-sm-12 col-md-3 col-lg-5">
                 <mat-form-field appearance="outline">
                     <mat-label>Mobile Number</mat-label>
                   <input matInput type="tel" placeholder="Mobile Number" name="mobileNumber" formControlName="mobileNumber"
                     minlength="0">
+                    <mat-error *ngIf="mobileNumber.touched && mobileNumber.errors && mobileNumber.errors.matched === false">
+                      Enter valid mobile number <i>eg: +33 410 20 30 40 or 04 01 02 03 04 </i>
+                    </mat-error>
                 </mat-form-field>
-                <div class="error-msg-container">
-                  <div class="alert alert-danger" *ngIf="mobileNumber.touched && mobileNumber.errors && mobileNumber.errors.matched === false">
-                    <small>Enter valid mobile number <i>eg: +33 410 20 30 40 or 04 01 02 03 04 </i></small>
-                  </div>
-                </div>
               </div>
               <div class="col-xs-12 col-sm-12 col-md-3 col-lg-2">
                 <button mat-raised-button color="primary" class="btn-xs btn-block" [disabled]="firstname.invalid || lastname.invalid || username.invalid || email.invalid || newPassword.invalid || confirmPassword.invalid || mobileNumber.invalid"
                   (click)="addNewUser()">
                   <mat-icon>add</mat-icon> Add User
                 </button>
-                <div class="error-msg-container"></div>
               </div>
             </div>
           </div>
@@ -142,7 +126,7 @@
   <br>
   <mat-card class="no-padding mat-card">
     <div class="container-fluid" style="padding-top: 15px;">
-      <div class="row">
+      <div class="row mb-3">
         <div class="col-sm-8">
           <h5>
             <b>Your Students</b>
@@ -157,34 +141,30 @@
       </div>
     </div>
     <table mat-table [dataSource]="dataSource" matSort multiTemplateDataRows>
-
       <!-- ID Column -->
       <ng-container matColumnDef="name">
         <th mat-header-cell *matHeaderCellDef mat-sort-header> Name </th>
         <td mat-cell *matCellDef="let row"> {{row.firstname}} {{row.lastname}} {{i}}</td>
       </ng-container>
-
       <!-- email Column -->
       <ng-container matColumnDef="email">
         <th mat-header-cell *matHeaderCellDef mat-sort-header> Email </th>
         <td mat-cell *matCellDef="let row"> {{row.email}} </td>
       </ng-container>
-
       <!-- Mobile Column -->
       <ng-container matColumnDef="mobile">
         <th mat-header-cell *matHeaderCellDef mat-sort-header> Mobile </th>
         <td mat-cell *matCellDef="let row"> {{row.mobile}} </td>
       </ng-container>
-
       <ng-container matColumnDef="expandedDetail">
         <td mat-cell *matCellDef="let row" [attr.colspan]="displayedColumns.length">
           <div class="user-element-detail" [@detailExpand]="row == expandedElement ? 'expanded' : 'collapsed'">
             <div class="container-fluid">
-              <div class="row">
+              <div class="row mb-3">
                 <div class="col-sm-4">
                   <div class="name-card">
                     <mat-icon>person</mat-icon>
-                    <div class="row">
+                    <div class="row mb-3">
                       <div class="col-sm-12 details">
                         <h4>{{row.firstname}}</h4>
                         <p>{{row.email}}</p>
@@ -197,7 +177,7 @@
                 </div>
                 <div class="col-sm-6 text-right" style="color:grey">
                   <p class="m-3">Last Visited: {{today | date:'fullDate'}}</p>
-                  <div class="row">
+                  <div class="row mb-3">
                     <div class="col-lg-4">
                       <button mat-raised-button color="primary" class="btn-xs">
                         <mat-icon>description</mat-icon> View Reports

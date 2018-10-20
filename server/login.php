@@ -1,6 +1,7 @@
 <?php
     include('./connection.php');
     $login_data = json_decode(file_get_contents('php://input'));
+    // $login_data = json_decode('{"username":"godwinvc","password":"User@123"}');
     $username = $login_data -> username;
     $password = sha1($login_data -> password);
     $userinfo = $db -> query("SELECT username FROM students WHERE username = '$username' AND password = '$password'");

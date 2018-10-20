@@ -11,29 +11,29 @@
               <mat-label>
                 Username
               </mat-label>
-              <input matInput type="text" placeholder="Enter your username" formControlName="username" name="username" (ngModelChange)="onChange()" required>
+              <input matInput type="text" placeholder="Enter your username" formControlName="username" name="username"
+                (ngModelChange)="onChange()" required>
             </mat-form-field>
             <br>
             <mat-form-field appearance="outline">
               <mat-label>
                 Password
               </mat-label>
-              <input matInput type="password" placeholder="Enter your password" formControlName="password" name="password" (ngModelChange)="onChange()" required>
+              <input matInput type="password" placeholder="Enter your password" formControlName="password" name="password"
+                (ngModelChange)="onChange()" required>
+              <mat-error *ngIf="loginError">
+                Incorrect username or password
+              </mat-error>
             </mat-form-field>
             <div class="container-fluid">
               <div class="row no-gutters">
                 <div class="col-lg-8">
-                  <a style="text-decoration: underline" class="gd-primary-text" (click)="openResetPasswordBottomSheet()">Can't login?</a>
+                  <a style="text-decoration: underline" class="gd-primary-text" (click)="openResetPasswordBottomSheet()">Can't
+                    login?</a>
                 </div>
                 <div class="col-lg-4">
                   <button mat-raised-button class="gd-primary-gradient" (click)="loginHandler()">LOGIN</button>
                 </div>
-              </div>
-            </div>
-            <br>
-            <div class="error-msg-container">
-              <div class="alert alert-danger" *ngIf="loginError">
-                <small>Incorrect username or password</small>
               </div>
             </div>
           </form>

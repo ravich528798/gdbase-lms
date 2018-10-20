@@ -1,3 +1,3 @@
 export const GLOBALS = {
-  environment: 'dev' //"Prod"
+  environment: location.origin == "http://localhost:4200" ? 'dev': 'prod'
 }

@@ -1,5 +1,8 @@
 @import "~@angular/material/prebuilt-themes/pink-bluegrey.css";
 @import '~@angular/material/theming';
+$custom-typography: mat-typography-config($font-family: "CircularStd");
+
+@include mat-core($custom-typography);
 $gd-primary: mat-palette($mat-amber, 900);
 $gd-accent : mat-palette($mat-amber, 900);
 $gd-warn : mat-palette($mat-red);

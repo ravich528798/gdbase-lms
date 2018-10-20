@@ -49,6 +49,9 @@ $value in $gd-colors-arr {
 * {
   margin: 0px auto;
 }
+body{
+  font-family: 'CircularStd';
+}
 
 [mat-raised-button] {
   box-shadow: $boxShadow !important;
