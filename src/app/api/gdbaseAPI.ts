@@ -21,3 +21,11 @@ export const URL_GET_USER = `${URL_API}/get-user.php`;
 export const URL_CHANGE_PASSWORD = `${URL_API}/change-password.php`;
 
 export const URL_SEND_PASSWORD_REST_MAIL = `${URL_API}/password-reset-mail.php`;
+
+export const URL_UPLOAD_SCORM = `${URL_API}/upload-scorm.php`;
+
+export const URL_VALIDATE_SCORM = `${URL_API}/validate-scorm.php`;
+
+export const URL_CREATE_COURSE = `${URL_API}/create-course.php`;
+
+export const URL_GET_ALL_COURSES = `${URL_API}/get-courses.php`;

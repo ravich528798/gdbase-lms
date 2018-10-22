@@ -1,0 +1,65 @@
+@import '../../../styles';
+
+mat-card {
+  border-top: 5px solid $primary;
+  border-radius: 5px;
+  padding: 10px;
+
+  .btn-xs {
+    font-size: 11px;
+    padding: 3px 10px;
+    line-height: 24px;
+  }
+
+  mat-icon[lg] {
+    @include md-icon-size(54px);
+  }
+}
+
+
+.mat-form-field {
+  font-size: 14px;
+  width: 100%;
+}
+
+/deep/.ql-toolbar {
+  border-radius: 5px 5px 0px 0px;
+}
+
+/deep/.ql-container {
+  border-radius: 0px 0px 5px 5px;
+}
+
+#drop-area, {
+  border: 2px dashed #ccc;
+  border-radius: 20px;
+  width: 100%;
+  padding: 5%;
+
+  .mat-icon {
+    font-size: 5rem;
+    width: 5rem;
+    height: auto;
+    color: gray;
+  }
+}
+
+#drop-area.highlight {
+  border-color: $primary;
+  color:$primary;
+  .mat-icon{
+    color:$primary;
+  }
+}
+.progress-container{
+  border: 2px solid #ccc;
+  border-radius: 20px;
+  width: 100%;
+  padding: 5%;
+  .mat-icon {
+    font-size: 5rem;
+    width: 5rem;
+    height: auto;
+    color: rgb(81, 183, 40);
+  }
+}
