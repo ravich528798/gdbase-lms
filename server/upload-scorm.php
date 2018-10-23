@@ -22,8 +22,8 @@ if($_FILES["scormFile"]["name"]) {
     echo json_encode("NOT_A_ZIP");
     die;
 	}
-
-	$target_path = "../courses/".$filename;  // change this to the correct site path
+	$destination_path = str_replace('/server/','',getcwd().DIRECTORY_SEPARATOR);
+	$target_path = $destination_path."/courses/".$filename;  // change this to the correct site path
 	if(move_uploaded_file($source, $target_path)) {
 		$zip = new ZipArchive();
 		$x = $zip->open($target_path);
@@ -35,7 +35,7 @@ if($_FILES["scormFile"]["name"]) {
 		}
 		echo json_encode("UPLOADED-".$courseID);
 	} else {	
-		echo json_encode($UPLOAD_ERRORS[$_FILES["scormFile"]["error"]]);
+		echo json_encode($_FILES);
 	}
 }
 ?>

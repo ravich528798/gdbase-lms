@@ -96,10 +96,10 @@ export class CoursesTabComponent implements OnInit {
               console.log(`Downloading ${loaded} kb downloaded`);
               break;
             case HttpEventType.Response:
+              console.log(event.body);
               if (event.body.split('-')[0] !== "UPLOADED") {
                 event.body == 'NOT_A_ZIP' ? this.uplaodError = 'SCORM file must be zipped before uploading' : '';
                 this.scormUploadStage = 0;
-                console.log(event.body);
               } else {
                 this.courseId = event.body.split('-')[1];
                 this.scormUploadStage = 2;
