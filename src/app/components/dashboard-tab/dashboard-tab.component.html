@@ -93,7 +93,7 @@
                           <div class="row mb-3">
                             <div class="col-sm-12 details">
                               <h4>{{row.course_name}}</h4>
-                              <p>{{row.course_data.description}}</p>
+                              <p [innerHTML]="decodeURI(row.course_data.description)"></p>
                               <small>Enrolled to
                                 <b>5 users</b>
                               </small>

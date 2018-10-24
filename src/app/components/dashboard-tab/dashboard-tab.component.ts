@@ -4,11 +4,14 @@ import { HttpClient } from '@angular/common/http';
 import { URL_GET_ALL_USERS, URL_GET_ACTIVE_USERS, URL_GET_ALL_COURSES } from '../../api';
 import { MatTableDataSource, MatPaginator, MatSort } from '@angular/material';
 
-interface courseData {
+interface CourseData {
   course_id: string;
   course_name: string;
   course_data: any;
 }
+
+
+
 
 @Component({
   selector: 'app-dashboard-tab',
@@ -23,26 +26,34 @@ interface courseData {
   ],
 })
 export class DashboardTabComponent implements OnInit {
-  public displayedColumns: string[] = ['name', 'date', 'author','completionRate'];
+  public displayedColumns: string[] = ['name', 'date', 'author', 'completionRate'];
   public totalUsers: Number = 0;
   public activeUsers: Number = 0;
-  public dataSource: MatTableDataSource<courseData>;
+  public dataSource: MatTableDataSource<CourseData>;
+  public currentCourse: CourseData;
+  public decodeURI:any;
+
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   constructor(private http: HttpClient) { }
 
   ngOnInit() {
+    this.decodeURI = decodeURI;
     this.dataSource = new MatTableDataSource();
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
     this.getAllUsers().subscribe((data: any[]) => { this.totalUsers = data.length });
     this.getActiveUsers().subscribe((data: any[]) => { this.activeUsers = data.length });
-    this.getAllCourses().subscribe((data: any[]) => { data.forEach(course => {
-      console.log(course);
-      course.course_data = JSON.parse(course.course_data);
-      this.dataSource.data.push(course);
-      console.log(course);
-    }) });
+    this.getAllCourses().subscribe((data: any[]) => { this.dataSource.data = this.parseData(data) });
+  }
+
+  parseData(data){
+    const parsedData = [];
+    data.forEach(e => {
+      e.course_data = JSON.parse(e.course_data);
+      parsedData.push(e);
+    })
+    return parsedData;
   }
 
   getAllUsers = () => this.http.get(URL_GET_ALL_USERS);
@@ -55,5 +66,9 @@ export class DashboardTabComponent implements OnInit {
     if (this.dataSource.paginator) {
       this.dataSource.paginator.firstPage();
     }
+  }
+
+  toggleExpandRow(currentCourse) {
+    this.currentCourse = currentCourse;
   }
 }

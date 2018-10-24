@@ -129,12 +129,13 @@ export class CoursesTabComponent implements OnInit {
         let postData = {
           course_id: this.courseId,
           course_name: this.addCourseFG.get('courseTitle').value,
-          course_data: {
-            description: this.addCourseFG.get('courseDesp').value.replace(/\"/g, '\\\\"'),
+          course_data: JSON.stringify({
+            description: encodeURI(this.addCourseFG.get('courseDesp').value).replace(/\'/g,"&#39;"),
             dateCreated: Date.now(),
             author: this.addCourseFG.get('author').value
-          }
+          })
         }
+        console.log(postData);
         this.http.post(URL_CREATE_COURSE, postData)
           .subscribe(res => {
             console.log(res);
