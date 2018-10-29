@@ -93,7 +93,7 @@ export class ConfirmDeleteCourseDialog {
 
   constructor(
     public dialogRef: MatDialogRef<ConfirmDeleteCourseDialog>,
-    @Inject(MAT_DIALOG_DATA) public data: ConfirmDeleteCourseDialog) {
+    @Inject(MAT_DIALOG_DATA) public data: CourseData) {
   }
 
   onNoClick(): void {
