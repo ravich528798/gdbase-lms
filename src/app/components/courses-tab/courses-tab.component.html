@@ -48,6 +48,7 @@
                 <mat-progress-spinner *ngIf="uplaodProgress < 100" color="accent" mode="determinate" [value]="uplaodProgress"></mat-progress-spinner>
                 <br>
                 <p *ngIf="uplaodProgress < 100">Uploading SCORM File ({{uplaodProgress}}%)</p>
+                <small *ngIf="uplaodProgress < 100">{{uploadedSize}}</small>
                 <mat-progress-spinner *ngIf="uplaodProgress === 100" color="accent" mode="indeterminate"></mat-progress-spinner>
                 <br>
                 <p *ngIf="uplaodProgress === 100">Extracting SCORM Package...</p>

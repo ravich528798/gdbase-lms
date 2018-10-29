@@ -1,0 +1,1 @@
+export const toMB = (bites) => (bites / 1024) / 1024;

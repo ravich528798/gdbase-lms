@@ -11,7 +11,7 @@ import { LMSRouter } from "./config/router";
 import { AppComponent } from './components/app/app.component';
 import { LoginComponent } from './components/login/login.component';
 import { AdminShellComponent } from './components/admin-shell/admin-shell.component';
-import { DashboardTabComponent } from './components/dashboard-tab/dashboard-tab.component';
+import { DashboardTabComponent, ConfirmDeleteCourseDialog } from './components/dashboard-tab/dashboard-tab.component';
 import { UsersTabComponent, ConfirmDeleteDialog } from './components/users-tab/users-tab.component';
 import { ManageTabComponent } from './components/manage-tab/manage-tab.component';
 import { CoursesTabComponent } from './components/courses-tab/courses-tab.component';
@@ -40,9 +40,10 @@ const lmsRoutes: Routes = LMSRouter;
     ManageTabComponent,
     CoursesTabComponent,
     ConfirmDeleteDialog,
+    ConfirmDeleteCourseDialog,
     ResetPasswordBottomsheetComponent
   ],
-  entryComponents: [ConfirmDeleteDialog, ResetPasswordBottomsheetComponent],
+  entryComponents: [ConfirmDeleteDialog,ConfirmDeleteCourseDialog, ResetPasswordBottomsheetComponent],
   providers: [
     {
       provide: HTTP_INTERCEPTORS,

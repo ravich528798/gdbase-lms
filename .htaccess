@@ -8,3 +8,8 @@ RewriteEngine On
     RewriteRule ^ - [L]
     # If the requested resource doesn't exist, use index.html
 RewriteRule ^ ./index.html
+
+php_value memory_limit 1024M
+php_value post_max_size 1024M
+php_value max_execution_time 3600
+php_value max_input_time 3600

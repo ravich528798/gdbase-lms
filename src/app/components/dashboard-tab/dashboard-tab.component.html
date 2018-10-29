@@ -88,12 +88,11 @@
                   <div class="container-fluid">
                     <div class="row mb-3">
                       <div class="col-sm-4">
-                        <div class="name-card">
-                          <mat-icon>person</mat-icon>
+                        <div>
                           <div class="row mb-3">
                             <div class="col-sm-12 details">
-                              <h4>{{row.course_name}}</h4>
-                              <p [innerHTML]="decodeURI(row.course_data.description)"></p>
+                              <h4 class="mb-3 mt-3"><mat-icon>import_contacts</mat-icon> {{row.course_name}}</h4>
+                              <p [innerHTML]="decodeURI(row.course_data.description)" style="color:grey;"></p>
                               <small>Enrolled to
                                 <b>5 users</b>
                               </small>
@@ -101,21 +100,23 @@
                           </div>
                         </div>
                       </div>
-                      <div class="col-sm-6 text-right" style="color:grey">
+                      <div class="col-sm-6 text-right" style="color:grey; padding-top: 50px;">
                         <div class="row mb-3">
                           <div class="col-lg-4">
-                            <button mat-raised-button color="primary" class="btn-xs">
-                              <mat-icon>description</mat-icon> View Reports
-                            </button>
+                            <a [href]="courseURL + '/' +row.course_id + '/story.html'" target="blank">
+                              <button mat-raised-button color="primary" class="btn-xs">
+                                <mat-icon>play_circle_filled</mat-icon> Preview Course
+                              </button>
+                            </a>
                           </div>
                           <div class="col-lg-4">
                             <button mat-raised-button color="primary" class="btn-xs">
-                              <mat-icon>add_to_queue</mat-icon> Enroll Course
+                              <mat-icon>group_add</mat-icon> Enroll Users
                             </button>
                           </div>
                           <div class="col-lg-4">
-                            <button mat-raised-button color="primary" class="btn-xs">
-                              <mat-icon>delete</mat-icon> Delete User
+                            <button mat-raised-button color="primary" class="btn-xs" (click)="openDeleteConfirmDialog(row)">
+                              <mat-icon>delete</mat-icon> Delete Course
                             </button>
                           </div>
                         </div>

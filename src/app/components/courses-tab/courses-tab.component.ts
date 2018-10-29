@@ -3,6 +3,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Constants } from 'src/app/utils/constants';
 import { HttpClient, HttpRequest, HttpEvent, HttpEventType } from '@angular/common/http';
 import { URL_UPLOAD_SCORM, URL_VALIDATE_SCORM, URL_CREATE_COURSE } from 'src/app/api';
+import { toMB } from 'src/app/utils/helpers';
 
 @Component({
   selector: 'app-courses-tab',
@@ -17,6 +18,7 @@ export class CoursesTabComponent implements OnInit {
   public uplaodProgress: number = 0;
   public uplaodError: string;
   public ScromZIPName: string;
+  public uploadedSize: string;
   private courseId: string;
   private uploadReq: any;
   @ViewChild('addCourseFromRoot') addCourseFrom;
@@ -90,10 +92,10 @@ export class CoursesTabComponent implements OnInit {
             case HttpEventType.UploadProgress:
               const percentDone = Math.round(100 * event.loaded / event.total);
               this.uplaodProgress = percentDone;
+              this.uploadedSize = `${Math.round(toMB(event.loaded))}mb of ${Math.round(toMB(event.total))}mb Uploaded`;
               break;
             case HttpEventType.DownloadProgress:
-              const loaded = Math.round(event.loaded);
-              console.log(`Downloading ${loaded} kb downloaded`);
+              console.log(`Downloading ${Math.round(toMB(event.loaded))}MB downloaded`);
               break;
             case HttpEventType.Response:
               console.log(event.body);

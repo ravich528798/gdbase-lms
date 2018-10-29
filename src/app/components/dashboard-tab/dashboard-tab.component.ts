@@ -1,17 +1,14 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, Inject } from '@angular/core';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { HttpClient } from '@angular/common/http';
-import { URL_GET_ALL_USERS, URL_GET_ACTIVE_USERS, URL_GET_ALL_COURSES } from '../../api';
-import { MatTableDataSource, MatPaginator, MatSort } from '@angular/material';
+import { URL_GET_ALL_USERS, URL_GET_ACTIVE_USERS, URL_GET_ALL_COURSES, URL_COURSES } from '../../api';
+import { MatTableDataSource, MatPaginator, MatSort, MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material';
 
 interface CourseData {
   course_id: string;
   course_name: string;
   course_data: any;
 }
-
-
-
 
 @Component({
   selector: 'app-dashboard-tab',
@@ -31,11 +28,15 @@ export class DashboardTabComponent implements OnInit {
   public activeUsers: Number = 0;
   public dataSource: MatTableDataSource<CourseData>;
   public currentCourse: CourseData;
-  public decodeURI:any;
+  public decodeURI: any;
+  public courseURL: string = URL_COURSES;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
-  constructor(private http: HttpClient) { }
+  constructor(
+    public dialog: MatDialog,
+    private http: HttpClient
+  ) { }
 
   ngOnInit() {
     this.decodeURI = decodeURI;
@@ -47,7 +48,7 @@ export class DashboardTabComponent implements OnInit {
     this.getAllCourses().subscribe((data: any[]) => { this.dataSource.data = this.parseData(data) });
   }
 
-  parseData(data){
+  parseData(data) {
     const parsedData = [];
     data.forEach(e => {
       e.course_data = JSON.parse(e.course_data);
@@ -67,8 +68,40 @@ export class DashboardTabComponent implements OnInit {
       this.dataSource.paginator.firstPage();
     }
   }
+  openDeleteConfirmDialog(row): void {
+    const deleteDialogRef = this.dialog.open(ConfirmDeleteCourseDialog, {
+      width: '250px',
+      data: { course_name: row.course_name}
+    });
+
+    deleteDialogRef.beforeClose().subscribe(res => {
+      if (res) {
+        deleteDialogRef.disableClose = true;
+      }
+    })
+  }
 
   toggleExpandRow(currentCourse) {
     this.currentCourse = currentCourse;
   }
+}
+@Component({
+  selector: 'confrim-delete-dialog',
+  templateUrl: 'confrim-delete.dialog.html',
+})
+export class ConfirmDeleteCourseDialog {
+
+  constructor(
+    public dialogRef: MatDialogRef<ConfirmDeleteCourseDialog>,
+    @Inject(MAT_DIALOG_DATA) public data: ConfirmDeleteCourseDialog) {
+  }
+
+  onNoClick(): void {
+    this.dialogRef.close();
+  }
+
+  onYesClick(data): void {
+    data.deleteUser(data.user);
+  }
+
 }
