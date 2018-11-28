@@ -1,0 +1,29 @@
+<div class="sideBar">
+  <mat-drawer-container class="sidenav-container" autosize>
+    <mat-drawer #drawer class="sidenav" mode="side" opened>
+      <ul>
+        <li>
+          <a mat-button color="basic" [routerLink]="['/student/dashboard']" [routerLinkActive]="'active'">
+            <mat-icon>bar_chart</mat-icon>
+            <p>Dashboard</p>
+          </a>
+        </li>
+        <li>
+          <a mat-button color="basic" [routerLink]="['/student/mycourses']" [routerLinkActive]="'active'">
+            <mat-icon>library_books</mat-icon>
+            <p>My Courses</p>
+          </a>
+        </li>
+        <li>
+          <a mat-button color="basic" [routerLink]="['/student/settings']" [routerLinkActive]="'active'">
+            <mat-icon>settings</mat-icon>
+            <p>Settings</p>
+          </a>
+        </li>
+      </ul>
+    </mat-drawer>
+    <div class="sidenav-content">
+      <router-outlet></router-outlet>
+    </div>
+  </mat-drawer-container>
+</div>

@@ -1,6 +1,7 @@
 @import '~@angular/material/theming';
 $gd-colors:("base": #FF6600, "cyan": #36cde8, "hover": #18bc9c, "white": #FFFFFF);
 $primary: #FF6600;
+$default: #FFFFFF;
 $gd-colors-arr:('gd-primary': map-get($gd-colors, 'base'), 'gd-cyan': map-get($gd-colors, 'cyan'), 'gd-hover': map-get($gd-colors, 'hover'), 'gd-white': map-get($gd-colors, 'white'));
 
 .gd-primary-gradient {
@@ -49,7 +50,8 @@ $value in $gd-colors-arr {
 * {
   margin: 0px auto;
 }
-body{
+
+body {
   font-family: 'CircularStd';
 }
 
@@ -89,6 +91,20 @@ a {
     padding: 0.25rem 1.25rem;
   }
 }
-.input-text{
+
+.input-text {
   width: 100%;
+}
+
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 2;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  padding: 8px 16px;
+  background-color: $default;
 }

@@ -59,9 +59,14 @@ export class LoginComponent implements OnInit {
     this.loginError = false;
   }
   loginHandler() {
-    this.http.post(URL_LOGIN, { username: this.username.value, password: this.password.value }).subscribe((data) => {
-      if (data !== 'ERROR') {
-        this.router.navigateByUrl('/admin/dashboard');
+    this.http.post(URL_LOGIN, { username: this.username.value, password: this.password.value }).subscribe((data: any) => {
+      if (data !== 'ERROR' && data.userinfo[0] && data.token) {
+        localStorage.setItem('gdbaseLMSToken',data.token);
+        if (data.userinfo[0].usertype == 'admin') {
+          this.router.navigateByUrl('/admin/dashboard');
+        } else {
+          this.router.navigateByUrl('/student/dashboard');
+        }
       } else {
         this.loginError = true;
         for (const control in this.loginFG.controls) {

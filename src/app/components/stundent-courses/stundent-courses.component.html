@@ -1,0 +1,28 @@
+<div class="container-fluid">
+  <h3>My Courses</h3>
+  <mat-list>
+    <div *ngFor="let course of courses" class="mt-3">
+      <mat-list-item>
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-sm-1 text-center">
+              <mat-icon mat-list-icon>folder</mat-icon>
+            </div>
+            <div class="col-sm-7 text-left">
+              <h4 mat-line>{{course.course_name}}</h4>
+              <p mat-line style="color: #6c757d;"[innerHTML]="decodeURI(parseJson(course.course_data).description)"></p>
+            </div>
+            <div class="col-sm-4 text-right">
+              <a [href]="courseURL + '/' + course.course_id + '/story.html'" target="blank">
+                <button mat-raised-button color="primary" class="btn-xs mt-1">
+                  <mat-icon>play_circle_filled</mat-icon>Launch Course
+                </button>
+              </a>
+            </div>
+          </div>
+        </div>
+      </mat-list-item>
+      <mat-divider></mat-divider>
+    </div>
+  </mat-list>
+</div>

@@ -16,7 +16,7 @@
         </div>
         <div class="row">
           <div class="col-sm-12 no-padding text-right" style="height: 50px;line-height: 50px;">
-            <button mat-raised-button color="primary" class="btn-xs">
+            <button mat-raised-button color="primary" class="btn-xs" (click)="router.navigateByUrl('admin/users')">
               <mat-icon>add</mat-icon> ADD USERS</button>
           </div>
         </div>
@@ -37,7 +37,7 @@
         </div>
         <div class="row">
           <div class="col-sm-12 no-padding text-right" style="height: 50px;line-height: 50px;">
-            <button mat-raised-button color="primary" class="btn-xs">
+            <button mat-raised-button color="primary" class="btn-xs" (click)="router.navigateByUrl('admin/courses')">
               <mat-icon>add</mat-icon> ADD COURSES</button>
           </div>
         </div>
@@ -56,7 +56,7 @@
               </div>
               <div class="col-sm-4">
                 <mat-form-field appearance="outline">
-                  <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Search for courses" type="ext">
+                  <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Search for courses" type="text">
                   <mat-icon matSuffix>search</mat-icon>
                 </mat-form-field>
               </div>
@@ -93,8 +93,8 @@
                             <div class="col-sm-12 details">
                               <h4 class="mb-3 mt-3"><mat-icon>import_contacts</mat-icon> {{row.course_name}}</h4>
                               <p [innerHTML]="decodeURI(row.course_data.description)" style="color:grey;"></p>
-                              <small>Enrolled to
-                                <b>5 users</b>
+                              <small *ngIf="row.course_data.enrolled">Enrolled to
+                                <b>{{row.course_data.enrolled.length}} students</b>
                               </small>
                             </div>
                           </div>
@@ -110,7 +110,7 @@
                             </a>
                           </div>
                           <div class="col-lg-4">
-                            <button mat-raised-button color="primary" class="btn-xs">
+                            <button mat-raised-button color="primary" class="btn-xs" (click)="enrollUser(row)">
                               <mat-icon>group_add</mat-icon> Enroll Users
                             </button>
                           </div>
