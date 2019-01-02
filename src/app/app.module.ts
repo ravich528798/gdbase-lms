@@ -24,6 +24,8 @@ import { StundentDashboardComponent } from './components/stundent-dashboard/stun
 import { StundentSettingsComponent } from './components/stundent-settings/stundent-settings.component';
 import { EnrollUserComponent } from './components/enroll-user/enroll-user.component';
 import { EnrollCourseComponent } from './components/enroll-course/enroll-course.component';
+import { PhotoUploadComponent } from './components/photo-upload/photo-upload.component';
+import { ReportsComponent } from './components/reports/reports.component';
 
 const lmsRoutes: Routes = LMSRouter;
 
@@ -55,7 +57,9 @@ const lmsRoutes: Routes = LMSRouter;
     StundentDashboardComponent,
     StundentSettingsComponent,
     EnrollUserComponent,
-    EnrollCourseComponent
+    EnrollCourseComponent,
+    PhotoUploadComponent,
+    ReportsComponent
   ],
   entryComponents: [ConfirmDeleteDialog,ConfirmDeleteCourseDialog, ResetPasswordBottomsheetComponent, EnrollUserComponent],
   providers: [
