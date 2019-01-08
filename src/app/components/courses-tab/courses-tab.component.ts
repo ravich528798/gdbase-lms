@@ -130,11 +130,11 @@ export class CoursesTabComponent implements OnInit {
       if (this.scormUploadStage === 3) {
         let postData = {
           course_id: this.courseId,
-          course_name: this.addCourseFG.get('courseTitle').value,
+          course_name: this.addCourseFG.get('courseTitle').value.replace(/\'/g,"&#39;"),
           course_data: JSON.stringify({
             description: encodeURI(this.addCourseFG.get('courseDesp').value).replace(/\'/g,"&#39;"),
             dateCreated: Date.now(),
-            author: this.addCourseFG.get('author').value
+            author: this.addCourseFG.get('author').value.replace(/\'/g,"&#39;")
           })
         }
         console.log(postData);
