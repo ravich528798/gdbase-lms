@@ -8,14 +8,9 @@
       <div class="col-sm-12" class="addcourseForm">
         <form name="addcourse" [formGroup]="addCourseFG" #addcourseFromRoot="ngForm">
           <div class="container-fluid">
-
-
-            <!-- <app-photo-upload></app-photo-upload> -->
-
-
             <div class="row mb-3">
-              <div class="col-sm-6 pl-0">
-                <mat-form-field appearance="outline">
+              <div class="col-sm-5 pl-0 pt-5">
+                <mat-form-field appearance="outline" class="mt-5">
                   <mat-label>Course Title</mat-label>
                   <input matInput type="text" name="CourseTitle" formControlName="courseTitle" required>
                   <mat-error *ngIf="courseTitle.errors && courseTitle.errors.required">
@@ -23,14 +18,17 @@
                   </mat-error>
                 </mat-form-field>
               </div>
-              <div class="col-sm-6 pr-0">
-                <mat-form-field appearance="outline">
+              <div class="col-sm-5 pr-0 pt-5">
+                <mat-form-field appearance="outline" class="mt-5">
                   <mat-label>Author</mat-label>
                   <input matInput type="text" name="author" formControlName="author" required>
                   <mat-error *ngIf="authorName.errors && authorName.errors.required">
                     Author name is required
                   </mat-error>
                 </mat-form-field>
+              </div>
+              <div class="col-sm-2 pr-0">
+                <app-photo-upload></app-photo-upload>
               </div>
             </div>
             <div class="row mb-3" style="height:220px;">

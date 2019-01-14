@@ -1,0 +1,20 @@
+.img-upload-container{
+    width: 150px;
+    height: 150px;
+    background-color: #F9F9F9;
+    border: 1px solid #DDD;
+    border-radius: 50%;
+    cursor: pointer;
+    .img-bg{
+        width: inherit;
+        height: inherit;
+        background-image: url(../../../assets/img/course.svg);
+        background-position: center;
+        background-size: 75%;
+        border-radius: inherit;
+        background-repeat: no-repeat;
+    }
+    input[type=file]{
+        display: none;
+    }
+}
