@@ -1,15 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-student-shell',
   templateUrl: './student-shell.component.html',
   styleUrls: ['./student-shell.component.scss']
 })
-export class StudentShellComponent implements OnInit {
+export class StudentShellComponent {
 
-  constructor() { }
-
-  ngOnInit() {
-  }
-
+  constructor(
+    public router: Router
+  ) { }
 }

@@ -8,6 +8,7 @@ import { StudentShellComponent } from "../components/student-shell/student-shell
 import { StundentCoursesComponent } from "../components/stundent-courses/stundent-courses.component";
 import { StundentDashboardComponent } from "../components/stundent-dashboard/stundent-dashboard.component";
 import { StundentSettingsComponent } from "../components/stundent-settings/stundent-settings.component";
+import { ScormPlayerComponent } from "../components/scorm-player/scorm-player.component";
 export const LMSRouter = [{
     path: '',
     component: LoginComponent
@@ -47,9 +48,13 @@ export const LMSRouter = [{
             component: StundentCoursesComponent
         },
         {
-            path:'settings',
+            path: 'settings',
             component: StundentSettingsComponent
-        }
+        },
     ]
+},
+{
+    path: 'player',
+    component: ScormPlayerComponent
 }
 ]

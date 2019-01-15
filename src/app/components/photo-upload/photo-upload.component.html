@@ -1,6 +1,6 @@
 <div class="d-flex flex-row-reverse">
     <div class="img-upload-container" matTooltip="Click to upload course image" (click)="uploadImg()">
-      <div class="img-bg"></div>
+      <div class="img-bg" [ngStyle]="{'background-image': courseImg ? 'url('+courseImg+')' : null,'background-size': courseImg? '96%': '75%'}"></div>
       <input type="file" #inputFile (change)="onChange()"/> 
     </div>
   </div>

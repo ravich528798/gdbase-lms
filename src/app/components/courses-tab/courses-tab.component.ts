@@ -21,7 +21,7 @@ export class CoursesTabComponent implements OnInit {
   public uploadedSize: string;
   private courseId: string;
   private uploadReq: any;
-  @ViewChild('addCourseFromRoot') addCourseFrom;
+  @ViewChild('addCourseFromRoot') addCourseFrom: FormGroup;
   @ViewChild('dropArea') dropArea: HTMLDivElement;
 
   constructor(
@@ -35,6 +35,7 @@ export class CoursesTabComponent implements OnInit {
 
   createFromGroup() {
     this.addCourseFG = this._fb.group({
+      courseImg: null,
       courseTitle: ['', Validators.required],
       author: ['', Validators.required],
       courseDesp: ['']
@@ -132,6 +133,7 @@ export class CoursesTabComponent implements OnInit {
           course_id: this.courseId,
           course_name: this.addCourseFG.get('courseTitle').value.replace(/\'/g,"&#39;"),
           course_data: JSON.stringify({
+            course_img: this.addCourseFG.get('courseImg').value ? this.addCourseFG.get('courseImg').value : null,
             description: encodeURI(this.addCourseFG.get('courseDesp').value).replace(/\'/g,"&#39;"),
             dateCreated: Date.now(),
             author: this.addCourseFG.get('author').value.replace(/\'/g,"&#39;")

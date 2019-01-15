@@ -26,6 +26,8 @@ import { EnrollUserComponent } from './components/enroll-user/enroll-user.compon
 import { EnrollCourseComponent } from './components/enroll-course/enroll-course.component';
 import { PhotoUploadComponent } from './components/photo-upload/photo-upload.component';
 import { ReportsComponent } from './components/reports/reports.component';
+import { ScormPlayerComponent } from './components/scorm-player/scorm-player.component';
+import { OpenLinkInNewWindowDirective } from './directives/newTab.directive';
 
 const lmsRoutes: Routes = LMSRouter;
 
@@ -59,7 +61,9 @@ const lmsRoutes: Routes = LMSRouter;
     EnrollUserComponent,
     EnrollCourseComponent,
     PhotoUploadComponent,
-    ReportsComponent
+    ReportsComponent,
+    ScormPlayerComponent,
+    OpenLinkInNewWindowDirective
   ],
   entryComponents: [ConfirmDeleteDialog,ConfirmDeleteCourseDialog, ResetPasswordBottomsheetComponent, EnrollUserComponent],
   providers: [

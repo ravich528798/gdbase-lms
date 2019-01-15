@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { URL_GET_USER, URL_GET_ENROLLED_COURSES, URL_COURSES } from 'src/app/api';
+import { isNull } from 'util';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-stundent-courses',
@@ -11,18 +13,22 @@ import { URL_GET_USER, URL_GET_ENROLLED_COURSES, URL_COURSES } from 'src/app/api
 export class StundentCoursesComponent implements OnInit {
   public courses;
   public courseURL = URL_COURSES;
-  public decodeURI:any;
+  public decodeURI: any;
+  public userData:any;
   constructor(
-    private http: HttpClient
+    private http: HttpClient,
+    private router: Router
   ) { }
 
   ngOnInit() {
     this.decodeURI = decodeURI;
     this.getUser().subscribe(res => {
-      if (JSON.parse(res[0].userdata).enrolled) {
-        this.getEnrolledCourses(JSON.parse(res[0].userdata).enrolled)
+      console.log(res);
+      this.userData = JSON.parse(res[0].userdata);
+      if (this.userData.enrolled) {
+        this.getEnrolledCourses(this.userData.enrolled)
           .subscribe(res => {
-            this.courses = res;
+            this.courses = res.filter(c => !isNull(c));
           })
       }
     })
@@ -34,5 +40,8 @@ export class StundentCoursesComponent implements OnInit {
 
   parseJson(string) {
     return JSON.parse(string);
+  }
+  openPlayer(){
+    this.router.navigateByUrl('player')
   }
 }

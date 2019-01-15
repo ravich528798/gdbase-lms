@@ -6,11 +6,4 @@ import { Router } from '@angular/router';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent {
-  title = 'app';
-  constructor(
-    public router: Router
-  ) {
-    console.log(this.router);
-  }
-}
+export class AppComponent {}
