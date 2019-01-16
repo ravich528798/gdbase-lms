@@ -1,20 +1,8 @@
-import {
-  Component,
-  OnInit
-} from '@angular/core';
-import {
-  Router,
-  ActivatedRoute
-} from '@angular/router';
-import {
-  Observable
-} from 'rxjs';
-import {
-  URL_GET_USER
-} from 'src/app/api';
-import {
-  HttpClient
-} from '@angular/common/http';
+import {Component,OnInit} from '@angular/core';
+import {Router,ActivatedRoute} from '@angular/router';
+import {Observable} from 'rxjs';
+import {URL_GET_USER} from 'src/app/api';
+import {HttpClient} from '@angular/common/http';
 
 @Component({
   selector: 'app-scorm-player',
@@ -34,7 +22,7 @@ export class ScormPlayerComponent implements OnInit {
   public skipManifestCheck = false;
 
   // The SCO's *default* launch file
-  public launchFile = 'default.htm';
+  public launchFile = 'default.htm';  
 
   // The *default* name of the cookie to be used within this session
   public cookieName = 'SimpleAPI_Data_' + this._VERSION;
@@ -92,14 +80,14 @@ export class ScormPlayerComponent implements OnInit {
     'cmi.core.exit': '' /* "time-out", "suspend" or "logout" */
   };
 
-  public scoWin;
-  public API;
+  public scoWin:any = {};
+  public API:any = {};
   public hasTerminated = false;
   public hasInitialized = false;
   public optionsOpen = true;
   public initTimeoutMax = 20000;
   public initTimeout = 0;
-  public fullPath = document.location.href.substr(0, document.location.href.lastIndexOf('/'))
+  public fullPath = "http://localhost:3000"
   public parentFolder = this.fullPath.substr(this.fullPath.lastIndexOf('/') + 1, this.fullPath.length);
   public timeoutErrorDisplayed = false;
   public launchWithEmbeddedParam = false;
@@ -110,34 +98,6 @@ export class ScormPlayerComponent implements OnInit {
 
     // JSON
     // ----------------------------------------------------------------------------
-    /*
-        json.js
-        2006-11-09
-    
-        This file adds these methods to JavaScript:
-    
-            array.toJSONString()
-            boolean.toJSONString()
-            date.toJSONString()
-            number.toJSONString()
-            object.toJSONString()
-            string.toJSONString()
-                These method produces a JSON text from a JavaScript value.
-                It must not contain any cyclical references. Illegal values
-                will be excluded.
-    
-                The default conversion for dates is to an ISO string. You can
-                add a toJSONString method to any date object to get a different
-                representation.
-    
-            string.parseJSON()
-                This method parses a JSON text to produce an object or
-                array. It can throw a SyntaxError exception.
-    
-        It is expected that these methods will formally become part of the
-        JavaScript Programming Language in the Fourth Edition of the
-        ECMAScript standard in 2007.
-    */
     //@ts-ignore
     Array.prototype.toJSONString = function () {
       var a = ['['],
@@ -279,7 +239,7 @@ export class ScormPlayerComponent implements OnInit {
       this.initialState['cmi.core.student_id'] = `${this.userData.studentID}`;
       this.initialState['cmi.cmi.core.student_name'] = `${this.userData.firstname} ${this.userData.lastname}`
     })
-    console.log(ScormPlayerComponent);
+    this.Utils.launchSCO();
   }
 
   getUser = (): Observable < any > => this.http.post < any > (URL_GET_USER, {
@@ -509,8 +469,8 @@ export class ScormPlayerComponent implements OnInit {
       }
     },
     openWindow: (winURL, winName, winW, winH, winOpts) => {
-      let winOptions: any = winOpts + ",width=" + winW + ",height=" + winH;
-      let newWin: any = window.open(winURL, winName, winOptions);
+      var winOptions: any = winOpts + ",width=" + winW + ",height=" + winH;
+      var newWin: any = window.open(winURL, winName, winOptions);
       newWin.moveTo(0, 0);
       newWin.focus();
       return newWin;
@@ -527,9 +487,9 @@ export class ScormPlayerComponent implements OnInit {
       tmp += '&gt; ' + hrs + ':' + min + ':' + sec + ' ';
       tmp += status;
       tmp += '</div>';
-
-      this.$('debug').innerHTML += tmp;
-      this.$('debug').scrollTop = this.$('debug').scrollHeight;
+      console.log(tmp);
+      // this.$('debug').innerHTML += tmp;
+      // this.$('debug').scrollTop = this.$('debug').scrollHeight;
     },
     clearCookieData: () => {
       let cookieNameAltVal = this.$('cookieNameAlt').value;
@@ -578,7 +538,7 @@ export class ScormPlayerComponent implements OnInit {
 
         setTimeout(function () {
           this.Utils.watchWin()
-        }, 1000);
+        }.bind(this), 1000);
       } else {
         this.Utils.log('SCO Closed', 'info');
         if (!this.hasInitialized) {
@@ -598,8 +558,8 @@ export class ScormPlayerComponent implements OnInit {
       this.initTimeout = 0;
       this.timeoutErrorDisplayed = false;
 
-      let launchFileAltVal = this.$('launchFileAlt').value;
-      let cookieNameAltVal = this.$('cookieNameAlt').value;
+      let launchFileAltVal = '/courses/quiz/index_lms_html5.html';
+      let cookieNameAltVal = "localhost:3000";
 
       if (launchFileAltVal.length > 0) {
         this.launchFile = launchFileAltVal;
@@ -621,19 +581,21 @@ export class ScormPlayerComponent implements OnInit {
           }
           this.Utils.log('Injected custom key/value into API object: ' + key + '=' + val, 'info');
         } catch (e) {
+          console.log("Catch 1");
           this.Utils.log('ERROR: Cannot inject custom key/value into API object: ' + key + '=' + val + '(' + e + ')', 'error');
         }
       }
 
       try {
-        let w = ((this.$('winW').value != "") && (this.$('winW').value > 0)) ? this.$('winW').value : this.wWidth;
-        let h = ((this.$('winH').value != "") && (this.$('winH').value > 0)) ? this.$('winH').value : this.wHeight;
+        let w = this.wWidth;
+        let h = this.wHeight;
         let embedParam = '';
         if (this.launchWithEmbeddedParam) {
           try {
             embedParam = this.$('searchString').value;
             this.Utils.log('Appending search string to launch file: ' + this.$('searchString').value, 'info');
           } catch (e) {
+            console.log("Catch 2");
             embedParam = '';
           }
         } else {
@@ -651,9 +613,10 @@ export class ScormPlayerComponent implements OnInit {
         opts = opts.substring(0, opts.length - 1)
 
         this.Utils.log("Launching SCO win with options: " + opts)
-
+        console.log(`Opening URL: ${this.launchFile + embedParam}`);
         this.scoWin = this.Utils.openWindow(this.launchFile + embedParam, "SCOwindow", w, h, opts);
       } catch (e) {
+        console.log("Catch 3", e);
         this.Utils.log('ERROR: ' + e.description, 'error');
       }
 
@@ -663,6 +626,7 @@ export class ScormPlayerComponent implements OnInit {
           this.scoWin.focus();
           this.Utils.watchWin();
         } catch (err) {
+          console.log("Catch 4", err);
           this.Utils.log('ERROR: ' + err.description, 'error');
         }
       } else {
@@ -1928,66 +1892,52 @@ export class ScormPlayerComponent implements OnInit {
       case "0":
         {
           return "No error";
-          break
         }
       case "101":
         {
           return "General exception";
-          break
         }
       case "201":
         {
           return "Invalid argument error";
-          break
         }
       case "202":
         {
           return "Element cannot have children";
-          break
         }
       case "203":
         {
           return "Element not an array - Cannot have count";
-          break
         }
       case "301":
         {
           return "Not initialized";
-          break
         }
       case "401":
         {
           return "Not implemented error";
-          break
         }
       case "402":
         {
           return "Invalid set value, element is a keyword";
-          break
         }
       case "403":
         {
           return "Element is read only";
-          break
         }
       case "404":
         {
           return "Element is write only";
-          break
         }
       case "405":
         {
           return "Incorrect Data Type";
-          break
         }
       default:
         {
           return "";
-          break
         }
     }
-    // just to be safe...
-    return;
   }
 
   LMSGetLastErrorMethod() {
@@ -2004,63 +1954,51 @@ export class ScormPlayerComponent implements OnInit {
       case "0":
         {
           return "No error. No errors were encountered. Successful API call.";
-          break
-        }
+          }
       case "101":
         {
           return "General exception. An unexpected error was encountered.";
-          break
-        }
+          }
       case "201":
         {
           return "Invalid argument error. A call was made to a DataModel element that does not exist.";
-          break
-        }
+          }
       case "202":
         {
           return "Element cannot have children. A call was made to an Element that does not support _children";
-          break
-        }
+          }
       case "203":
         {
           return "Element is not an array.  Cannot have count. A call was made to an Element that does not support _count.";
-          break
-        }
+          }
       case "301":
         {
           return "Not initialized. The SCO has not yet been initialized.  It needs to call LMSInitialize() first.";
-          break
-        }
+          }
       case "401":
         {
           return "Not implemented error.  A call was made to a DataModel element that is not supported.";
-          break
-        }
+          }
       case "402":
         {
           return "Invalid set value, element is a keyword.  Keyword values cannot be changed";
-          break
-        }
+          }
       case "403":
         {
           return "Element is read only.  A call was made to set the value of a read-only element.";
-          break
-        }
+          }
       case "404":
         {
           return "Element is write only.  A call was made to get the value of a write-only element.";
-          break
-        }
+          }
       case "405":
         {
           return "Incorrect Data Type.  The syntax of a call to change an element was incorrect.";
-          break
-        }
+          }
       default:
         {
           return "";
-          break
-        }
+          }
     }
   }
 
@@ -2418,50 +2356,41 @@ export class ScormPlayerComponent implements OnInit {
         case "true-false":
           {
             return this.checkTrueFalse(value);
-            break
-          }
+              }
         case "choice":
           {
             return this.checkChoice(value);
-            break
-          }
+              }
         case "fill-in":
           {
             return this.checkFillIn(value);
-            break
-          }
+              }
         case "numeric":
           {
             return this.checkCMIDecimal(value);
-            break
-          }
+              }
         case "likert":
           {
             return this.checkLikert(value);
-            break
-          }
+              }
         case "matching":
           {
             return this.checkMatching(value);
-            break
-          }
+              }
         case "performance":
           {
             return this.checkCMIString255(value);
-            break
-          }
+              }
         case "sequencing":
           {
             return this.checkSequencing(value);
-            break
-          }
+              }
           // if its not been set then we should return false.  That would mean
           // that a cmi.interaction.n.type MUST have a value and cannot be empty
         default:
           {
             return "false";
-            break
-          }
+              }
       }
     } else {
       return "true";
@@ -2844,108 +2773,87 @@ class ServerScoSettings {
       case "CMIBlank":
         {
           return this.player.checkCMIBlank(value);
-          break
-        }
+          }
       case "CMIBoolean":
         {
           return this.player.checkCMIBoolean(value);
-          break
-        }
+          }
       case "CMIDecimal":
         {
           return this.player.checkCMIDecimal(value);
-          break
-        }
+          }
       case "CMIFeedback":
         {
           return this.player.checkCMIFeedback(element, value);
-          break
-        }
+          }
       case "CMIIdentifier":
         {
           return this.player.checkCMIIdentifier(value);
-          break
-        }
+          }
       case "CMIInteger":
         {
           return this.player.checkCMIInteger(value);
-          break
-        }
+          }
       case "CMISInteger":
         {
           return this.player.checkCMISInteger(element, value);
-          break
-        }
+          }
       case "CMIString255":
         {
           return this.player.checkCMIString255(value);
-          break
-        }
+          }
       case "CMIString4096":
         {
           return this.player.checkCMIString4096(value);
-          break
-        }
+          }
       case "CMITime":
         {
           return this.player.checkCMITime(value);
-          break
-        }
+          }
       case "CMITimespan":
         {
           return this.player.checkCMITimespan(value);
-          break
-        }
+          }
       case "CMIVocabularyCredit":
         {
           return this.player.checkCMIVocabularyCredit(value);
-          break
-        }
+          }
       case "CMIVocabularyStatus":
         {
           return this.player.checkCMIVocabularyStatus(element, value);
-          break
-        }
+          }
       case "CMIVocabularyEntry":
         {
           return this.player.checkCMIVocabularyEntry(value);
-          break
-        }
+          }
       case "CMIVocabularyMode":
         {
           return this.player.checkCMIVocabularyMode(value);
-          break
-        }
+          }
       case "CMIVocabularyExit":
         {
           return this.player.checkCMIVocabularyExit(value);
-          break
-        }
+          }
       case "CMIVocabularyTimeLimitAction":
         {
           return this.player.checkCMIVocabularyTimeLimitAction(value);
-          break
-        }
+          }
       case "CMIVocabularyInteraction":
         {
           return this.player.checkCMIVocabularyInteraction(value);
-          break
-        }
+          }
       case "CMIVocabularyResult":
         {
           return this.player.checkCMIVocabularyResult(value);
-          break
-        }
+          }
       case "CMIDecimalOrCMIBlank":
         {
           return this.player.checkCMIDecimalOrCMIBlank(value);
-          break
-        }
+          }
       default:
         {
           return "true";
-          break
-        }
+          }
     }
   }
 }

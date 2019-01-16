@@ -28,6 +28,7 @@ import { PhotoUploadComponent } from './components/photo-upload/photo-upload.com
 import { ReportsComponent } from './components/reports/reports.component';
 import { ScormPlayerComponent } from './components/scorm-player/scorm-player.component';
 import { OpenLinkInNewWindowDirective } from './directives/newTab.directive';
+import { WindowWrapper, getWindow } from './directives/WindowWrapper';
 
 const lmsRoutes: Routes = LMSRouter;
 
@@ -71,7 +72,8 @@ const lmsRoutes: Routes = LMSRouter;
       provide: HTTP_INTERCEPTORS,
       useClass: GlobalInterceptor,
       multi: true
-    }
+    },
+    {provide: WindowWrapper, useFactory: getWindow}
   ],
   bootstrap: [AppComponent]
 })
