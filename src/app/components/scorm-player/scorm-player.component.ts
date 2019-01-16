@@ -1,8 +1,20 @@
-import { Component, OnInit } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
-import { Observable } from 'rxjs';
-import { URL_GET_USER } from 'src/app/api';
-import { HttpClient } from '@angular/common/http';
+import {
+  Component,
+  OnInit
+} from '@angular/core';
+import {
+  Router,
+  ActivatedRoute
+} from '@angular/router';
+import {
+  Observable
+} from 'rxjs';
+import {
+  URL_GET_USER
+} from 'src/app/api';
+import {
+  HttpClient
+} from '@angular/common/http';
 
 @Component({
   selector: 'app-scorm-player',
@@ -15,7 +27,7 @@ export class ScormPlayerComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private http: HttpClient
-  ) { }
+  ) {}
 
   public _VERSION = "2.2.20130225";
   // Should we skip the automatic manifest check?
@@ -71,9 +83,12 @@ export class ScormPlayerComponent implements OnInit {
     'cmi.core.lesson_location': '',
     'cmi.suspend_data': '',
     'cmi.core.session_time': '0000:00:00.00',
-    'cmi.core.credit': 'credit', /* "credit" or "no-credit" */
-    'cmi.core.entry': 'ab-initio', /* "resume" or "ab-initio" */
-    'cmi.core.lesson_mode': 'normal', /* "browse",  "normal" or "review" */
+    'cmi.core.credit': 'credit',
+    /* "credit" or "no-credit" */
+    'cmi.core.entry': 'ab-initio',
+    /* "resume" or "ab-initio" */
+    'cmi.core.lesson_mode': 'normal',
+    /* "browse",  "normal" or "review" */
     'cmi.core.exit': '' /* "time-out", "suspend" or "logout" */
   };
 
@@ -123,9 +138,11 @@ export class ScormPlayerComponent implements OnInit {
         JavaScript Programming Language in the Fourth Edition of the
         ECMAScript standard in 2007.
     */
-
+    //@ts-ignore
     Array.prototype.toJSONString = function () {
-      var a = ['['], b, i, l = this.length, v;
+      var a = ['['],
+        b, i, l = this.length,
+        v;
 
       function p(s) {
         if (b) {
@@ -140,6 +157,7 @@ export class ScormPlayerComponent implements OnInit {
         switch (typeof v) {
           case 'undefined':
           case 'function':
+          //@ts-ignore
           case 'unknown':
             break;
           case 'object':
@@ -158,9 +176,11 @@ export class ScormPlayerComponent implements OnInit {
       a.push(']');
       return a.join('');
     };
+    //@ts-ignore
     Boolean.prototype.toJSONString = function () {
       return String(this);
     };
+    //@ts-ignore
     Date.prototype.toJSONString = function () {
 
       function f(n) {
@@ -174,11 +194,14 @@ export class ScormPlayerComponent implements OnInit {
         f(this.getMinutes()) + ':' +
         f(this.getSeconds()) + '"';
     };
+    //@ts-ignore
     Number.prototype.toJSONString = function () {
       return isFinite(this) ? String(this) : "null";
     };
+    //@ts-ignore
     Object.prototype.toJSONString = function () {
-      var a = ['{'], b, i, v;
+      var a = ['{'],
+        b, i, v;
 
       function p(s) {
         if (b) {
@@ -194,6 +217,7 @@ export class ScormPlayerComponent implements OnInit {
           switch (typeof v) {
             case 'undefined':
             case 'function':
+            //@ts-ignore
             case 'unknown':
               break;
             case 'object':
@@ -223,16 +247,16 @@ export class ScormPlayerComponent implements OnInit {
         '"': '\\"',
         '\\': '\\\\'
       };
+      //@ts-ignore
       s.parseJSON = function () {
         try {
-          if (/^("(\\.|[^"\\\n\r])*?"|[,:{}\[\]0-9.\-+Eaeflnr-u \n\r\t])+?$/.
-            test(this)) {
+          if (/^("(\\.|[^"\\\n\r])*?"|[,:{}\[\]0-9.\-+Eaeflnr-u \n\r\t])+?$/.test(this)) {
             return eval('(' + this + ')');
           }
-        } catch (e) {
-        }
+        } catch (e) {}
         throw new SyntaxError("parseJSON");
       };
+      //@ts-ignore
       s.toJSONString = function () {
         if (/["\\\x00-\x1f]/.test(this)) {
           return '"' + this.replace(/([\x00-\x1f\\"])/g, function (a, b) {
@@ -258,7 +282,10 @@ export class ScormPlayerComponent implements OnInit {
     console.log(ScormPlayerComponent);
   }
 
-  getUser = (): Observable<any> => this.http.post<any>(URL_GET_USER, { action: 'username', payload: localStorage.getItem('gdbaseLMSToken').split("|")[0] });
+  getUser = (): Observable < any > => this.http.post < any > (URL_GET_USER, {
+    action: 'username',
+    payload: localStorage.getItem('gdbaseLMSToken').split("|")[0]
+  });
 
   SimpleAPI = function (cookiename, api, initData, CC = this) {
     this.api = api;
@@ -400,16 +427,14 @@ export class ScormPlayerComponent implements OnInit {
     getInitAPIData: (initData) => {
       if (this.storageObject.retrieve(this.API.cookiename) !== null && this.storageObject.retrieve(this.API.cookiename) !== undefined) {
         return this.storageObject.retrieve(this.API.cookiename).parseJSON();
-      }
-      else {
+      } else {
         return initData;
       }
     },
     dumpAPI: () => {
       if (this.API.__data) {
         this.Utils.log('<b>Dumping API object:</b> <blockquote> ' + this.Utils.formatAPIData(this.API.__data.toJSONString()) + '</blockquote>', 'info');
-      }
-      else {
+      } else {
         this.Utils.log('ERROR: API object contains no data.', 'error');
       }
     },
@@ -418,8 +443,7 @@ export class ScormPlayerComponent implements OnInit {
       if (this.storageObject.retrieve(this.cookieName) !== undefined && this.storageObject.retrieve(this.cookieName) !== null) {
         let existingData = this.storageObject.retrieve(this.cookieName);
         this.Utils.log('<b>Existing API Data (from ' + this.storageObject.toString() + ' &quot;' + this.cookieName + '&quot; - To be used in API during initialization):</b> <blockquote> ' + this.Utils.formatAPIData(existingData) + '</blockquote>', 'info');
-      }
-      else {
+      } else {
         this.Utils.log('No Existing API data found in &quot;' + this.cookieName + '&quot;. Will use default init data.', 'info');
       }
     },
@@ -444,7 +468,7 @@ export class ScormPlayerComponent implements OnInit {
       let cSecond = sSecond[2].split(".");
       let change = 0;
 
-      let FirstCents = 0;  //Cents
+      let FirstCents = 0; //Cents
       if (cFirst.length > 1) {
         FirstCents = parseInt(cFirst[1], 10);
       }
@@ -459,21 +483,21 @@ export class ScormPlayerComponent implements OnInit {
         cents = "0" + cents.toString();
       }
 
-      let secs: any = parseInt(cFirst[0], 10) + parseInt(cSecond[0], 10) + change;  //Seconds
+      let secs: any = parseInt(cFirst[0], 10) + parseInt(cSecond[0], 10) + change; //Seconds
       change = Math.floor(secs / 60);
       secs = secs - (change * 60);
       if (Math.floor(secs) < 10) {
         secs = "0" + secs.toString();
       }
 
-      let mins: any = parseInt(sFirst[1], 10) + parseInt(sSecond[1], 10) + change;   //Minutes
+      let mins: any = parseInt(sFirst[1], 10) + parseInt(sSecond[1], 10) + change; //Minutes
       change = Math.floor(mins / 60);
       mins = mins - (change * 60);
       if (mins < 10) {
         mins = "0" + mins.toString();
       }
 
-      let hours: any = parseInt(sFirst[0], 10) + parseInt(sSecond[0], 10) + change;  //Hours
+      let hours: any = parseInt(sFirst[0], 10) + parseInt(sSecond[0], 10) + change; //Hours
       if (hours < 10) {
         hours = "0" + hours.toString();
       }
@@ -491,7 +515,7 @@ export class ScormPlayerComponent implements OnInit {
       newWin.focus();
       return newWin;
     },
-    log: (status, style?) => {
+    log: (status, style ? ) => {
       let timeFix = function (time) {
         return (time < 10) ? '0' + time : time;
       };
@@ -514,17 +538,14 @@ export class ScormPlayerComponent implements OnInit {
         if (this.storageObject.retrieve(cookieNameAltVal)) {
           this.storageObject.remove(cookieNameAltVal);
           this.Utils.log(this.storageObject.toString() + '"' + this.$('cookieNameAlt').value + '" Cleared', 'info');
-        }
-        else {
+        } else {
           this.Utils.log(this.storageObject.toString() + '"' + this.$('cookieNameAlt').value + '" Not Found', 'error');
         }
-      }
-      else {
+      } else {
         if (this.storageObject.retrieve(this.cookieName)) {
           this.storageObject.remove(this.cookieName);
           this.Utils.log(this.storageObject.toString() + '"' + this.cookieName + '" Cleared', 'info');
-        }
-        else {
+        } else {
           this.Utils.log(this.storageObject.toString() + '"' + this.cookieName + '" Not Found', 'error');
         }
       }
@@ -537,8 +558,7 @@ export class ScormPlayerComponent implements OnInit {
 
       if (this.useParentFolderAsCookieName) {
         var tmp = this.parentFolder + '_';
-      }
-      else {
+      } else {
         var tmp = 'SimpleAPI_Data_';
       }
 
@@ -556,9 +576,10 @@ export class ScormPlayerComponent implements OnInit {
           }
         }
 
-        setTimeout(function () { this.Utils.watchWin() }, 1000);
-      }
-      else {
+        setTimeout(function () {
+          this.Utils.watchWin()
+        }, 1000);
+      } else {
         this.Utils.log('SCO Closed', 'info');
         if (!this.hasInitialized) {
           this.Utils.log('ERROR: LMSInitialize was never called.', 'error');
@@ -599,8 +620,7 @@ export class ScormPlayerComponent implements OnInit {
             this.API[key] = val;
           }
           this.Utils.log('Injected custom key/value into API object: ' + key + '=' + val, 'info');
-        }
-        catch (e) {
+        } catch (e) {
           this.Utils.log('ERROR: Cannot inject custom key/value into API object: ' + key + '=' + val + '(' + e + ')', 'error');
         }
       }
@@ -613,12 +633,10 @@ export class ScormPlayerComponent implements OnInit {
           try {
             embedParam = this.$('searchString').value;
             this.Utils.log('Appending search string to launch file: ' + this.$('searchString').value, 'info');
-          }
-          catch (e) {
+          } catch (e) {
             embedParam = '';
           }
-        }
-        else {
+        } else {
           embedParam = '';
         }
 
@@ -635,8 +653,7 @@ export class ScormPlayerComponent implements OnInit {
         this.Utils.log("Launching SCO win with options: " + opts)
 
         this.scoWin = this.Utils.openWindow(this.launchFile + embedParam, "SCOwindow", w, h, opts);
-      }
-      catch (e) {
+      } catch (e) {
         this.Utils.log('ERROR: ' + e.description, 'error');
       }
 
@@ -645,12 +662,10 @@ export class ScormPlayerComponent implements OnInit {
           this.Utils.log('SCO Launched', 'info');
           this.scoWin.focus();
           this.Utils.watchWin();
-        }
-        catch (err) {
+        } catch (err) {
           this.Utils.log('ERROR: ' + err.description, 'error');
         }
-      }
-      else {
+      } else {
         this.Utils.log('ERROR: SCO windows unable to open.  Please disable any popup blockers you might have enabled and ensure the launch file path is correct.', 'error');
       }
     },
@@ -660,8 +675,7 @@ export class ScormPlayerComponent implements OnInit {
           this.Utils.log('Attempting to close SCO window...', 'info');
           this.scoWin.close();
         }
-      }
-      catch (e) {
+      } catch (e) {
         this.Utils.log('ERROR: Unable to close SCO window (' + e.description + ')', 'error');
       }
     },
@@ -764,26 +778,26 @@ export class ScormPlayerComponent implements OnInit {
           this.$('launchFileAlt').value = itemResourceHref;
 
           return obj;
-        }
-        catch (e) {
+        } catch (e) {
           let error = e.message;
           this.Utils.log('IMS Manifest: Cannot locate or parse manifest - ' + error, 'error');
           return false;
         }
       };
 
-			/* - For Webkit - Not now though...
-			// Check for the letious File API support.
-			if (window.File && window.FileReader) {
-			  alert('Great success! All the File APIs are supported.');
-			} else {
-			  alert('The File APIs are not fully supported in this browser.');
-			}
-			*/
+      /* - For Webkit - Not now though...
+      // Check for the letious File API support.
+      if (window.File && window.FileReader) {
+        alert('Great success! All the File APIs are supported.');
+      } else {
+        alert('The File APIs are not fully supported in this browser.');
+      }
+      */
 
 
       try //Internet Explorer
       {
+        //@ts-ignore
         xmlDoc = new ActiveXObject("Microsoft.XMLDOM");
         xmlDoc.async = false;
         xmlDoc.onreadystatechange = function () {
@@ -792,8 +806,7 @@ export class ScormPlayerComponent implements OnInit {
           }
         }
         let success = xmlDoc.load(file);
-      }
-      catch (e) {
+      } catch (e) {
         try //Firefox, Mozilla, Opera, etc.
         {
           xmlDoc = document.implementation.createDocument("", "", null);
@@ -802,17 +815,16 @@ export class ScormPlayerComponent implements OnInit {
             useManifest();
           };
           let success = xmlDoc.load(file);
-        }
-        catch (e) {
+        } catch (e) {
           try //Google Chrome
           {
+            //@ts-ignore
             let xmlhttp = new window.XMLHttpRequest();
             xmlhttp.open("GET", file, false);
             xmlhttp.send(null);
             xmlDoc = xmlhttp.responseXML.documentElement;
             //alert(success);
-          }
-          catch (e) {
+          } catch (e) {
             let error = e.message;
             this.Utils.log('IMS Manifest: Cannot locate or parse manifest - ' + error, 'error');
 
@@ -838,8 +850,7 @@ export class ScormPlayerComponent implements OnInit {
       if (this.useParentFolderAsCookieName) {
         this.cookieName = this.parentFolder;
       }
-    }
-    else {
+    } else {
       if (manifestObj.id) {
         this.cookieName = manifestObj.id;
       }
@@ -849,7 +860,7 @@ export class ScormPlayerComponent implements OnInit {
       }
     }
 
-    var api = new GenericAPIAdaptor();
+    var api = new GenericAPIAdaptor(this);
     this.API = new this.SimpleAPI(this.cookieName, api, this.initialState);
 
     // test for localStorage
@@ -857,15 +868,13 @@ export class ScormPlayerComponent implements OnInit {
       try {
         if (('localStorage' in window) && window['localStorage'] && window.localStorage !== null) {
           this.storageObject = this.localStorageObject;
-        }
-        else {
+        } else {
           this.storageObject = this.cookieStorageObject;
         }
       } catch (e) {
         this.storageObject = this.cookieStorageObject;
       }
-    }
-    else {
+    } else {
       this.storageObject = this.cookieStorageObject;
     }
 
@@ -951,8 +960,7 @@ export class ScormPlayerComponent implements OnInit {
       var date = new Date();
       date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
       var expires = "; expires=" + date.toUTCString();
-    }
-    else {
+    } else {
       expires = "";
     }
     document.cookie = name + "=" + value + expires + "; path=/";
@@ -977,12 +985,10 @@ export class ScormPlayerComponent implements OnInit {
   loadDataIntoModel(element, value) {
     if (element != "cmi.interactions._count" && element != "cmi.interactions._count") {
       if (element.indexOf("cmi.objectives") != -1) {
-        dealWithSettingObjectives(element, value);
-      }
-      else if (element.indexOf("cmi.interactions") != -1) {
-        dealWithSettingInteractions(element, value);
-      }
-      else {
+        this.dealWithSettingObjectives(element, value);
+      } else if (element.indexOf("cmi.interactions") != -1) {
+        this.dealWithSettingInteractions(element, value);
+      } else {
         var result = eval("API." + element);
         if (result != null) {
           result.cmivalue = value;
@@ -992,26 +998,15 @@ export class ScormPlayerComponent implements OnInit {
   }
 
   /*
-  *  Object ServerScoSettings()
-  *  Used to store server specific settings and error codes etc..
-  *  Is accessed as an object inside this implementation of the API object.
-  */
-  static ServerScoSettings = function () {
-    this.isInitialized = "false";
-    this.lastError = "0";
-    this.checkDataTypeAndVocab = scoCheckDataTypeAndVocab;
-  }
+   * ---------------------------------------------------------------------------------------------
+   *	API Javascript Functions
+   * ---------------------------------------------------------------------------------------------
+   */
 
   /*
-  * ---------------------------------------------------------------------------------------------
-  *	API Javascript Functions
-  * ---------------------------------------------------------------------------------------------
-  */
-
-  /*
-  * LMSInitialize. Initialize this sco (if it is one)
-  */
-  static LMSInitializeMethod = function (parameter) {
+   * LMSInitialize. Initialize this sco (if it is one)
+   */
+  LMSInitializeMethod = function (parameter) {
     // check that this has been called with an empty string...
     if (parameter != "") {
       this.ServerSco.lastError = "201"
@@ -1022,17 +1017,16 @@ export class ScormPlayerComponent implements OnInit {
       this.ServerSco.isInitialized = "true";
       this.ServerSco.lastError = "0"
       return "true";
-    }
-    else {
+    } else {
       this.ServerSco.lastError = "101"
       return "false";
     }
   }
 
   /*
-  * LMSFinish. Finish this sco session.
-  */
-  static LMSFinishMethod = function (parameter) {
+   * LMSFinish. Finish this sco session.
+   */
+  LMSFinishMethod = function (parameter) {
     // check that this has been called with an empty string...
     if (parameter != "") {
       this.ServerSco.lastError = "201";
@@ -1043,8 +1037,7 @@ export class ScormPlayerComponent implements OnInit {
       this.ServerSco.isInitialized = "false";
       this.ServerSco.lastError = "0";
       return "true";
-    }
-    else {
+    } else {
       // not initialized
       this.ServerSco.lastError = "301";
       return "false";
@@ -1054,9 +1047,9 @@ export class ScormPlayerComponent implements OnInit {
 
 
   /*
-  * LMSCommit.  Method to update/persist any changed items in the CMI datamodel
-  */
-  static LMSCommitMethod = function (parameter) {
+   * LMSCommit.  Method to update/persist any changed items in the CMI datamodel
+   */
+  LMSCommitMethod = function (parameter) {
     // check that this has been called with an empty string...
     if (parameter != "") {
       this.ServerSco.lastError = "201"
@@ -1065,8 +1058,7 @@ export class ScormPlayerComponent implements OnInit {
     if (this.ServerSco.isInitialized == "true") {
       this.ServerSco.lastError = "0";
       return "true";
-    }
-    else {
+    } else {
       // not initialized
       this.ServerSco.lastError = "301";
       return "false";
@@ -1107,8 +1099,7 @@ export class ScormPlayerComponent implements OnInit {
       // call to array is out of bounds
       this.API.ServerSco.lastError = "201";
       return "";
-    }
-    else {	// WEVE GOT TO THE POINT OF VALIDATING cmi.objective.n
+    } else { // WEVE GOT TO THE POINT OF VALIDATING cmi.objective.n
       // does this element exist in the objectives array? - sanity check...
       var mystr = "API." + cmiArray[0] + "." + cmiArray[1] + ".objArray(" + cmiArray[2] + ");",
         ans = eval(mystr);
@@ -1116,8 +1107,7 @@ export class ScormPlayerComponent implements OnInit {
       if (ans == null) {
         this.API.ServerSco.lastError = "201";
         return "";
-      }
-      else {
+      } else {
         // we need to see if the call is asking for a valid element under cmi.objectives.n
         // we can trust the element parameter now to call the following...
         var subelementstr = "ans";
@@ -1136,8 +1126,7 @@ export class ScormPlayerComponent implements OnInit {
         if (res == null) {
           this.API.ServerSco.lastError = "201";
           return "";
-        }
-        else {
+        } else {
           this.API.ServerSco.lastError = "0";
           return res;
         }
@@ -1145,1508 +1134,1936 @@ export class ScormPlayerComponent implements OnInit {
     }
   }
 
-dealWithGettingInteractions(element) {
-  // RETURN _CHILDREN
-  if (element == "cmi.interactions._children") {
-    this.API.ServerSco.lastError = "0";
-    return this.API.cmi.interactions._children.cmivalue;
-  }
+  dealWithGettingInteractions(element) {
+    // RETURN _CHILDREN
+    if (element == "cmi.interactions._children") {
+      this.API.ServerSco.lastError = "0";
+      return this.API.cmi.interactions._children.cmivalue;
+    }
 
-  // RETURN _COUNT
-  if (element == "cmi.interactions._count") {
-    this.API.ServerSco.lastError = "0";
-    return this.API.cmi.interactions._count.cmivalue;
-  }
+    // RETURN _COUNT
+    if (element == "cmi.interactions._count") {
+      this.API.ServerSco.lastError = "0";
+      return this.API.cmi.interactions._count.cmivalue;
+    }
 
-  // ELSE CHECK THAT THE ELEMENT IS VALID AND HAS AT LEAST 3 PARAMS, DOESNT HAVE
-  // MORE THAN 6 PARAMS  - IF SO, ITS ILLEGAL
-  var cmiArray = element.split(".");
-  if (cmiArray.length < 3 || cmiArray.length > 6) {
-    this.API.ServerSco.lastError = "201";
-    return "";
-  }
-
-  var theCount = this.API.cmi.interactions._count.cmivalue;
-
-  // IF 3RD ARG IS NOT A NUMBER THEN THROW ERROR
-  // need to check cmiArray[2] to see if its a number
-  if (isNaN(cmiArray[2])) {
-    this.API.ServerSco.lastError = "401";
-    return "";
-  }
-
-  // IF ITS A NUMBER MAKE SURE ITS IN THE ARRAY BOUNDS
-  if (cmiArray[2] >= theCount) {
-    // call to array is out of bounds
-    this.API.ServerSco.lastError = "201";
-    return "";
-  }
-  else {	// WEVE GOT TO THE POINT OF VALIDATING cmi.interactions.n
-    // does this element exist in the interactions array? - sanity check...
-    //
-    // We are checking that 'cmi.interactions.n' exists
-    var mystr = "API." + cmiArray[0] + "." + cmiArray[1] + ".intArray(" + cmiArray[2] + ")",
-    ans = eval(mystr);
-    //if it doesn't exist
-    if (ans == null) {
+    // ELSE CHECK THAT THE ELEMENT IS VALID AND HAS AT LEAST 3 PARAMS, DOESNT HAVE
+    // MORE THAN 6 PARAMS  - IF SO, ITS ILLEGAL
+    var cmiArray = element.split(".");
+    if (cmiArray.length < 3 || cmiArray.length > 6) {
       this.API.ServerSco.lastError = "201";
       return "";
     }
-    else {
-      // if theres 4 bits to the element path then try to see if object exists
-      if (cmiArray.length == 4) {
-        var strleaf = "ans." + cmiArray[3] + ";";
-        var doesLeafExist = eval(strleaf);
-        if (doesLeafExist == null) {
-          this.API.ServerSco.lastError = "201";
-          return "";
+
+    var theCount = this.API.cmi.interactions._count.cmivalue;
+
+    // IF 3RD ARG IS NOT A NUMBER THEN THROW ERROR
+    // need to check cmiArray[2] to see if its a number
+    if (isNaN(cmiArray[2])) {
+      this.API.ServerSco.lastError = "401";
+      return "";
+    }
+
+    // IF ITS A NUMBER MAKE SURE ITS IN THE ARRAY BOUNDS
+    if (cmiArray[2] >= theCount) {
+      // call to array is out of bounds
+      this.API.ServerSco.lastError = "201";
+      return "";
+    } else { // WEVE GOT TO THE POINT OF VALIDATING cmi.interactions.n
+      // does this element exist in the interactions array? - sanity check...
+      //
+      // We are checking that 'cmi.interactions.n' exists
+      var mystr = "API." + cmiArray[0] + "." + cmiArray[1] + ".intArray(" + cmiArray[2] + ")",
+        ans = eval(mystr);
+      //if it doesn't exist
+      if (ans == null) {
+        this.API.ServerSco.lastError = "201";
+        return "";
+      } else {
+        // if theres 4 bits to the element path then try to see if object exists
+        if (cmiArray.length == 4) {
+          var strleaf = "ans." + cmiArray[3] + ";";
+          var doesLeafExist = eval(strleaf);
+          if (doesLeafExist == null) {
+            this.API.ServerSco.lastError = "201";
+            return "";
+          } else {
+            // NEXT CHECK THAT THIS ELEMENT IS NOT WRITEONLY
+            var strleafstatus = mystr + "." + cmiArray[3] + ".cmireadStatus;";
+            var leafstatus = eval(strleafstatus);
+            if (leafstatus == "writeonly") {
+              this.API.ServerSco.lastError = "404";
+              return "";
+            }
+
+            // WE CAN NOW TRY TO GET THE FULL OBJECT REFERENCE
+            var strleafval = mystr + "." + cmiArray[3] + ".cmivalue;";
+            var leafVal = eval(strleafval);
+            if (leafVal == null) {
+              // IT FAILED AT THE FINAL HURDLE...
+              this.API.ServerSco.lastError = "201";
+              return "";
+            } else {
+              this.API.ServerSco.lastError = "0";
+              return leafVal;
+            }
+
+          }
         }
-        else {
-          // NEXT CHECK THAT THIS ELEMENT IS NOT WRITEONLY
-          var strleafstatus = mystr + "." + cmiArray[3] + ".cmireadStatus;";
-          var leafstatus = eval(strleafstatus);
-          if (leafstatus == "writeonly") {
+        // if theres 5 bits to the element path then try to see if object exists
+        if (cmiArray.length == 5) {
+          // check object exists
+          var strbranch = "ans." + cmiArray[3] + ";";
+          var doesLeafExist = eval(strbranch);
+          if (doesLeafExist == null) {
+            this.API.ServerSco.lastError = "201";
+            return "";
+          }
+
+          // check final object exists in the array list...
+          var nextstrbranch = "ans." + cmiArray[3] + "." + cmiArray[4] + ";";
+          var doesLeafExist = eval(nextstrbranch);
+          if (doesLeafExist == null) {
+            this.API.ServerSco.lastError = "201";
+            return "";
+          }
+
+          // check for write only
+          var strread = "ans." + cmiArray[3] + "." + cmiArray[4] + ".cmireadStatus;";
+          var isWriteOnly = eval(strread);
+          if (isWriteOnly == "writeonly") {
             this.API.ServerSco.lastError = "404";
             return "";
           }
 
-          // WE CAN NOW TRY TO GET THE FULL OBJECT REFERENCE
-          var strleafval = mystr + "." + cmiArray[3] + ".cmivalue;";
-          var leafVal = eval(strleafval);
-          if (leafVal == null) {
-            // IT FAILED AT THE FINAL HURDLE...
+          // see if value exists
+          var strleaf = "ans." + cmiArray[3] + "." + cmiArray[4] + ".cmivalue;";
+          var doesLeafExist = eval(strleaf);
+          if (doesLeafExist == null) {
             this.API.ServerSco.lastError = "201";
             return "";
-          }
-          else {
+          } else {
             this.API.ServerSco.lastError = "0";
-            return leafVal;
+            return doesLeafExist;
           }
 
         }
-      }
-      // if theres 5 bits to the element path then try to see if object exists
-      if (cmiArray.length == 5) {
-        // check object exists
-        var strbranch = "ans." + cmiArray[3] + ";";
-        var doesLeafExist = eval(strbranch);
-        if (doesLeafExist == null) {
-          this.API.ServerSco.lastError = "201";
-          return "";
-        }
-
-        // check final object exists in the array list...
-        var nextstrbranch = "ans." + cmiArray[3] + "." + cmiArray[4] + ";";
-        var doesLeafExist = eval(nextstrbranch);
-        if (doesLeafExist == null) {
-          this.API.ServerSco.lastError = "201";
-          return "";
-        }
-
-        // check for write only
-        var strread = "ans." + cmiArray[3] + "." + cmiArray[4] + ".cmireadStatus;";
-        var isWriteOnly = eval(strread);
-        if (isWriteOnly == "writeonly") {
-          this.API.ServerSco.lastError = "404";
-          return "";
-        }
-
-        // see if value exists
-        var strleaf = "ans." + cmiArray[3] + "." + cmiArray[4] + ".cmivalue;";
-        var doesLeafExist = eval(strleaf);
-        if (doesLeafExist == null) {
-          this.API.ServerSco.lastError = "201";
-          return "";
-        }
-        else {
-          this.API.ServerSco.lastError = "0";
-          return doesLeafExist;
-        }
-
-      }
-      // if theres 6 bits to the element path then try to see if object exists
-      if (cmiArray.length == 6) {
-        // check object exists
-        strbranch = "ans." + cmiArray[3];
-        var doesBranchExist = eval(strbranch);
-        if (doesBranchExist == null) {
-          this.API.ServerSco.lastError = "201";
-          return "";
-        }
-        // The fifth argument should be an array reference, so do some checking...
-
-        // IF 5TH ARG IS NOT A NUMBER THEN THROW ERROR
-        // need to check cmiArray[4] to see if its a number
-        if (isNaN(cmiArray[4])) {
-          this.API.ServerSco.lastError = "401";
-          return "";
-        }
-
-        // check to see if this element has a _count
-        // If it hasn't we'll have to throw an error here
-        // because we need the correct array index for array #2...
-        theCount = "ans." + cmiArray[3] + "._count.cmivalue;";
-        var hasCount = eval(theCount);
-        // CANT FIND _COUNT FOR THIS ELEMENT, SO THROW AN ERROR...
-        if (hasCount == null) {
-          this.API.ServerSco.lastError = "201";
-          return "";
-        }
-        // next need to check to see if array ref is in array bounds
-        if (cmiArray[4] >= hasCount || cmiArray[4] < 0) {
-          // call to array is out of bounds
-          this.API.ServerSco.lastError = "201";
-          return "";
-        }
-        // make sure that array index 4 is either 'objectives' or 'correct_responses'
-        if (cmiArray[3] == "objectives") {
-          // next check that there is an object here at this array index...
-          var arrayIndex2Check = eval("ans." + cmiArray[3] + ".objectivesInteractionArray(" + cmiArray[4] + ")");
-          // check for null
-          if (arrayIndex2Check == null) {
+        // if theres 6 bits to the element path then try to see if object exists
+        if (cmiArray.length == 6) {
+          // check object exists
+          strbranch = "ans." + cmiArray[3];
+          var doesBranchExist = eval(strbranch);
+          if (doesBranchExist == null) {
             this.API.ServerSco.lastError = "201";
             return "";
           }
-          else {
-            // next check that the last element is valid...
-            var finalObjectCheck = eval("arrayIndex2Check." + cmiArray[5]);
-            if (finalObjectCheck == null) {
-              this.API.ServerSco.lastError = "201";
-              return "";
-            }
-            else {
-              // call must be to a valid element in the model so...
-              // check it for writeonly...
-              var isWriteonly = eval("finalObjectCheck.cmireadStatus");
-              if (isWriteonly == "writeonly") {
-                this.API.ServerSco.lastError = "404";
-                return "";
-              }
-              else {
-                this.API.ServerSco.lastError = "0";
-                return eval("finalObjectCheck.cmivalue");
-              }
-            }
+          // The fifth argument should be an array reference, so do some checking...
+
+          // IF 5TH ARG IS NOT A NUMBER THEN THROW ERROR
+          // need to check cmiArray[4] to see if its a number
+          if (isNaN(cmiArray[4])) {
+            this.API.ServerSco.lastError = "401";
+            return "";
           }
-        }
-        else if (cmiArray[3] == "correct_responses") {
-          // next check that there is an object here at this array index...
-          var arrayIndex2Check = eval("ans." + cmiArray[3] + ".correctResponsesInteractionArray(" + cmiArray[4] + ")");
-          // check for null
-          if (arrayIndex2Check == null) {
+
+          // check to see if this element has a _count
+          // If it hasn't we'll have to throw an error here
+          // because we need the correct array index for array #2...
+          theCount = "ans." + cmiArray[3] + "._count.cmivalue;";
+          var hasCount = eval(theCount);
+          // CANT FIND _COUNT FOR THIS ELEMENT, SO THROW AN ERROR...
+          if (hasCount == null) {
             this.API.ServerSco.lastError = "201";
             return "";
           }
-          else {
-            // next check that the last element is valid...
-            finalObjectCheck = eval("arrayIndex2Check." + cmiArray[5]);
-            if (finalObjectCheck == null) {
+          // next need to check to see if array ref is in array bounds
+          if (cmiArray[4] >= hasCount || cmiArray[4] < 0) {
+            // call to array is out of bounds
+            this.API.ServerSco.lastError = "201";
+            return "";
+          }
+          // make sure that array index 4 is either 'objectives' or 'correct_responses'
+          if (cmiArray[3] == "objectives") {
+            // next check that there is an object here at this array index...
+            var arrayIndex2Check = eval("ans." + cmiArray[3] + ".objectivesInteractionArray(" + cmiArray[4] + ")");
+            // check for null
+            if (arrayIndex2Check == null) {
               this.API.ServerSco.lastError = "201";
               return "";
-            }
-            else {
-              // call must be to a valid element in the model so...
-              // check it for writeonly...
-              isWriteonly = eval("finalObjectCheck.cmireadStatus");
-              if (isWriteonly == "writeonly") {
-                this.API.ServerSco.lastError = "404";
+            } else {
+              // next check that the last element is valid...
+              var finalObjectCheck = eval("arrayIndex2Check." + cmiArray[5]);
+              if (finalObjectCheck == null) {
+                this.API.ServerSco.lastError = "201";
                 return "";
-              }
-              else {
-                this.API.ServerSco.lastError = "0";
-                return eval("finalObjectCheck.cmivalue");
+              } else {
+                // call must be to a valid element in the model so...
+                // check it for writeonly...
+                var isWriteonly = eval("finalObjectCheck.cmireadStatus");
+                if (isWriteonly == "writeonly") {
+                  this.API.ServerSco.lastError = "404";
+                  return "";
+                } else {
+                  this.API.ServerSco.lastError = "0";
+                  return eval("finalObjectCheck.cmivalue");
+                }
               }
             }
-          }
-        }
-        else {
-          // throw an error becuase 4th arg was not either
-          // objectives or correct_responses
-          this.API.ServerSco.lastError = "201";
-          return "";
-        }
-      }
-    }
-  }
-}
-
-dealWithSettingObjectives(element, value) {
-  //  _CHILDREN ARE READONLY
-  if (element == "cmi.objectives._children") {
-    this.API.ServerSco.lastError = "402";
-    return "false";
-  }
-
-  //  _COUNT IS READ ONLY
-  if (element == "cmi.objectives._count") {
-    this.API.ServerSco.lastError = "402";
-    return "false";
-  }
-
-  // ELSE CHECK THAT THE ELEMENT IS VALID AND HAS AT LEAST 3 PARAMS
-  var cmiArray = element.split(".");
-  if (cmiArray.length < 3) {
-    this.API.ServerSco.lastError = "201";
-    return "false";
-  }
-
-  // IF 3RD ARG IS NOT A NUMBER THEN THROW ERROR
-  // need to check cmiArray[2] to see if its a number
-  if (isNaN(cmiArray[2])) {
-    this.API.ServerSco.lastError = "401";
-    return "false";
-  }
-
-
-  var theCount = this.API.cmi.objectives._count.cmivalue;
-
-  // IF ITS A NUMBER MAKE SURE ITS IN THE ARRAY BOUNDS
-  if (cmiArray[2] > theCount || cmiArray[2] < 0) {
-    // call to array is out of bounds
-    this.API.ServerSco.lastError = "201";
-    return "false";
-  }
-  else if (cmiArray[2] == theCount || cmiArray[2] < theCount) {
-
-    //create a new one
-    var existingObjectiveHandle = this.API.cmi.objectives.objArray(cmiArray[2]);
-    if (existingObjectiveHandle == null) {
-      this.API.ServerSco.lastError = "101";
-      return "false";
-    }
-    else {
-      // we need to see if the call is asking for a valid element under cmi.objectives.n
-      // we can trust the element parameter now to call the following...
-     var subelementstr = "existingObjectiveHandle";
-      for (var i = 3; i < cmiArray.length; i++) {
-        subelementstr = subelementstr + "." + cmiArray[i];
-      }
-
-      var objTest = eval(subelementstr);
-      if (objTest == null) {
-        this.API.ServerSco.lastError = "201";
-        return "false";
-
-      }
-
-      var subelementstrWithoutLeaf = subelementstr;
-      var subelementstr = subelementstr + ".cmireadStatus;";
-      var res = eval(subelementstr);
-      if (res == null) {
-        this.API.ServerSco.lastError = "101";
-        return "false";
-      }
-      else {
-        if (res == "readonly") {
-          this.API.ServerSco.lastError = "403";
-          return "false";
-        }
-        else {
-
-          // check the datatype and vocabulary...
-          var datatype = objTest.cmidatatype;
-          res = this.API.ServerSco.checkDataTypeAndVocab(element, value, datatype);
-
-          if (res == "true") {
-            // correct datatype...
-            // WE CAN NOW TRY TO SET THE FULL OBJECT REFERENCE
-            var strleafval = "objTest.cmivalue =\"" + value + "\";";
-            var leafVal = eval(strleafval);
-            if (leafVal == null) {
-              // IT FAILED AT THE FINAL HURDLE...
+          } else if (cmiArray[3] == "correct_responses") {
+            // next check that there is an object here at this array index...
+            var arrayIndex2Check = eval("ans." + cmiArray[3] + ".correctResponsesInteractionArray(" + cmiArray[4] + ")");
+            // check for null
+            if (arrayIndex2Check == null) {
               this.API.ServerSco.lastError = "201";
-              return "false";
-            }
-            else {
-              this.API.ServerSco.lastError = "0";
-              return "true";
-            }
-          }
-          else {
-            // incorrect data type...
-            this.API.ServerSco.lastError = "405";
-            return "false";
-          }
-
-        }
-      }
-    }
-  }
-}
-
-function dealWithSettingInteractions(element, value) {
-  //  _CHILDREN ARE READONLY
-  if (element == "cmi.interactions._children") {
-    API.ServerSco.lastError = "402";
-    return "false";
-  }
-
-  //  _COUNT IS READ ONLY
-  if (element == "cmi.interactions._count") {
-    API.ServerSco.lastError = "402";
-    return "false";
-  }
-
-  // ELSE CHECK THAT THE ELEMENT IS VALID AND HAS AT LEAST 3 PARAMS, DOESNT HAVE
-  // MORE THAN 6 PARAMS  - ALL ILLEGAL
-  var cmiArray = element.split(".");
-  if (cmiArray.length < 3 || cmiArray.length > 6) {
-    API.ServerSco.lastError = "201";
-    return "false";
-  }
-
-  var theCount = API.cmi.interactions._count.cmivalue;
-
-  // IF 3RD ARG IS NOT A NUMBER THEN THROW ERROR
-  // need to check cmiArray[2] to see if its a number
-  if (isNaN(cmiArray[2])) {
-    API.ServerSco.lastError = "401";
-    return "false";
-  }
-
-  var theCount = API.cmi.interactions._count.cmivalue;
-
-  // IF ITS A NUMBER MAKE SURE ITS IN THE ARRAY BOUNDS
-  if (cmiArray[2] > theCount || cmiArray[2] < 0) {
-    // call to array is out of bounds
-    API.ServerSco.lastError = "201";
-    return "false";
-  }
-  else if (cmiArray[2] <= theCount) {
-
-    //create a new one or get existing object
-    var existingObjectiveHandle = API.cmi.interactions.intArray(cmiArray[2]);
-    if (existingObjectiveHandle == null) {
-      API.ServerSco.lastError = "101";
-      return "false";
-    }
-    else {
-      // we now have a reference to cmi.interactions.n
-      // if theres 4 bits to the element path then try to see if object exists
-
-      if (cmiArray.length == 4) {
-        strleaf = "existingObjectiveHandle." + cmiArray[3];
-        var doesLeafExist = eval(strleaf);
-        if (doesLeafExist == null) {
-          API.ServerSco.lastError = "201";
-          return "false";
-        }
-        else {
-
-          // NEXT CHECK THAT THIS ELEMENT IS NOT READONLY
-          strleafstatus = "doesLeafExist.cmireadStatus";
-          var leafstatus = eval(strleafstatus);
-          if (leafstatus == "readonly") {
-            API.ServerSco.lastError = "403";
-            return "false";
-          }
-
-          // check the datatype and vocabulary...
-          var datatype = doesLeafExist.cmidatatype;
-          res = API.ServerSco.checkDataTypeAndVocab(element, value, datatype);
-          if (res == "true") {
-            // correct datatype...
-            // WE CAN NOW TRY TO SET THE FULL OBJECT REFERENCE
-            var strleafval = "doesLeafExist.cmivalue =\"" + value + "\";";
-            var leafVal = eval(strleafval);
-            if (leafVal == null) {
-              // IT FAILED AT THE FINAL HURDLE...
-              API.ServerSco.lastError = "201";
-              return "false";
-            }
-            else {
-              API.ServerSco.lastError = "0";
-              return "true";
-            }
-          }
-          else {
-            // incorrect data type...
-            API.ServerSco.lastError = "405";
-            return "false";
-          }
-        }
-      }
-      if (cmiArray.length == 5) {
-        // check object exists
-        strbranch = "existingObjectiveHandle." + cmiArray[3] + ";";
-        var doesLeafExist = eval(strbranch);
-        if (doesLeafExist == null) {
-          API.ServerSco.lastError = "201";
-          return "false";
-        }
-
-        // check final object exists in the array list...
-        nextstrbranch = "existingObjectiveHandle." + cmiArray[3] + "." + cmiArray[4] + ";";
-        var doesLeafExist = eval(nextstrbranch);
-        if (doesLeafExist == null) {
-          API.ServerSco.lastError = "201";
-          return "false";
-        }
-
-        // check for write only
-        strread = "existingObjectiveHandle." + cmiArray[3] + "." + cmiArray[4] + ".cmireadStatus;";
-        var isWriteOnly = eval(strread);
-        if (isWriteOnly == "readonly") {
-          API.ServerSco.lastError = "403";
-          return "false";
-        }
-
-        // see if value exists
-        strleaf = "existingObjectiveHandle." + cmiArray[3] + "." + cmiArray[4] + ".cmivalue;";
-        var doesLeafExist = eval(strleaf);
-        if (doesLeafExist == null) {
-          API.ServerSco.lastError = "201";
-          return "false";
-        }
-        else {
-          // check the datatype and vocabulary...
-          var datatype = doesLeafExist.cmidatatype;
-          res = API.ServerSco.checkDataTypeAndVocab(element, value, datatype);
-          if (res == "true") {
-            // correct datatype...
-            // WE CAN NOW TRY TO SET THE FULL OBJECT REFERENCE
-            var strleafval = "doesLeafExist.cmivalue =\"" + value + "\";";
-            var leafVal = eval(strleafval);
-            if (leafVal == null) {
-              // IT FAILED AT THE FINAL HURDLE...
-              API.ServerSco.lastError = "201";
-              return "false";
-            }
-            else {
-              API.ServerSco.lastError = "0";
-              return "true";
-            }
-          }
-          else {
-            // incorrect data type...
-            API.ServerSco.lastError = "405";
-            return "false";
-          }
-        }
-      }
-      if (cmiArray.length == 6) {
-        // check object exists
-        strbranch = "existingObjectiveHandle." + cmiArray[3];
-        var doesBranchExist = eval(strbranch);
-        if (doesBranchExist == null) {
-          API.ServerSco.lastError = "201";
-          return "false";
-        }
-        // The fifth argument should be an array reference, so do some checking...
-
-        // IF 5TH ARG IS NOT A NUMBER THEN THROW ERROR
-        // need to check cmiArray[4] to see if its a number
-        if (isNaN(cmiArray[4])) {
-          API.ServerSco.lastError = "401";
-          return "false";
-        }
-
-        // check to see if this element has a _count
-        // If it hasn't we'll have to throw an error here
-        // because we need the correct array index for array #2...
-        var theCount = "existingObjectiveHandle." + cmiArray[3] + "._count.cmivalue;";
-        var hasCount = eval(theCount);
-        // CANT FIND _COUNT FOR THIS ELEMENT, SO THROW AN ERROR...
-        if (hasCount == null) {
-          API.ServerSco.lastError = "201";
-          return "false";
-        }
-        // next need to check to see if array ref is in array bounds
-        if (cmiArray[4] > hasCount || cmiArray[4] < 0) {
-          // call to array is out of bounds
-          API.ServerSco.lastError = "201";
-          return "false";
-        }
-
-        // make sure that array index 4 is either 'objectives' or 'correct_responses'
-        if (cmiArray[3] == "objectives") {
-          // next check that there is an object here at this array index...
-          var arrayIndex2Check = eval("existingObjectiveHandle." + cmiArray[3] + ".objectivesInteractionArray(" + cmiArray[4] + ")");
-          // check for null
-          if (arrayIndex2Check == null) {
-            API.ServerSco.lastError = "201";
-            return "false";
-          }
-          else {
-            // next check that the last element is valid...
-            finalObjectCheck = eval("arrayIndex2Check." + cmiArray[5]);
-            if (finalObjectCheck == null) {
-              API.ServerSco.lastError = "201";
-              return "false";
-            }
-            else {
-              // call must be to a valid element in the model so...
-              // check it for readonly...
-              isWriteonly = eval("finalObjectCheck.cmireadStatus");
-              if (isWriteonly == "readonly") {
-                API.ServerSco.lastError = "403";
-                return "false";
-              }
-              else {
-
-                // check the datatype and vocabulary...
-                var datatype = finalObjectCheck.cmidatatype;
-                res = API.ServerSco.checkDataTypeAndVocab(element, value, datatype);
-                if (res == "true") {
-                  // correct datatype...
-                  // WE CAN NOW TRY TO SET THE FULL OBJECT REFERENCE
-                  var strleafval = "finalObjectCheck.cmivalue =\"" + value + "\";";
-                  var leafVal = eval(strleafval);
-                  if (leafVal == null) {
-                    // IT FAILED AT THE FINAL HURDLE...
-                    API.ServerSco.lastError = "201";
-                    return "false";
-                  }
-                  else {
-                    API.ServerSco.lastError = "0";
-                    return "true";
-                  }
-                }
-                else {
-                  // incorrect data type...
-                  API.ServerSco.lastError = "405";
-                  return "false";
+              return "";
+            } else {
+              // next check that the last element is valid...
+              finalObjectCheck = eval("arrayIndex2Check." + cmiArray[5]);
+              if (finalObjectCheck == null) {
+                this.API.ServerSco.lastError = "201";
+                return "";
+              } else {
+                // call must be to a valid element in the model so...
+                // check it for writeonly...
+                isWriteonly = eval("finalObjectCheck.cmireadStatus");
+                if (isWriteonly == "writeonly") {
+                  this.API.ServerSco.lastError = "404";
+                  return "";
+                } else {
+                  this.API.ServerSco.lastError = "0";
+                  return eval("finalObjectCheck.cmivalue");
                 }
               }
             }
-          }
-        }
-        else if (cmiArray[3] == "correct_responses") {
-          // next check that there is an object here at this array index...
-          var arrayIndex2Check = eval("existingObjectiveHandle." + cmiArray[3] + ".correctResponsesInteractionArray(" + cmiArray[4] + ")");
-          // check for null
-          if (arrayIndex2Check == null) {
-            API.ServerSco.lastError = "201";
-            return "false";
-          }
-          else {
-            // next check that the last element is valid...
-            finalObjectCheck = eval("arrayIndex2Check." + cmiArray[5]);
-            if (finalObjectCheck == null) {
-              API.ServerSco.lastError = "201";
-              return "false";
-            }
-            else {
-              // call must be to a valid element in the model so...
-              // check it for readonly...
-              isWriteonly = eval("finalObjectCheck.cmireadStatus");
-              if (isWriteonly == "readonly") {
-                API.ServerSco.lastError = "403";
-                return "false";
-              }
-              else {
-                // check the datatype and vocabulary...
-                var datatype = finalObjectCheck.cmidatatype;
-                res = API.ServerSco.checkDataTypeAndVocab(element, value, datatype);
-                if (res == "true") {
-                  // correct datatype...
-                  // WE CAN NOW TRY TO SET THE FULL OBJECT REFERENCE
-                  var strleafval = "finalObjectCheck.cmivalue =\"" + value + "\";";
-                  var leafVal = eval(strleafval);
-                  if (leafVal == null) {
-                    // IT FAILED AT THE FINAL HURDLE...
-                    API.ServerSco.lastError = "201";
-                    return "false";
-                  }
-                  else {
-                    API.ServerSco.lastError = "0";
-                    return "true";
-                  }
-                }
-                else {
-                  // incorrect data type...
-                  API.ServerSco.lastError = "405";
-                  return "false";
-                }
-
-              }
-            }
-          }
-        }
-        else {
-          // throw an error because 4th arg was not either
-          // objectives or correct_responses
-          API.ServerSco.lastError = "201";
-          return "false";
-        }
-
-      }
-
-    }
-  }
-
-}
-
-/*
-* LMSGetValue.  Method to allow sco to read/access CMI datamodel elements
-*/
-static LMSGetValueMethod(element) {
-  if (this.ServerSco.isInitialized == "true") {
-    var invalid = "false";
-    var cannotHaveChildren = "false";
-    var isNotAnArray = "false";
-
-    // this checks to make sure there is at least one dot in the value
-    if (element.indexOf(".") == -1) {
-      invalid = "true";
-    }
-
-    // dont bother doing this if we have already found an error...
-    if (invalid != "true") {
-      // we then loop around the children, making sure they exist one, by one...
-      var cmiArray = element.split(".");
-      var teststring = "this";
-      for (i = 0; i < cmiArray.length; i++) {
-        doesExist = eval(teststring + "." + cmiArray[i] + ";");
-        if (doesExist == null) {
-          invalid = "true";
-          // check for invalid _children call
-          if (cmiArray[i] == "_children") {
-            cannotHaveChildren = "true";
-          }
-          // check for invalid _count call
-          if (cmiArray[i] == "_count") {
-            isNotAnArray = "true";
-          }
-          break;
-        }
-        else {
-          teststring = teststring + "." + cmiArray[i];
-          // WE NEED TO TRAP THE OBJECTIVES...
-          if (teststring == "this.cmi.objectives") {
-            return dealWithGettingObjectives(element);
-          }
-          // WE NEED TO TRAP THE INTERACTIONS...
-          if (teststring == "this.cmi.interactions") {
-            return dealWithGettingInteractions(element);
+          } else {
+            // throw an error becuase 4th arg was not either
+            // objectives or correct_responses
+            this.API.ServerSco.lastError = "201";
+            return "";
           }
         }
       }
     }
-
-    // user tried to call _count on a non-array value
-    if (isNotAnArray == "true") {
-      this.ServerSco.lastError = "203";
-      return "";
-    }
-
-    // user tried to call _children on an element that didnt support it
-    if (cannotHaveChildren == "true") {
-      this.ServerSco.lastError = "202";
-      return "";
-    }
-
-    // if there was some kind of error found above, then...
-    if (invalid == "true") {
-      this.ServerSco.lastError = "401";
-      return "";
-    }
-    else {
-      // otherwise its a valid model reference...
-      elementObj = eval("this." + element);
-    }
-
-    // next we will check to make sure this element is not writeonly..
-    if (elementObj.cmireadStatus == "writeonly") {
-      this.ServerSco.lastError = "404";
-      return "";
-    }
-    else {
-      // its okay and user can read it...
-      this.ServerSco.lastError = "0";
-      return elementObj.cmivalue;
-    }
   }
-  else {
-    // not initialized...
-    this.ServerSco.lastError = "301";
-    return "";
-  }
-}
 
-
-
-/*
-* LMSSetValue.  Method to allow sco to write data to CMI datamodel
-*/
-function LMSSetValueMethod(element, value) {
-  value = unescape(value);
-  if (this.ServerSco.isInitialized == "true") {
-    var invalid = "false";
-    var cannotHaveChildren = "false";
-    var isNotAnArray = "false";
-
-    // check for sco trying to set _children & _count
-    //element is a keyword, cannot set...
-    if (element.indexOf("._children") != -1 || element.indexOf("._count") != -1) {
-      this.ServerSco.lastError = "402";
+  dealWithSettingObjectives(element, value) {
+    //  _CHILDREN ARE READONLY
+    if (element == "cmi.objectives._children") {
+      this.API.ServerSco.lastError = "402";
       return "false";
     }
 
-    // this checks to make sure there is at least one dot in the value
-    // if it doesnt, then it cant be a valid CMI model reference
-    if (element.indexOf(".") == -1) {
-      invalid = "true";
-    }
-
-    // dont bother doing this if we have already found an error...
-    if (invalid != "true") {
-      // we then loop around the children, making sure they exist one, by one...
-      var cmiArray = element.split(".");
-      var teststring = "this";
-      for (i = 0; i < cmiArray.length; i++) {
-        doesExist = eval(teststring + "." + cmiArray[i] + ";");
-        if (doesExist == null) {
-          invalid = "true";
-          // check for invalid _children call
-          if (cmiArray[i] == "_children") {
-            cannotHaveChildren = "true";
-          }
-          // check for invalid _count call
-          if (cmiArray[i] == "_count") {
-            isNotAnArray = "true";
-          }
-          break;
-        }
-        else {
-          teststring = teststring + "." + cmiArray[i];
-          // WE NEED TO TRAP THE OBJECTIVES...
-          if (teststring == "this.cmi.objectives") {
-            return dealWithSettingObjectives(element, value);
-          }
-          // WE NEED TO TRAP THE INTERACTIONS...
-          if (teststring == "this.cmi.interactions") {
-            return dealWithSettingInteractions(element, value);
-          }
-        }
-      }
-    }
-
-    // user tried to call _count on a non-array value
-    if (isNotAnArray == "true") {
-      this.ServerSco.lastError = "203";
+    //  _COUNT IS READ ONLY
+    if (element == "cmi.objectives._count") {
+      this.API.ServerSco.lastError = "402";
       return "false";
     }
 
-    // user tried to call _children on an element that didnt support it
-    if (cannotHaveChildren == "true") {
-      this.ServerSco.lastError = "202";
-      return "false";
-    }
-
-    // if there was some kind of error found above, then...
-    if (invalid == "true") {
-      this.ServerSco.lastError = "401";
-      return "false";
-    }
-    else {
-      // otherwise its a valid model reference...
-      elementObj = eval("this." + element);
-    }
-
-    // check that its writeable...
-    if (elementObj.cmireadStatus == "readonly") {
-      this.ServerSco.lastError = "403";
-      return "false";
-    }
-    else {
-      // check the datatype and vocabulary...
-      var datatype = elementObj.cmidatatype;
-      res = this.ServerSco.checkDataTypeAndVocab(element, value, datatype);
-      if (res == "true") {
-        // correct datatype...
-        // cmi.comments need to be appended...
-        if (element == "cmi.comments") {
-          pre = this.LMSGetValue("cmi.comments");
-          setString = "this." + element + ".cmivalue =\"" + pre + value + "\";";
-        }
-        else {
-          setString = "this." + element + ".cmivalue =\"" + value + "\";";
-        }
-        var result = eval(setString);
-        this.ServerSco.lastError = "0";
-        return "true";
-      }
-      else {
-        // incorrect data type...
-        this.ServerSco.lastError = "405";
-        return "false";
-      }
-    }
-  }
-  else {
-    // not initialized...
-    this.ServerSco.lastError = "301";
-    return "false";
-  }
-}
-
-function LMSGetErrorStringMethod(errorCode) {
-  switch (errorCode) {
-    case "0": { return "No error"; break }
-    case "101": { return "General exception"; break }
-    case "201": { return "Invalid argument error"; break }
-    case "202": { return "Element cannot have children"; break }
-    case "203": { return "Element not an array - Cannot have count"; break }
-    case "301": { return "Not initialized"; break }
-    case "401": { return "Not implemented error"; break }
-    case "402": { return "Invalid set value, element is a keyword"; break }
-    case "403": { return "Element is read only"; break }
-    case "404": { return "Element is write only"; break }
-    case "405": { return "Incorrect Data Type"; break }
-    default: { return ""; break }
-  }
-  // just to be safe...
-  return;
-}
-
-function LMSGetLastErrorMethod() {
-  return this.ServerSco.lastError;
-}
-
-function LMSGetDiagnosticMethod(errorCode) {
-  if (errorCode == "") {
-    errorCode = this.ServerSco.lastError;
-  }
-  switch (errorCode) {
-    case "0": { return "No error. No errors were encountered. Successful API call."; break }
-    case "101": { return "General exception. An unexpected error was encountered."; break }
-    case "201": { return "Invalid argument error. A call was made to a DataModel element that does not exist."; break }
-    case "202": { return "Element cannot have children. A call was made to an Element that does not support _children"; break }
-    case "203": { return "Element is not an array.  Cannot have count. A call was made to an Element that does not support _count."; break }
-    case "301": { return "Not initialized. The SCO has not yet been initialized.  It needs to call LMSInitialize() first."; break }
-    case "401": { return "Not implemented error.  A call was made to a DataModel element that is not supported."; break }
-    case "402": { return "Invalid set value, element is a keyword.  Keyword values cannot be changed"; break }
-    case "403": { return "Element is read only.  A call was made to set the value of a read-only element."; break }
-    case "404": { return "Element is write only.  A call was made to get the value of a write-only element."; break }
-    case "405": { return "Incorrect Data Type.  The syntax of a call to change an element was incorrect."; break }
-    default: { return ""; break }
-  }
-}
-
-/*
-* --------------------------------------------------------------------------------------------------
-*	Datatype and vocabulary checking
-* --------------------------------------------------------------------------------------------------
-*/
-
-/*
-* Method to check the datatype and vocabulary of an element
-* returns true or false...
-*/
-function scoCheckDataTypeAndVocab(element, value, datatype) {
-  switch (datatype) {
-    case "CMIBlank": { return checkCMIBlank(value); break }
-    case "CMIBoolean": { return checkCMIBoolean(value); break }
-    case "CMIDecimal": { return checkCMIDecimal(value); break }
-    case "CMIFeedback": { return checkCMIFeedback(element, value); break }
-    case "CMIIdentifier": { return checkCMIIdentifier(value); break }
-    case "CMIInteger": { return checkCMIInteger(value); break }
-    case "CMISInteger": { return checkCMISInteger(element, value); break }
-    case "CMIString255": { return checkCMIString255(value); break }
-    case "CMIString4096": { return checkCMIString4096(value); break }
-    case "CMITime": { return checkCMITime(value); break }
-    case "CMITimespan": { return checkCMITimespan(value); break }
-    case "CMIVocabularyCredit": { return checkCMIVocabularyCredit(value); break }
-    case "CMIVocabularyStatus": { return checkCMIVocabularyStatus(element, value); break }
-    case "CMIVocabularyEntry": { return checkCMIVocabularyEntry(value); break }
-    case "CMIVocabularyMode": { return checkCMIVocabularyMode(value); break }
-    case "CMIVocabularyExit": { return checkCMIVocabularyExit(value); break }
-    case "CMIVocabularyTimeLimitAction": { return checkCMIVocabularyTimeLimitAction(value); break }
-    case "CMIVocabularyInteraction": { return checkCMIVocabularyInteraction(value); break }
-    case "CMIVocabularyResult": { return checkCMIVocabularyResult(value); break }
-    case "CMIDecimalOrCMIBlank": { return checkCMIDecimalOrCMIBlank(value); break }
-    default: { return "true"; break }
-  }
-}
-
-function checkCMIDecimalOrCMIBlank(value) {
-
-  var isBlank = checkCMIBlank(value);
-  var isCMIDecimal = checkCMIDecimal(value);
-  if (isBlank == "true" || isCMIDecimal == "true") {
-    if (value > 100 || value < 0) {
-      return "false";
-    }
-    else {
-      return "true";
-    }
-  } else {
-    return "false";
-  }
-}
-
-function checkCMIVocabularyResult(value) {
-  var ans = checkCMIDecimal(value);
-  if (ans == "true") {
-    return "true";
-  }
-  if (value == "correct" || value == "wrong" ||
-    value == "unanticipated" || value == "neutral") {
-    return "true";
-  }
-  else {
-    return "false";
-  }
-}
-
-
-function checkCMIVocabularyInteraction(value) {
-  if (value == "true-false" || value == "choice" ||
-    value == "fill-in" || value == "matching" ||
-    value == "performance" || value == "likert" ||
-    value == "sequencing" || value == "numeric") {
-    return "true";
-  }
-  else {
-    return "false";
-  }
-}
-
-function checkCMIVocabularyTimeLimitAction(value) {
-  if (value == "exit,message" || value == "exit,no message" ||
-    value == "continue,message" || value == "continue,no message") {
-    return "true";
-  }
-  else {
-    return "false";
-  }
-}
-
-function checkCMIVocabularyExit(value) {
-  if (value == "time-out" || value == "suspend" ||
-    value == "logout" || value == "") {
-    return "true";
-  }
-  else {
-    return "false";
-  }
-}
-
-function checkCMIVocabularyMode(value) {
-  if (value == "normal" || value == "review" || value == "browse") {
-    return "true";
-  }
-  else {
-    return "false";
-  }
-}
-
-function checkCMIVocabularyEntry(value) {
-  if (value == "ab-initio" || value == "resume" || value == "") {
-    return "true";
-  }
-  else {
-    return "false";
-  }
-}
-
-function checkCMIVocabularyStatus(element, value) {
-  // sco cannot set lesson_status to not attempted
-  if (element == "cmi.core.lesson_status" && value == "not attempted") {
-    return false;
-  }
-  if (value == "passed" || value == "completed" ||
-    value == "failed" || value == "incomplete" ||
-    value == "browsed" || value == "not attempted") {
-    return "true";
-  }
-  else {
-    return "false";
-  }
-}
-
-function checkCMIVocabularyCredit(value) {
-  if (value == "credit" || value == "no-credit") {
-    return "true";
-  }
-  else {
-    return "false";
-  }
-}
-
-
-function checkCMITimespan(value) {
-  // must have some colons...
-  if (value.indexOf(":") == -1) {
-    return "false";
-  }
-  // must contain at least 2 colons, giving 3 array elements...
-  var cmiArray = value.split(":");
-  if (cmiArray.length < 3) {
-    return "false";
-  }
-  // hours must be 4,3 or 2 digits...
-  if (cmiArray[0].length < 2 || cmiArray[0].length > 4) {
-    return "false";
-  }
-  // minutes must be 2 digits...
-  if (cmiArray[1].length != 2) {
-    return "false";
-  }
-  // must be numbers...
-  if (isNaN(cmiArray[0]) || isNaN(cmiArray[1]) || isNaN(cmiArray[2])) {
-    return "false";
-  }
-  // 24hr clock for hours...
-  if (parseInt(cmiArray[0]) < 0) {
-    return "false";
-  }
-  // parse minutes
-  // NOTE: Seems illegal to have 99 minutes, but ADL 1.2
-  // SCORM Conformance Test Suite does this? I'll do the same...
-  // if (parseInt(cmiArray[1]) < 0 || parseInt(cmiArray[1]) > 59){
-  if (parseInt(cmiArray[1]) < 0) {
-    return "false";
-  }
-  // check for decimal place...
-  if (cmiArray[2].indexOf(".") != -1) {
-    var cmiDecArray = cmiArray[2].split(".");
-    // can only be 2 values here...
-    if (cmiDecArray.length != 2) {
-      return "false";
-    }
-    // again they must be numbers...
-    if (isNaN(cmiDecArray[0]) || isNaN(cmiDecArray[1])) {
-      return "false";
-    }
-    // only two digits allowed for seconds...
-    if (cmiDecArray[0].length != 2) {
-      return "false";
-    }
-    // make sure there is less than 60 seconds here...
-    if (parseInt(cmiDecArray[0]) > 59) {
-      return "false";
-    }
-    // only one or two digits allowed for milliseconds...
-    if (cmiDecArray[1].length > 2) {
-      return "false";
-    }
-  }
-  else {
-    // no dots, so must be no milliseconds...
-    // make sure length is 2
-    if (cmiArray[2].length != 2) {
-      return "false";
-    }
-    // make sure there is less than 60 seconds here...
-    if (parseInt(cmiArray[2]) > 59) {
-      return "false";
-    }
-  }
-  // got up to here, then value okay...
-  return "true";
-}
-
-function checkCMITime(value) {
-
-  // must have some colons...
-  if (value.indexOf(":") == -1) {
-    return "false";
-  }
-  // must contain at least 2 colons, giving 3 array elements...
-  var cmiArray = value.split(":");
-  if (cmiArray.length < 3) {
-    return "false";
-  }
-  // hours & minutes must be 2 digits...
-  if (cmiArray[0].length != 2 || cmiArray[1].length != 2) {
-    return "false";
-  }
-  // must be numbers...
-  if (isNaN(cmiArray[0]) || isNaN(cmiArray[1]) || isNaN(cmiArray[2])) {
-    return "false";
-  }
-  // 24hr clock for hours...
-  if (parseInt(cmiArray[0]) < 0 || parseInt(cmiArray[0]) > 23) {
-    return "false";
-  }
-  // parse minutes
-  if (parseInt(cmiArray[1]) < 0 || parseInt(cmiArray[1]) > 59) {
-    return "false";
-  }
-  // check for decimal place...
-  if (cmiArray[2].indexOf(".") != -1) {
-    var cmiDecArray = cmiArray[2].split(".");
-    // can only be 2 values here...
-    if (cmiDecArray.length != 2) {
-      return "false";
-    }
-    // again they must be numbers...
-    if (isNaN(cmiDecArray[0]) || isNaN(cmiDecArray[1])) {
-      return "false";
-    }
-    // only two digits allowed for seconds...
-    if (cmiDecArray[0].length != 2) {
-      return "false";
-    }
-    // make sure there is less than 60 seconds here...
-    if (parseInt(cmiDecArray[0]) > 59) {
-      return "false";
-    }
-    // only one or two digits allowed for milliseconds...
-    if (cmiDecArray[1].length > 2) {
-      return "false";
-    }
-  }
-  else {
-    // no dots, so must be no milliseconds...
-    // make sure length is 2
-    if (cmiArray[2].length != 2) {
-      return "false";
-    }
-    // make sure there is less than 60 seconds here...
-    if (parseInt(cmiArray[2]) > 59) {
-      return "false";
-    }
-  }
-  // got up to here, then value okay...
-  return "true";
-}
-
-
-function checkCMIString4096(value) {
-  if (value.length <= 4096) {
-    return "true";
-  }
-  else {
-    return "false";
-  }
-}
-
-function checkCMIString255(value) {
-  if (value.length <= 255) {
-    return "true";
-  }
-  else {
-    return "false";
-  }
-}
-
-function checkCMISInteger(element, value) {
-  if (isNaN(value)) {
-    return "false";
-  }
-  else {
-    var num = parseInt(value);
-    if (num >= -32768 && num <= 32768) {
-      if (element == "cmi.student_preference.audio") {
-        if (num < -1 || num > 100) {
-          return "false";
-        }
-        else {
-          return "true";
-        }
-      }
-      else if (element == "cmi.student_preference.speed") {
-        if (num < -100 || num > 100) {
-          return "false";
-        }
-        else {
-          return "true";
-        }
-      }
-      else if (element == "cmi.student_preference.text") {
-        if (num < -1 || num > 1) {
-          return "false";
-        }
-        else {
-          return "true";
-        }
-      }
-      else {
-        return "true";
-      }
-    }
-    else {
-      return "false";
-    }
-  }
-}
-
-function checkCMIInteger(value) {
-  if (isNaN(value)) {
-    return "false";
-  }
-  else {
-    var num = parseInt(value);
-    if (num >= 0 && num <= 65536) {
-      return "true";
-    }
-    else {
-      return "false";
-    }
-  }
-}
-
-function checkCMIIdentifier(value) {
-  var SPACE = ' ';
-  var TAB = '\t';
-  var CRETURN = '\r';
-  var LINEFEED = '\n';
-  if (value.indexOf(SPACE) == -1 && value.indexOf(TAB) == -1
-    && value.indexOf(CRETURN) == -1 && value.indexOf(LINEFEED) == -1) {
-    if (value.length > 0 && value.length < 256) {
-      return "true";
-    }
-    else {
-      return "false";
-    }
-  }
-  else {
-    return "false";
-  }
-}
-
-
-
-function checkCMIFeedback(element, value) {
-  // allow user to edit var at top of page to disable this checking...
-  if (looseChecking == "false") {
-    // need to find the type (if its set)
+    // ELSE CHECK THAT THE ELEMENT IS VALID AND HAS AT LEAST 3 PARAMS
     var cmiArray = element.split(".");
+    if (cmiArray.length < 3) {
+      this.API.ServerSco.lastError = "201";
+      return "false";
+    }
+
+    // IF 3RD ARG IS NOT A NUMBER THEN THROW ERROR
     // need to check cmiArray[2] to see if its a number
     if (isNaN(cmiArray[2])) {
-      // this should be a number. However, Err on the side of caution...
+      this.API.ServerSco.lastError = "401";
       return "false";
     }
-    // make sure that this interaction already exists...
-    var res = API.LMSGetValue("cmi.interactions._count");
-    if (parseInt(cmiArray[2]) >= parseInt(res)) {
-      // then this interaction does not exist.. However, Err on the side of caution...
-      return "false";
-    }
-    // Up to here? - then get the type
-    var theType = "cmi.interactions.intArray(" + cmiArray[2] + ").type";
-    elementObj = eval("API." + theType + ";");
-    if (elementObj == null) {
-      return "false";
-    }
-    datatype = elementObj.cmivalue;
 
-    if (datatype == null) {
+
+    var theCount = this.API.cmi.objectives._count.cmivalue;
+
+    // IF ITS A NUMBER MAKE SURE ITS IN THE ARRAY BOUNDS
+    if (cmiArray[2] > theCount || cmiArray[2] < 0) {
+      // call to array is out of bounds
+      this.API.ServerSco.lastError = "201";
+      return "false";
+    } else if (cmiArray[2] == theCount || cmiArray[2] < theCount) {
+
+      //create a new one
+      var existingObjectiveHandle = this.API.cmi.objectives.objArray(cmiArray[2]);
+      if (existingObjectiveHandle == null) {
+        this.API.ServerSco.lastError = "101";
+        return "false";
+      } else {
+        // we need to see if the call is asking for a valid element under cmi.objectives.n
+        // we can trust the element parameter now to call the following...
+        var subelementstr = "existingObjectiveHandle";
+        for (var i = 3; i < cmiArray.length; i++) {
+          subelementstr = subelementstr + "." + cmiArray[i];
+        }
+
+        var objTest = eval(subelementstr);
+        if (objTest == null) {
+          this.API.ServerSco.lastError = "201";
+          return "false";
+
+        }
+
+        var subelementstrWithoutLeaf = subelementstr;
+        var subelementstr = subelementstr + ".cmireadStatus;";
+        var res = eval(subelementstr);
+        if (res == null) {
+          this.API.ServerSco.lastError = "101";
+          return "false";
+        } else {
+          if (res == "readonly") {
+            this.API.ServerSco.lastError = "403";
+            return "false";
+          } else {
+
+            // check the datatype and vocabulary...
+            var datatype = objTest.cmidatatype;
+            res = this.API.ServerSco.checkDataTypeAndVocab(element, value, datatype);
+
+            if (res == "true") {
+              // correct datatype...
+              // WE CAN NOW TRY TO SET THE FULL OBJECT REFERENCE
+              var strleafval = "objTest.cmivalue =\"" + value + "\";";
+              var leafVal = eval(strleafval);
+              if (leafVal == null) {
+                // IT FAILED AT THE FINAL HURDLE...
+                this.API.ServerSco.lastError = "201";
+                return "false";
+              } else {
+                this.API.ServerSco.lastError = "0";
+                return "true";
+              }
+            } else {
+              // incorrect data type...
+              this.API.ServerSco.lastError = "405";
+              return "false";
+            }
+
+          }
+        }
+      }
+    }
+  }
+
+  dealWithSettingInteractions(element, value) {
+    //  _CHILDREN ARE READONLY
+    if (element == "cmi.interactions._children") {
+      this.API.ServerSco.lastError = "402";
       return "false";
     }
-    // its not null, so it equals something, so...
+
+    //  _COUNT IS READ ONLY
+        if (element == "cmi.interactions._count") {
+      this.API.ServerSco.lastError = "402";
+      return "false";
+    }
+
+    // ELSE CHECK THAT THE ELEMENT IS VALID AND HAS AT LEAST 3 PARAMS, DOESNT HAVE
+    // MORE THAN 6 PARAMS  - ALL ILLEGAL
+    var cmiArray = element.split(".");
+    if (cmiArray.length < 3 || cmiArray.length > 6) {
+      this.API.ServerSco.lastError = "201";
+      return "false";
+    }
+
+    var theCount = this.API.cmi.interactions._count.cmivalue;
+
+    // IF 3RD ARG IS NOT A NUMBER THEN THROW ERROR
+    // need to check cmiArray[2] to see if its a number
+    if (isNaN(cmiArray[2])) {
+      this.API.ServerSco.lastError = "401";
+      return "false";
+    }
+
+    var theCount = this.API.cmi.interactions._count.cmivalue;
+
+    // IF ITS A NUMBER MAKE SURE ITS IN THE ARRAY BOUNDS
+    if (cmiArray[2] > theCount || cmiArray[2] < 0) {
+      // call to array is out of bounds
+      this.API.ServerSco.lastError = "201";
+      return "false";
+    } else if (cmiArray[2] <= theCount) {
+
+      //create a new one or get existing object
+      var existingObjectiveHandle = this.API.cmi.interactions.intArray(cmiArray[2]);
+      if (existingObjectiveHandle == null) {
+        this.API.ServerSco.lastError = "101";
+        return "false";
+      } else {
+        // we now have a reference to cmi.interactions.n
+        // if theres 4 bits to the element path then try to see if object exists
+
+        if (cmiArray.length == 4) {
+          var strleaf = "existingObjectiveHandle." + cmiArray[3];
+          var doesLeafExist = eval(strleaf);
+          if (doesLeafExist == null) {
+            this.API.ServerSco.lastError = "201";
+            return "false";
+          } else {
+
+            // NEXT CHECK THAT THIS ELEMENT IS NOT READONLY
+            var strleafstatus = "doesLeafExist.cmireadStatus";
+            var leafstatus = eval(strleafstatus);
+            if (leafstatus == "readonly") {
+              this.API.ServerSco.lastError = "403";
+              return "false";
+            }
+
+            // check the datatype and vocabulary...
+            var datatype = doesLeafExist.cmidatatype;
+            var res = this.API.ServerSco.checkDataTypeAndVocab(element, value, datatype);
+            if (res == "true") {
+              // correct datatype...
+              // WE CAN NOW TRY TO SET THE FULL OBJECT REFERENCE
+              var strleafval = "doesLeafExist.cmivalue =\"" + value + "\";";
+              var leafVal = eval(strleafval);
+              if (leafVal == null) {
+                // IT FAILED AT THE FINAL HURDLE...
+                this.API.ServerSco.lastError = "201";
+                return "false";
+              } else {
+                this.API.ServerSco.lastError = "0";
+                return "true";
+              }
+            } else {
+              // incorrect data type...
+              this.API.ServerSco.lastError = "405";
+              return "false";
+            }
+          }
+        }
+        if (cmiArray.length == 5) {
+          // check object exists
+          var strbranch = "existingObjectiveHandle." + cmiArray[3] + ";";
+          var doesLeafExist = eval(strbranch);
+          if (doesLeafExist == null) {
+            this.API.ServerSco.lastError = "201";
+            return "false";
+          }
+
+          // check final object exists in the array list...
+          var nextstrbranch = "existingObjectiveHandle." + cmiArray[3] + "." + cmiArray[4] + ";";
+          var doesLeafExist = eval(nextstrbranch);
+          if (doesLeafExist == null) {
+            this.API.ServerSco.lastError = "201";
+            return "false";
+          }
+
+          // check for write only
+          var strread = "existingObjectiveHandle." + cmiArray[3] + "." + cmiArray[4] + ".cmireadStatus;";
+          var isWriteOnly = eval(strread);
+          if (isWriteOnly == "readonly") {
+            this.API.ServerSco.lastError = "403";
+            return "false";
+          }
+
+          // see if value exists
+          strleaf = "existingObjectiveHandle." + cmiArray[3] + "." + cmiArray[4] + ".cmivalue;";
+          var doesLeafExist = eval(strleaf);
+          if (doesLeafExist == null) {
+            this.API.ServerSco.lastError = "201";
+            return "false";
+          } else {
+            // check the datatype and vocabulary...
+            var datatype = doesLeafExist.cmidatatype;
+            res = this.API.ServerSco.checkDataTypeAndVocab(element, value, datatype);
+            if (res == "true") {
+              // correct datatype...
+              // WE CAN NOW TRY TO SET THE FULL OBJECT REFERENCE
+              var strleafval = "doesLeafExist.cmivalue =\"" + value + "\";";
+              var leafVal = eval(strleafval);
+              if (leafVal == null) {
+                // IT FAILED AT THE FINAL HURDLE...
+                this.API.ServerSco.lastError = "201";
+                return "false";
+              } else {
+                this.API.ServerSco.lastError = "0";
+                return "true";
+              }
+            } else {
+              // incorrect data type...
+              this.API.ServerSco.lastError = "405";
+              return "false";
+            }
+          }
+        }
+        if (cmiArray.length == 6) {
+          // check object exists
+          strbranch = "existingObjectiveHandle." + cmiArray[3];
+          var doesBranchExist = eval(strbranch);
+          if (doesBranchExist == null) {
+            this.API.ServerSco.lastError = "201";
+            return "false";
+          }
+          // The fifth argument should be an array reference, so do some checking...
+
+          // IF 5TH ARG IS NOT A NUMBER THEN THROW ERROR
+          // need to check cmiArray[4] to see if its a number
+          if (isNaN(cmiArray[4])) {
+            this.API.ServerSco.lastError = "401";
+            return "false";
+          }
+
+          // check to see if this element has a _count
+          // If it hasn't we'll have to throw an error here
+          // because we need the correct array index for array #2...
+          var theCount: any = "existingObjectiveHandle." + cmiArray[3] + "._count.cmivalue;";
+          var hasCount = eval(theCount);
+          // CANT FIND _COUNT FOR THIS ELEMENT, SO THROW AN ERROR...
+          if (hasCount == null) {
+            this.API.ServerSco.lastError = "201";
+            return "false";
+          }
+          // next need to check to see if array ref is in array bounds
+          if (cmiArray[4] > hasCount || cmiArray[4] < 0) {
+            // call to array is out of bounds
+            this.API.ServerSco.lastError = "201";
+            return "false";
+          }
+
+          // make sure that array index 4 is either 'objectives' or 'correct_responses'
+          if (cmiArray[3] == "objectives") {
+            // next check that there is an object here at this array index...
+            var arrayIndex2Check = eval("existingObjectiveHandle." + cmiArray[3] + ".objectivesInteractionArray(" + cmiArray[4] + ")");
+            // check for null
+            if (arrayIndex2Check == null) {
+              this.API.ServerSco.lastError = "201";
+              return "false";
+            } else {
+              // next check that the last element is valid...
+              var finalObjectCheck = eval("arrayIndex2Check." + cmiArray[5]);
+              if (finalObjectCheck == null) {
+                this.API.ServerSco.lastError = "201";
+                return "false";
+              } else {
+                // call must be to a valid element in the model so...
+                // check it for readonly...
+                var isWriteonly = eval("finalObjectCheck.cmireadStatus");
+                if (isWriteonly == "readonly") {
+                  this.API.ServerSco.lastError = "403";
+                  return "false";
+                } else {
+
+                  // check the datatype and vocabulary...
+                  var datatype = finalObjectCheck.cmidatatype;
+                  res = this.API.ServerSco.checkDataTypeAndVocab(element, value, datatype);
+                  if (res == "true") {
+                    // correct datatype...
+                    // WE CAN NOW TRY TO SET THE FULL OBJECT REFERENCE
+                    var strleafval = "finalObjectCheck.cmivalue =\"" + value + "\";";
+                    var leafVal = eval(strleafval);
+                    if (leafVal == null) {
+                      // IT FAILED AT THE FINAL HURDLE...
+                      this.API.ServerSco.lastError = "201";
+                      return "false";
+                    } else {
+                      this.API.ServerSco.lastError = "0";
+                      return "true";
+                    }
+                  } else {
+                    // incorrect data type...
+                    this.API.ServerSco.lastError = "405";
+                    return "false";
+                  }
+                }
+              }
+            }
+          } else if (cmiArray[3] == "correct_responses") {
+            // next check that there is an object here at this array index...
+            var arrayIndex2Check = eval("existingObjectiveHandle." + cmiArray[3] + ".correctResponsesInteractionArray(" + cmiArray[4] + ")");
+            // check for null
+            if (arrayIndex2Check == null) {
+              this.API.ServerSco.lastError = "201";
+              return "false";
+            } else {
+              // next check that the last element is valid...
+              finalObjectCheck = eval("arrayIndex2Check." + cmiArray[5]);
+              if (finalObjectCheck == null) {
+                this.API.ServerSco.lastError = "201";
+                return "false";
+              } else {
+                // call must be to a valid element in the model so...
+                // check it for readonly...
+                isWriteonly = eval("finalObjectCheck.cmireadStatus");
+                if (isWriteonly == "readonly") {
+                  this.API.ServerSco.lastError = "403";
+                  return "false";
+                } else {
+                  // check the datatype and vocabulary...
+                  var datatype = finalObjectCheck.cmidatatype;
+                  res = this.API.ServerSco.checkDataTypeAndVocab(element, value, datatype);
+                  if (res == "true") {
+                    // correct datatype...
+                    // WE CAN NOW TRY TO SET THE FULL OBJECT REFERENCE
+                    var strleafval = "finalObjectCheck.cmivalue =\"" + value + "\";";
+                    var leafVal = eval(strleafval);
+                    if (leafVal == null) {
+                      // IT FAILED AT THE FINAL HURDLE...
+                      this.API.ServerSco.lastError = "201";
+                      return "false";
+                    } else {
+                      this.API.ServerSco.lastError = "0";
+                      return "true";
+                    }
+                  } else {
+                    // incorrect data type...
+                    this.API.ServerSco.lastError = "405";
+                    return "false";
+                  }
+
+                }
+              }
+            }
+          } else {
+            // throw an error because 4th arg was not either
+            // objectives or correct_responses
+            this.API.ServerSco.lastError = "201";
+            return "false";
+          }
+
+        }
+
+      }
+    }
+
+  }
+
+  /*
+   * LMSGetValue.  Method to allow sco to read/access CMI datamodel elements
+   */
+  LMSGetValueMethod(element) {
+    var ServerSco: any = {};
+    if (ServerSco.isInitialized == "true") {
+      var invalid = "false";
+      var cannotHaveChildren = "false";
+      var isNotAnArray = "false";
+
+      // this checks to make sure there is at least one dot in the value
+      if (element.indexOf(".") == -1) {
+        invalid = "true";
+      }
+
+      // dont bother doing this if we have already found an error...
+      if (invalid != "true") {
+        // we then loop around the children, making sure they exist one, by one...
+        var cmiArray = element.split(".");
+        var teststring = "this";
+        for (var i = 0; i < cmiArray.length; i++) {
+          var doesExist = eval(teststring + "." + cmiArray[i] + ";");
+          if (doesExist == null) {
+            invalid = "true";
+            // check for invalid _children call
+            if (cmiArray[i] == "_children") {
+              cannotHaveChildren = "true";
+            }
+            // check for invalid _count call
+            if (cmiArray[i] == "_count") {
+              isNotAnArray = "true";
+            }
+            break;
+          } else {
+            teststring = teststring + "." + cmiArray[i];
+            // WE NEED TO TRAP THE OBJECTIVES...
+            if (teststring == "this.cmi.objectives") {
+              return this.dealWithGettingObjectives(element);
+            }
+            // WE NEED TO TRAP THE INTERACTIONS...
+            if (teststring == "this.cmi.interactions") {
+              return this.dealWithGettingInteractions(element);
+            }
+          }
+        }
+      }
+
+      // user tried to call _count on a non-array value
+      if (isNotAnArray == "true") {
+        ServerSco.lastError = "203";
+        return "";
+      }
+
+      // user tried to call _children on an element that didnt support it
+      if (cannotHaveChildren == "true") {
+        ServerSco.lastError = "202";
+        return "";
+      }
+
+      // if there was some kind of error found above, then...
+      if (invalid == "true") {
+        ServerSco.lastError = "401";
+        return "";
+      } else {
+        // otherwise its a valid model reference...
+        var elementObj = eval("this." + element);
+      }
+
+      // next we will check to make sure this element is not writeonly..
+      if (elementObj.cmireadStatus == "writeonly") {
+        ServerSco.lastError = "404";
+        return "";
+      } else {
+        // its okay and user can read it...
+        ServerSco.lastError = "0";
+        return elementObj.cmivalue;
+      }
+    } else {
+      // not initialized...
+      ServerSco.lastError = "301";
+      return "";
+    }
+  }
+
+
+
+  /*
+   * LMSSetValue.  Method to allow sco to write data to CMI datamodel
+   */
+  LMSSetValueMethod(element, value) {
+    value = unescape(value);
+    var ServerSco: any = {};
+    if (ServerSco.isInitialized == "true") {
+      var invalid = "false";
+      var cannotHaveChildren = "false";
+      var isNotAnArray = "false";
+
+      // check for sco trying to set _children & _count
+      //element is a keyword, cannot set...
+      if (element.indexOf("._children") != -1 || element.indexOf("._count") != -1) {
+        ServerSco.lastError = "402";
+        return "false";
+      }
+
+      // this checks to make sure there is at least one dot in the value
+      // if it doesnt, then it cant be a valid CMI model reference
+      if (element.indexOf(".") == -1) {
+        invalid = "true";
+      }
+
+      // dont bother doing this if we have already found an error...
+      if (invalid != "true") {
+        // we then loop around the children, making sure they exist one, by one...
+        var cmiArray = element.split(".");
+        var teststring = "this";
+        for (var i = 0; i < cmiArray.length; i++) {
+          var doesExist = eval(teststring + "." + cmiArray[i] + ";");
+          if (doesExist == null) {
+            invalid = "true";
+            // check for invalid _children call
+            if (cmiArray[i] == "_children") {
+              cannotHaveChildren = "true";
+            }
+            // check for invalid _count call
+            if (cmiArray[i] == "_count") {
+              isNotAnArray = "true";
+            }
+            break;
+          } else {
+            teststring = teststring + "." + cmiArray[i];
+            // WE NEED TO TRAP THE OBJECTIVES...
+            if (teststring == "this.cmi.objectives") {
+              return this.dealWithSettingObjectives(element, value);
+            }
+            // WE NEED TO TRAP THE INTERACTIONS...
+            if (teststring == "this.cmi.interactions") {
+              return this.dealWithSettingInteractions(element, value);
+            }
+          }
+        }
+      }
+
+      // user tried to call _count on a non-array value
+      if (isNotAnArray == "true") {
+        ServerSco.lastError = "203";
+        return "false";
+      }
+
+      // user tried to call _children on an element that didnt support it
+      if (cannotHaveChildren == "true") {
+        ServerSco.lastError = "202";
+        return "false";
+      }
+
+      // if there was some kind of error found above, then...
+      if (invalid == "true") {
+        ServerSco.lastError = "401";
+        return "false";
+      } else {
+        // otherwise its a valid model reference...
+        var elementObj = eval("this." + element);
+      }
+
+      // check that its writeable...
+      if (elementObj.cmireadStatus == "readonly") {
+        ServerSco.lastError = "403";
+        return "false";
+      } else {
+        // check the datatype and vocabulary...
+        var datatype = elementObj.cmidatatype;
+        var res = ServerSco.checkDataTypeAndVocab(element, value, datatype);
+        if (res == "true") {
+          // correct datatype...
+          // cmi.comments need to be appended...
+          if (element == "cmi.comments") {
+            var pre = this.LMSGetValueMethod("cmi.comments");
+            var setString = "this." + element + ".cmivalue =\"" + pre + value + "\";";
+          } else {
+            setString = "this." + element + ".cmivalue =\"" + value + "\";";
+          }
+          var result = eval(setString);
+          ServerSco.lastError = "0";
+          return "true";
+        } else {
+          // incorrect data type...
+          ServerSco.lastError = "405";
+          return "false";
+        }
+      }
+    } else {
+      // not initialized...
+      ServerSco.lastError = "301";
+      return "false";
+    }
+  }
+
+  LMSGetErrorStringMethod(errorCode) {
+    switch (errorCode) {
+      case "0":
+        {
+          return "No error";
+          break
+        }
+      case "101":
+        {
+          return "General exception";
+          break
+        }
+      case "201":
+        {
+          return "Invalid argument error";
+          break
+        }
+      case "202":
+        {
+          return "Element cannot have children";
+          break
+        }
+      case "203":
+        {
+          return "Element not an array - Cannot have count";
+          break
+        }
+      case "301":
+        {
+          return "Not initialized";
+          break
+        }
+      case "401":
+        {
+          return "Not implemented error";
+          break
+        }
+      case "402":
+        {
+          return "Invalid set value, element is a keyword";
+          break
+        }
+      case "403":
+        {
+          return "Element is read only";
+          break
+        }
+      case "404":
+        {
+          return "Element is write only";
+          break
+        }
+      case "405":
+        {
+          return "Incorrect Data Type";
+          break
+        }
+      default:
+        {
+          return "";
+          break
+        }
+    }
+    // just to be safe...
+    return;
+  }
+
+  LMSGetLastErrorMethod() {
+    var ServerSco: any = {};
+    return ServerSco.lastError;
+  }
+
+  LMSGetDiagnosticMethod(errorCode) {
+    var ServerSco: any = {};
+    if (errorCode == "") {
+      errorCode = ServerSco.lastError;
+    }
+    switch (errorCode) {
+      case "0":
+        {
+          return "No error. No errors were encountered. Successful API call.";
+          break
+        }
+      case "101":
+        {
+          return "General exception. An unexpected error was encountered.";
+          break
+        }
+      case "201":
+        {
+          return "Invalid argument error. A call was made to a DataModel element that does not exist.";
+          break
+        }
+      case "202":
+        {
+          return "Element cannot have children. A call was made to an Element that does not support _children";
+          break
+        }
+      case "203":
+        {
+          return "Element is not an array.  Cannot have count. A call was made to an Element that does not support _count.";
+          break
+        }
+      case "301":
+        {
+          return "Not initialized. The SCO has not yet been initialized.  It needs to call LMSInitialize() first.";
+          break
+        }
+      case "401":
+        {
+          return "Not implemented error.  A call was made to a DataModel element that is not supported.";
+          break
+        }
+      case "402":
+        {
+          return "Invalid set value, element is a keyword.  Keyword values cannot be changed";
+          break
+        }
+      case "403":
+        {
+          return "Element is read only.  A call was made to set the value of a read-only element.";
+          break
+        }
+      case "404":
+        {
+          return "Element is write only.  A call was made to get the value of a write-only element.";
+          break
+        }
+      case "405":
+        {
+          return "Incorrect Data Type.  The syntax of a call to change an element was incorrect.";
+          break
+        }
+      default:
+        {
+          return "";
+          break
+        }
+    }
+  }
+
+  /*
+   * --------------------------------------------------------------------------------------------------
+   *	Datatype and vocabulary checking
+   * --------------------------------------------------------------------------------------------------
+   */
+
+  checkCMIDecimalOrCMIBlank(value) {
+
+    var isBlank = this.checkCMIBlank(value);
+    var isCMIDecimal = this.checkCMIDecimal(value);
+    if (isBlank == "true" || isCMIDecimal == "true") {
+      if (value > 100 || value < 0) {
+        return "false";
+      } else {
+        return "true";
+      }
+    } else {
+      return "false";
+    }
+  }
+
+  checkCMIVocabularyResult(value) {
+    var ans = this.checkCMIDecimal(value);
+    if (ans == "true") {
+      return "true";
+    }
+    if (value == "correct" || value == "wrong" ||
+      value == "unanticipated" || value == "neutral") {
+      return "true";
+    } else {
+      return "false";
+    }
+  }
+
+
+  checkCMIVocabularyInteraction(value) {
+    if (value == "true-false" || value == "choice" ||
+      value == "fill-in" || value == "matching" ||
+      value == "performance" || value == "likert" ||
+      value == "sequencing" || value == "numeric") {
+      return "true";
+    } else {
+      return "false";
+    }
+  }
+
+  checkCMIVocabularyTimeLimitAction(value) {
+    if (value == "exit,message" || value == "exit,no message" ||
+      value == "continue,message" || value == "continue,no message") {
+      return "true";
+    } else {
+      return "false";
+    }
+  }
+
+  checkCMIVocabularyExit(value) {
+    if (value == "time-out" || value == "suspend" ||
+      value == "logout" || value == "") {
+      return "true";
+    } else {
+      return "false";
+    }
+  }
+
+  checkCMIVocabularyMode(value) {
+    if (value == "normal" || value == "review" || value == "browse") {
+      return "true";
+    } else {
+      return "false";
+    }
+  }
+
+  checkCMIVocabularyEntry(value) {
+    if (value == "ab-initio" || value == "resume" || value == "") {
+      return "true";
+    } else {
+      return "false";
+    }
+  }
+
+  checkCMIVocabularyStatus(element, value) {
+    // sco cannot set lesson_status to not attempted
+    if (element == "cmi.core.lesson_status" && value == "not attempted") {
+      return false;
+    }
+    if (value == "passed" || value == "completed" ||
+      value == "failed" || value == "incomplete" ||
+      value == "browsed" || value == "not attempted") {
+      return "true";
+    } else {
+      return "false";
+    }
+  }
+
+  checkCMIVocabularyCredit(value) {
+    if (value == "credit" || value == "no-credit") {
+      return "true";
+    } else {
+      return "false";
+    }
+  }
+
+
+  checkCMITimespan(value) {
+    // must have some colons...
+    if (value.indexOf(":") == -1) {
+      return "false";
+    }
+    // must contain at least 2 colons, giving 3 array elements...
+    var cmiArray = value.split(":");
+    if (cmiArray.length < 3) {
+      return "false";
+    }
+    // hours must be 4,3 or 2 digits...
+    if (cmiArray[0].length < 2 || cmiArray[0].length > 4) {
+      return "false";
+    }
+    // minutes must be 2 digits...
+    if (cmiArray[1].length != 2) {
+      return "false";
+    }
+    // must be numbers...
+    if (isNaN(cmiArray[0]) || isNaN(cmiArray[1]) || isNaN(cmiArray[2])) {
+      return "false";
+    }
+    // 24hr clock for hours...
+    if (parseInt(cmiArray[0]) < 0) {
+      return "false";
+    }
+    // parse minutes
+    // NOTE: Seems illegal to have 99 minutes, but ADL 1.2
+    // SCORM Conformance Test Suite does this? I'll do the same...
+    // if (parseInt(cmiArray[1]) < 0 || parseInt(cmiArray[1]) > 59){
+    if (parseInt(cmiArray[1]) < 0) {
+      return "false";
+    }
+    // check for decimal place...
+    if (cmiArray[2].indexOf(".") != -1) {
+      var cmiDecArray = cmiArray[2].split(".");
+      // can only be 2 values here...
+      if (cmiDecArray.length != 2) {
+        return "false";
+      }
+      // again they must be numbers...
+      if (isNaN(cmiDecArray[0]) || isNaN(cmiDecArray[1])) {
+        return "false";
+      }
+      // only two digits allowed for seconds...
+      if (cmiDecArray[0].length != 2) {
+        return "false";
+      }
+      // make sure there is less than 60 seconds here...
+      if (parseInt(cmiDecArray[0]) > 59) {
+        return "false";
+      }
+      // only one or two digits allowed for milliseconds...
+      if (cmiDecArray[1].length > 2) {
+        return "false";
+      }
+    } else {
+      // no dots, so must be no milliseconds...
+      // make sure length is 2
+      if (cmiArray[2].length != 2) {
+        return "false";
+      }
+      // make sure there is less than 60 seconds here...
+      if (parseInt(cmiArray[2]) > 59) {
+        return "false";
+      }
+    }
+    // got up to here, then value okay...
+    return "true";
+  }
+
+  checkCMITime(value) {
+
+    // must have some colons...
+    if (value.indexOf(":") == -1) {
+      return "false";
+    }
+    // must contain at least 2 colons, giving 3 array elements...
+    var cmiArray = value.split(":");
+    if (cmiArray.length < 3) {
+      return "false";
+    }
+    // hours & minutes must be 2 digits...
+    if (cmiArray[0].length != 2 || cmiArray[1].length != 2) {
+      return "false";
+    }
+    // must be numbers...
+    if (isNaN(cmiArray[0]) || isNaN(cmiArray[1]) || isNaN(cmiArray[2])) {
+      return "false";
+    }
+    // 24hr clock for hours...
+    if (parseInt(cmiArray[0]) < 0 || parseInt(cmiArray[0]) > 23) {
+      return "false";
+    }
+    // parse minutes
+    if (parseInt(cmiArray[1]) < 0 || parseInt(cmiArray[1]) > 59) {
+      return "false";
+    }
+    // check for decimal place...
+    if (cmiArray[2].indexOf(".") != -1) {
+      var cmiDecArray = cmiArray[2].split(".");
+      // can only be 2 values here...
+      if (cmiDecArray.length != 2) {
+        return "false";
+      }
+      // again they must be numbers...
+      if (isNaN(cmiDecArray[0]) || isNaN(cmiDecArray[1])) {
+        return "false";
+      }
+      // only two digits allowed for seconds...
+      if (cmiDecArray[0].length != 2) {
+        return "false";
+      }
+      // make sure there is less than 60 seconds here...
+      if (parseInt(cmiDecArray[0]) > 59) {
+        return "false";
+      }
+      // only one or two digits allowed for milliseconds...
+      if (cmiDecArray[1].length > 2) {
+        return "false";
+      }
+    } else {
+      // no dots, so must be no milliseconds...
+      // make sure length is 2
+      if (cmiArray[2].length != 2) {
+        return "false";
+      }
+      // make sure there is less than 60 seconds here...
+      if (parseInt(cmiArray[2]) > 59) {
+        return "false";
+      }
+    }
+    // got up to here, then value okay...
+    return "true";
+  }
+
+
+  checkCMIString4096(value) {
+    if (value.length <= 4096) {
+      return "true";
+    } else {
+      return "false";
+    }
+  }
+
+  checkCMIString255(value) {
+    if (value.length <= 255) {
+      return "true";
+    } else {
+      return "false";
+    }
+  }
+
+  checkCMISInteger(element, value) {
+    if (isNaN(value)) {
+      return "false";
+    } else {
+      var num = parseInt(value);
+      if (num >= -32768 && num <= 32768) {
+        if (element == "cmi.student_preference.audio") {
+          if (num < -1 || num > 100) {
+            return "false";
+          } else {
+            return "true";
+          }
+        } else if (element == "cmi.student_preference.speed") {
+          if (num < -100 || num > 100) {
+            return "false";
+          } else {
+            return "true";
+          }
+        } else if (element == "cmi.student_preference.text") {
+          if (num < -1 || num > 1) {
+            return "false";
+          } else {
+            return "true";
+          }
+        } else {
+          return "true";
+        }
+      } else {
+        return "false";
+      }
+    }
+  }
+
+  checkCMIInteger(value) {
+    if (isNaN(value)) {
+      return "false";
+    } else {
+      var num = parseInt(value);
+      if (num >= 0 && num <= 65536) {
+        return "true";
+      } else {
+        return "false";
+      }
+    }
+  }
+
+  checkCMIIdentifier(value) {
+    var SPACE = ' ';
+    var TAB = '\t';
+    var CRETURN = '\r';
+    var LINEFEED = '\n';
+    if (value.indexOf(SPACE) == -1 && value.indexOf(TAB) == -1 &&
+      value.indexOf(CRETURN) == -1 && value.indexOf(LINEFEED) == -1) {
+      if (value.length > 0 && value.length < 256) {
+        return "true";
+      } else {
+        return "false";
+      }
+    } else {
+      return "false";
+    }
+  }
+
+
+
+  checkCMIFeedback(element, value) {
+    var looseChecking;
+    // allow user to edit var at top of page to disable this checking...
+    if (looseChecking == "false") {
+      // need to find the type (if its set)
+      var cmiArray = element.split(".");
+      // need to check cmiArray[2] to see if its a number
+      if (isNaN(cmiArray[2])) {
+        // this should be a number. However, Err on the side of caution...
+        return "false";
+      }
+      // make sure that this interaction already exists...
+      var res = this.API.LMSGetValue("cmi.interactions._count");
+      if (parseInt(cmiArray[2]) >= parseInt(res)) {
+        // then this interaction does not exist.. However, Err on the side of caution...
+        return "false";
+      }
+      // Up to here? - then get the type
+      var theType = "cmi.interactions.intArray(" + cmiArray[2] + ").type";
+      var elementObj = eval("API." + theType + ";");
+      if (elementObj == null) {
+        return "false";
+      }
+      var datatype = elementObj.cmivalue;
+
+      if (datatype == null) {
+        return "false";
+      }
+      // its not null, so it equals something, so...
+      switch (datatype) {
+        case "true-false":
+          {
+            return this.checkTrueFalse(value);
+            break
+          }
+        case "choice":
+          {
+            return this.checkChoice(value);
+            break
+          }
+        case "fill-in":
+          {
+            return this.checkFillIn(value);
+            break
+          }
+        case "numeric":
+          {
+            return this.checkCMIDecimal(value);
+            break
+          }
+        case "likert":
+          {
+            return this.checkLikert(value);
+            break
+          }
+        case "matching":
+          {
+            return this.checkMatching(value);
+            break
+          }
+        case "performance":
+          {
+            return this.checkCMIString255(value);
+            break
+          }
+        case "sequencing":
+          {
+            return this.checkSequencing(value);
+            break
+          }
+          // if its not been set then we should return false.  That would mean
+          // that a cmi.interaction.n.type MUST have a value and cannot be empty
+        default:
+          {
+            return "false";
+            break
+          }
+      }
+    } else {
+      return "true";
+    }
+
+  }
+
+  checkMatching(value) {
+    // check for n.n
+    var TEST_VAL = /^[a-z,A-Z,0-9]{1}.{1}[a-z,A-Z,0-9]{1}$/;
+    // check for n.n,n.n,n.n etc
+    var TEST_VAL2 = /^[a-z,A-Z,0-9]{1}.{1}[a-z,A-Z,0-9]{1},{1}([a-z,A-Z,0-9]{1}.{1}[a-z,A-Z,0-9]{1},{1})*[a-z,A-Z,0-9]{1}.{1}[a-z,A-Z,0-9]{1}$/;
+    // check for {n.n,n.n,n.n etc }
+    // Bugfix Mozilla firebird didnt like this line below
+    // var TEST_VAL3 = /^{[a-z,A-Z,0-9]{1}.{1}[a-z,A-Z,0-9]{1},{1}([a-z,A-Z,0-9]{1}.{1}[a-z,A-Z,0-9]{1},{1})*[a-z,A-Z,0-9]{1}.{1}[a-z,A-Z,0-9]{1}}$/;
+    var TEST_VAL3 = /^[a-z,A-Z,0-9]{1}.{1}[a-z,A-Z,0-9]{1},{1}([a-z,A-Z,0-9]{1}.{1}[a-z,A-Z,0-9]{1},{1})*[a-z,A-Z,0-9]{1}.{1}[a-z,A-Z,0-9]{1}$/;
+    if (TEST_VAL.test(value)) {
+      return "true";
+    } else if (TEST_VAL2.test(value)) {
+      return "true";
+    } else if (TEST_VAL3.test(value)) {
+      return "true";
+    } else {
+      return "false";
+    }
+  }
+
+
+  checkSequencing(value) {
+
+    // test for single a-z 0-9
+    var TEST_VAL = /^[a-z,A-Z,0-9]{1}$/;
+
+    // test for format 1,2,3,a,b,c
+    var TEST_VAL2 = /^[a-z,A-Z,0-9]{1},{1}([a-z,A-Z,0-9],)*[a-z,A-Z,0-9]{1}$/;
+
+    if (TEST_VAL.test(value)) {
+      return "true";
+    } else if (TEST_VAL2.test(value)) {
+      return "true";
+    } else {
+      return "false";
+    }
+  }
+
+  checkChoice(value) {
+    // test for single a-z 0-9
+    var TEST_VAL = /^[a-z,A-Z,0-9]{1}$/;
+
+    // test for format 1,2,3,a,b,c
+    var TEST_VAL2 = /^[a-z,A-Z,0-9]{1},{1}([a-z,A-Z,0-9],)*[a-z,A-Z,0-9]{1}$/;
+
+    // test for format {1,2,3,a,b,c}
+    // Bugfix Mozilla firebird didnt like this line below
+    //var TEST_VAL3 = /^{[a-z,A-Z,0-9]{1},{1}([a-z,A-Z,0-9],)*[a-z,A-Z,0-9]{1}}$/;
+    var TEST_VAL3 = /^[a-z,A-Z,0-9]{1},{1}([a-z,A-Z,0-9],)*[a-z,A-Z,0-9]{1}$/;
+
+    if (TEST_VAL.test(value)) {
+      return "true";
+    } else if (TEST_VAL2.test(value)) {
+      return "true";
+    } else if (TEST_VAL3.test(value)) {
+      return "true";
+    } else {
+      return "false";
+    }
+  }
+
+
+  checkFillIn(value) {
+    return this.checkCMIString255(value);
+  }
+
+
+  checkTrueFalse(value) {
+    if (value == "0" || value == "1" || value == "t" || value == "f" || value == "T" || value == "F") {
+      return "true";
+    } else {
+      return "false";
+    }
+  }
+
+
+  checkLikert(value) {
+    if (value.length == 0) {
+      return "true";
+    }
+    if (value.length > 1) {
+      return "false";
+    }
+    var TEST_VAL = /^[a-z,A-Z,0-9]{1}$/;
+    if (TEST_VAL.test(value)) {
+      return "true";
+    } else {
+      return "false";
+    }
+  }
+
+
+  checkCMIDecimal(value) {
+    if (isNaN(value)) {
+      return "false";
+    } else {
+      return "true";
+    }
+  }
+
+  checkCMIBoolean(value) {
+    if (value == "true" || value == "false") {
+      return "true";
+    } else {
+      return "false";
+    }
+  }
+
+  checkCMIBlank(value) {
+    if (value != "") {
+      return "false";
+    } else {
+      return "true";
+    }
+  }
+  InteractionsArrayModel = function (index, cc = this) {
+    if (index > this._count.cmivalue - 1) {
+      if (index == this._count.cmivalue) {
+        // then create new one...
+        this.intArr[index] = new cc.singleInteractionModel();
+        this._count.cmivalue = this._count.cmivalue + 1;
+        return this.intArr[index];
+      } else {
+        return "false";
+      }
+    } else {
+      // we must be talking about this one so return object..
+      return this.intArr[index];
+    }
+  }
+
+  SingleObjectivesInteractionModel = function(index, cc=this) {
+    if (index > this._count.cmivalue - 1) {
+      if (index == this._count.cmivalue) {
+        // then create new one...
+        this.objectivesInteractionArr[index] = new cc.SingleItemObjectivesInteractionModel();
+        this._count.cmivalue = this._count.cmivalue + 1;
+        return this.objectivesInteractionArr[index];
+      } else {
+        return "false";
+      }
+    } else {
+      // we must be talking about this one so return object..
+      return this.objectivesInteractionArr[index];
+    }
+  }
+  
+  
+  SingleItemObjectivesInteractionModel = function() {
+    this.id = new CMIComponent("id", "", "writeonly", "CMIIdentifier");
+  }
+  
+  
+  
+  CorrectResponsesInteractionModel =  function(cc = this) {
+    this._count = new CMIComponent("_count", 0, "readonly", "CMIInteger");
+    this.correctResponsesInteractionArray = cc.SingleCorrectResponsesInteractionModel;
+    this.correctResponsesInteractionArr = new Array();
+  }
+  
+  
+  SingleCorrectResponsesInteractionModel = function(index, cc = this) {
+    if (index > this._count.cmivalue - 1) {
+      if (index == this._count.cmivalue) {
+        // then create new one...
+        this.correctResponsesInteractionArr[index] = new cc.SingleItemCorrectResponsesInteractionModel();
+        this._count.cmivalue = this._count.cmivalue + 1;
+        return this.correctResponsesInteractionArr[index];
+      } else {
+        return "false";
+      }
+    } else {
+      // we must be talking about this one so return object..
+      return this.correctResponsesInteractionArr[index];
+    }
+  }
+  
+  
+  SingleItemCorrectResponsesInteractionModel = function() {
+    this.pattern = new CMIComponent("pattern", "", "writeonly", "CMIFeedback");
+  }
+
+  showCurrentModelState(infoOrForm) {
+
+    var divider = "";
+    var titles = "";
+    var equals = "";
+    if (infoOrForm == "info") {
+      divider = "\n";
+      equals = "=";
+      titles = "Current client CMI Datamodel\n\n";
+    } else {
+      equals = "~r@l@ad~";
+      divider = "^r@l@ad^";
+      titles = "";
+    }
+
+    var a = "cmi.core.student_id" + equals + this.API.cmi.core.student_id.cmivalue + divider;
+    var b = "cmi.core.student_name" + equals + this.API.cmi.core.student_name.cmivalue + divider;
+    var c = "cmi.core.lesson_location" + equals + this.API.cmi.core.lesson_location.cmivalue + divider;
+    var d = "cmi.core.credit" + equals + this.API.cmi.core.credit.cmivalue + divider;
+    var e = "cmi.core.lesson_status" + equals + this.API.cmi.core.lesson_status.cmivalue + divider;
+    var f = "cmi.core.entry" + equals + this.API.cmi.core.entry.cmivalue + divider;
+    var g = "cmi.core.score.raw" + equals + this.API.cmi.core.score.raw.cmivalue + divider;
+    var h = "cmi.core.score.max" + equals + this.API.cmi.core.score.max.cmivalue + divider;
+    var i = "cmi.core.score.min" + equals + this.API.cmi.core.score.min.cmivalue + divider;
+    var j = "cmi.core.total_time" + equals + this.API.cmi.core.total_time.cmivalue + divider;
+    var k = "cmi.core.lesson_mode" + equals + this.API.cmi.core.lesson_mode.cmivalue + divider;
+    var l = "cmi.core.exit" + equals + this.API.cmi.core.exit.cmivalue + divider;
+    var m = "cmi.core.session_time" + equals + this.API.cmi.core.session_time.cmivalue + divider;
+    var n = "cmi.suspend_data" + equals + this.API.cmi.suspend_data.cmivalue + divider;
+    var o = "cmi.launch_data" + equals + this.API.cmi.launch_data.cmivalue + divider;
+    var p = "cmi.comments" + equals + this.API.cmi.comments.cmivalue + divider;
+    var q = "cmi.comments_from_lms" + equals + this.API.cmi.comments_from_lms.cmivalue + divider;
+    var r = "cmi.objectives._count" + equals + this.API.cmi.objectives._count.cmivalue + divider;
+
+    var s = "";
+    var objectivesCount = this.API.cmi.objectives._count.cmivalue;
+    for (var count = 0; count < objectivesCount; count++) {
+      var objHandle = this.API.cmi.objectives.objArray(count);
+      var idval = objHandle.id.cmivalue;
+      var scoreRaw = objHandle.score.raw.cmivalue;
+      var scoreMax = objHandle.score.max.cmivalue;
+      var scoreMin = objHandle.score.min.cmivalue;
+      var statval = objHandle.status.cmivalue;
+      s = s + "cmi.objectives." + count + ".id" + equals + idval + divider;
+      s = s + "cmi.objectives." + count + ".score.raw" + equals + scoreRaw + divider;
+      s = s + "cmi.objectives." + count + ".score.max" + equals + scoreMax + divider;
+      s = s + "cmi.objectives." + count + ".score.min" + equals + scoreMin + divider;
+      s = s + "cmi.objectives." + count + ".status" + equals + statval + divider;
+    }
+
+
+    var v = "cmi.student_data.mastery_score" + equals + this.API.cmi.student_data.mastery_score.cmivalue + divider;
+    var w = "cmi.student_data.max_time_allowed" + equals + this.API.cmi.student_data.max_time_allowed.cmivalue + divider;
+    var x = "cmi.student_data.time_limit_action" + equals + this.API.cmi.student_data.time_limit_action.cmivalue + divider;
+
+    var y = "cmi.student_preference.audio" + equals + this.API.cmi.student_preference.audio.cmivalue + divider;
+    var z = "cmi.student_preference.language" + equals + this.API.cmi.student_preference.language.cmivalue + divider;
+    var zz = "cmi.student_preference.speed" + equals + this.API.cmi.student_preference.speed.cmivalue + divider;
+    var zzz = "cmi.student_preference.text" + equals + this.API.cmi.student_preference.text.cmivalue + divider;
+
+    var t = "cmi.interactions._count" + equals + this.API.cmi.interactions._count.cmivalue + divider;
+
+    var u = "";
+    var interactionsCount = this.API.cmi.interactions._count.cmivalue
+    for (var intcount = 0; intcount < interactionsCount; intcount++) {
+      var intHandle = this.API.cmi.interactions.intArray(intcount);
+
+      idval = intHandle.id.cmivalue;
+      u = u + "cmi.interactions." + intcount + ".id" + equals + idval + divider;
+
+      var interObjCount = intHandle.objectives._count.cmivalue;
+      u = u + "cmi.interactions." + intcount + ".objectives._count" + equals + interObjCount + divider;
+
+      for (var objcount = 0; objcount < interObjCount; objcount++) {
+        var interactionObjectiveHandle = intHandle.objectives.objectivesInteractionArray(objcount);
+        var objid = interactionObjectiveHandle.id.cmivalue;
+        u = u + "cmi.interactions." + intcount + ".objectives." + objcount + ".id" + equals + objid + divider;
+      }
+
+      var srCount = intHandle.correct_responses._count.cmivalue;
+      u = u + "cmi.interactions." + intcount + ".correct_responses._count" + equals + srCount + divider;
+
+      for (var objcount = 0; objcount < srCount; objcount++) {
+        var interactionSRHandle = intHandle.correct_responses.correctResponsesInteractionArray(objcount);
+        var patternid = interactionSRHandle.pattern.cmivalue;
+        u = u + "cmi.interactions." + intcount + ".correct_responses." + objcount + ".pattern" + equals + patternid + divider;
+      }
+
+
+      var timeval = intHandle.time.cmivalue;
+      u = u + "cmi.interactions." + intcount + ".time" + equals + timeval + divider;
+
+      var typeval = intHandle.type.cmivalue;
+      u = u + "cmi.interactions." + intcount + ".type" + equals + typeval + divider;
+
+      var weightingval = intHandle.weighting.cmivalue;
+      u = u + "cmi.interactions." + intcount + ".weighting" + equals + weightingval + divider;
+
+      var student_responseval = intHandle.student_response.cmivalue;
+      u = u + "cmi.interactions." + intcount + ".student_response" + equals + student_responseval + divider;
+
+      var resultval = intHandle.result.cmivalue;
+      u = u + "cmi.interactions." + intcount + ".result" + equals + resultval + divider;
+
+      var latencyval = intHandle.latency.cmivalue;
+      u = u + "cmi.interactions." + intcount + ".latency" + equals + latencyval + divider;
+    }
+
+    var alertString = titles + a + b + c + d + e + f + g + h + i + j + k + l + m + n + o + p + q + r + s + v + w + x + y + z + zz + zzz + t + u;
+    return alertString;
+
+  }
+
+  /*
+   * a function used in debug mode to see the current cmi model
+   */
+  viewModel() {
+    return this.showCurrentModelState("info");
+  }
+}
+
+/*
+ * Top level object to hold complete CMI data model and API methods
+ */
+class GenericAPIAdaptor {
+  public cmi;
+  public LMSInitialize;
+  public LMSGetValue;
+  public LMSSetValue;
+  public LMSCommit;
+  public LMSFinish;
+  public LMSGetLastError;
+  public LMSGetErrorString;
+  public LMSGetDiagnostic;
+  public ServerSco;
+  constructor(private player: ScormPlayerComponent) {
+    this.cmi = new CMIModel(this.player);
+    this.LMSInitialize = this.player.LMSInitializeMethod;
+    this.LMSGetValue = this.player.LMSGetValueMethod;
+    this.LMSSetValue = this.player.LMSSetValueMethod;
+    this.LMSCommit = this.player.LMSCommitMethod;
+    this.LMSFinish = this.player.LMSFinishMethod;
+    this.LMSGetLastError = this.player.LMSGetLastErrorMethod;
+    this.LMSGetErrorString = this.player.LMSGetErrorStringMethod;
+    this.LMSGetDiagnostic = this.player.LMSGetDiagnosticMethod;
+    this.ServerSco = new ServerScoSettings(this.player);
+  }
+}
+
+/*
+ * A CMIComponent holds properties for each CMI element in the model.
+ * Here we keep the element name, it current value, its read/write status
+ * and finally it CMI datatype
+ */
+class CMIComponent {
+  public cminame;
+  public cmivalue;
+  public cmireadStatus;
+  public cmidatatype;
+  constructor(thename, thevalue, readstatus, datatype) {
+    this.cminame = thename;
+    this.cmivalue = thevalue;
+    this.cmireadStatus = readstatus;
+    this.cmidatatype = datatype;
+  }
+}
+
+/*
+ *  Object ServerScoSettings()
+ *  Used to store server specific settings and error codes etc..
+ *  Is accessed as an object inside this implementation of the API object.
+ */
+class ServerScoSettings {
+  public isInitialized;
+  public lastError;
+  public checkDataTypeAndVocab;
+  constructor(
+    private player: ScormPlayerComponent
+  ) {
+    this.isInitialized = "false";
+    this.lastError = "0";
+    this.checkDataTypeAndVocab = this.scoCheckDataTypeAndVocab;
+  }
+
+  /*
+   * Method to check the datatype and vocabulary of an element
+   * returns true or false...
+   */
+  scoCheckDataTypeAndVocab(element, value, datatype) {
     switch (datatype) {
-      case "true-false": { return checkTrueFalse(value); break }
-      case "choice": { return checkChoice(value); break }
-      case "fill-in": { return checkFillIn(value); break }
-      case "numeric": { return checkCMIDecimal(value); break }
-      case "likert": { return checkLikert(value); break }
-      case "matching": { return checkMatching(value); break }
-      case "performance": { return checkCMIString255(value); break }
-      case "sequencing": { return checkSequencing(value); break }
-      // if its not been set then we should return false.  That would mean
-      // that a cmi.interaction.n.type MUST have a value and cannot be empty
-      default: { return "false"; break }
+      case "CMIBlank":
+        {
+          return this.player.checkCMIBlank(value);
+          break
+        }
+      case "CMIBoolean":
+        {
+          return this.player.checkCMIBoolean(value);
+          break
+        }
+      case "CMIDecimal":
+        {
+          return this.player.checkCMIDecimal(value);
+          break
+        }
+      case "CMIFeedback":
+        {
+          return this.player.checkCMIFeedback(element, value);
+          break
+        }
+      case "CMIIdentifier":
+        {
+          return this.player.checkCMIIdentifier(value);
+          break
+        }
+      case "CMIInteger":
+        {
+          return this.player.checkCMIInteger(value);
+          break
+        }
+      case "CMISInteger":
+        {
+          return this.player.checkCMISInteger(element, value);
+          break
+        }
+      case "CMIString255":
+        {
+          return this.player.checkCMIString255(value);
+          break
+        }
+      case "CMIString4096":
+        {
+          return this.player.checkCMIString4096(value);
+          break
+        }
+      case "CMITime":
+        {
+          return this.player.checkCMITime(value);
+          break
+        }
+      case "CMITimespan":
+        {
+          return this.player.checkCMITimespan(value);
+          break
+        }
+      case "CMIVocabularyCredit":
+        {
+          return this.player.checkCMIVocabularyCredit(value);
+          break
+        }
+      case "CMIVocabularyStatus":
+        {
+          return this.player.checkCMIVocabularyStatus(element, value);
+          break
+        }
+      case "CMIVocabularyEntry":
+        {
+          return this.player.checkCMIVocabularyEntry(value);
+          break
+        }
+      case "CMIVocabularyMode":
+        {
+          return this.player.checkCMIVocabularyMode(value);
+          break
+        }
+      case "CMIVocabularyExit":
+        {
+          return this.player.checkCMIVocabularyExit(value);
+          break
+        }
+      case "CMIVocabularyTimeLimitAction":
+        {
+          return this.player.checkCMIVocabularyTimeLimitAction(value);
+          break
+        }
+      case "CMIVocabularyInteraction":
+        {
+          return this.player.checkCMIVocabularyInteraction(value);
+          break
+        }
+      case "CMIVocabularyResult":
+        {
+          return this.player.checkCMIVocabularyResult(value);
+          break
+        }
+      case "CMIDecimalOrCMIBlank":
+        {
+          return this.player.checkCMIDecimalOrCMIBlank(value);
+          break
+        }
+      default:
+        {
+          return "true";
+          break
+        }
     }
   }
-  else {
-    return "true";
-  }
-
 }
-
-function checkMatching(value) {
-  // check for n.n
-  var TEST_VAL = /^[a-z,A-Z,0-9]{1}.{1}[a-z,A-Z,0-9]{1}$/;
-  // check for n.n,n.n,n.n etc
-  var TEST_VAL2 = /^[a-z,A-Z,0-9]{1}.{1}[a-z,A-Z,0-9]{1},{1}([a-z,A-Z,0-9]{1}.{1}[a-z,A-Z,0-9]{1},{1})*[a-z,A-Z,0-9]{1}.{1}[a-z,A-Z,0-9]{1}$/;
-  // check for {n.n,n.n,n.n etc }
-  // Bugfix Mozilla firebird didnt like this line below
-  // var TEST_VAL3 = /^{[a-z,A-Z,0-9]{1}.{1}[a-z,A-Z,0-9]{1},{1}([a-z,A-Z,0-9]{1}.{1}[a-z,A-Z,0-9]{1},{1})*[a-z,A-Z,0-9]{1}.{1}[a-z,A-Z,0-9]{1}}$/;
-  var TEST_VAL3 = /^[a-z,A-Z,0-9]{1}.{1}[a-z,A-Z,0-9]{1},{1}([a-z,A-Z,0-9]{1}.{1}[a-z,A-Z,0-9]{1},{1})*[a-z,A-Z,0-9]{1}.{1}[a-z,A-Z,0-9]{1}$/;
-  if (TEST_VAL.test(value)) {
-    return "true";
-  }
-  else if (TEST_VAL2.test(value)) {
-    return "true";
-  }
-  else if (TEST_VAL3.test(value)) {
-    return "true";
-  }
-  else {
-    return "false";
-  }
-}
-
-
-function checkSequencing(value) {
-
-  // test for single a-z 0-9
-  var TEST_VAL = /^[a-z,A-Z,0-9]{1}$/;
-
-  // test for format 1,2,3,a,b,c
-  var TEST_VAL2 = /^[a-z,A-Z,0-9]{1},{1}([a-z,A-Z,0-9],)*[a-z,A-Z,0-9]{1}$/;
-
-  if (TEST_VAL.test(value)) {
-    return "true";
-  }
-  else if (TEST_VAL2.test(value)) {
-    return "true";
-  }
-  else {
-    return "false";
-  }
-}
-
-function checkChoice(value) {
-  // test for single a-z 0-9
-  var TEST_VAL = /^[a-z,A-Z,0-9]{1}$/;
-
-  // test for format 1,2,3,a,b,c
-  var TEST_VAL2 = /^[a-z,A-Z,0-9]{1},{1}([a-z,A-Z,0-9],)*[a-z,A-Z,0-9]{1}$/;
-
-  // test for format {1,2,3,a,b,c}
-  // Bugfix Mozilla firebird didnt like this line below
-  //var TEST_VAL3 = /^{[a-z,A-Z,0-9]{1},{1}([a-z,A-Z,0-9],)*[a-z,A-Z,0-9]{1}}$/;
-  var TEST_VAL3 = /^[a-z,A-Z,0-9]{1},{1}([a-z,A-Z,0-9],)*[a-z,A-Z,0-9]{1}$/;
-
-  if (TEST_VAL.test(value)) {
-    return "true";
-  }
-  else if (TEST_VAL2.test(value)) {
-    return "true";
-  }
-  else if (TEST_VAL3.test(value)) {
-    return "true";
-  }
-  else {
-    return "false";
-  }
-}
-
-
-function checkFillIn(value) {
-  return checkCMIString255(value);
-}
-
-
-function checkTrueFalse(value) {
-  if (value == "0" || value == "1" || value == "t" || value == "f" || value == "T" || value == "F") {
-    return "true";
-  }
-  else {
-    return "false";
-  }
-}
-
-
-function checkLikert(value) {
-  if (value.length == 0) {
-    return "true";
-  }
-  if (value.length > 1) {
-    return "false";
-  }
-  var TEST_VAL = /^[a-z,A-Z,0-9]{1}$/;
-  if (TEST_VAL.test(value)) {
-    return "true";
-  }
-  else {
-    return "false";
-  }
-}
-
-
-function checkCMIDecimal(value) {
-  if (isNaN(value)) {
-    return "false";
-  }
-  else {
-    return "true";
-  }
-}
-
-function checkCMIBoolean(value) {
-  if (value == "true" || value == "false") {
-    return "true";
-  }
-  else {
-    return "false";
-  }
-}
-
-function checkCMIBlank(value) {
-  if (value != "") {
-    return "false";
-  }
-  else {
-    return "true";
-  }
-}
-
 
 /*
-* ----------------------------------------------------------------------------------------------------
-*
-*	The CMI Client side data models
-*
-* ----------------------------------------------------------------------------------------------------
-*/
+ * ----------------------------------------------------------------------------------------------------
+ *
+ *	The CMI Client side data models
+ *
+ * ----------------------------------------------------------------------------------------------------
+ */
 
 
 
-CMIModel = function () {
-  this._version = new CMIComponent("_version", "3.4", "readonly", "");
-  this.core = new CMICoreModel;
-  this.suspend_data = new CMIComponent("suspend_data", "", "both", "CMIString4096");
-  this.launch_data = new CMIComponent("launch_data", "", "readonly", "CMIString4096");
-  this.comments = new CMIComponent("comments", "", "both", "CMIString4096");
-  this.comments_from_lms = new CMIComponent("comments_from_lms", "", "readonly", "CMIString4096");
-  this.objectives = new ObjectivesModel;
-  this.student_data = new StudentDataModel;
-  this.student_preference = new StudentPreferenceModel;
-  this.interactions = new InteractionsModel; v
+class CMIModel {
+  public _version;
+  public core;
+  public suspend_data;
+  public launch_data;
+  public comments;
+  public comments_from_lms;
+  public objectives;
+  public student_data;
+  public student_preference;
+  public interactions;
+  constructor(private player: ScormPlayerComponent) {
+    this._version = new CMIComponent("_version", "3.4", "readonly", "");
+    this.core = new CMICoreModel;
+    this.suspend_data = new CMIComponent("suspend_data", "", "both", "CMIString4096");
+    this.launch_data = new CMIComponent("launch_data", "", "readonly", "CMIString4096");
+    this.comments = new CMIComponent("comments", "", "both", "CMIString4096");
+    this.comments_from_lms = new CMIComponent("comments_from_lms", "", "readonly", "CMIString4096");
+    this.objectives = new ObjectivesModel;
+    this.student_data = new StudentDataModel;
+    this.student_preference = new StudentPreferenceModel;
+    this.interactions = new InteractionsModel(this.player);
+  }
 }
 
 
-function CMICoreModel() {
-  this._children = new CMIComponent("_children", "student_id,student_name,lesson_location,credit,lesson_status,entry,score,total_time,lesson_mode,exit,session_time", "readonly", "CMIString255");
-  this.student_id = new CMIComponent("student_id", "", "readonly", "CMIIdentifier");
-  this.student_name = new CMIComponent("student_name", "", "readonly", "CMIString255");
-  this.lesson_location = new CMIComponent("lesson_location", "", "both", "CMIString255");
-  this.credit = new CMIComponent("credit", "", "readonly", "CMIVocabularyCredit");
-  this.lesson_status = new CMIComponent("lesson_status", "", "both", "CMIVocabularyStatus");
-  this.entry = new CMIComponent("entry", "", "readonly", "CMIVocabularyEntry");
-  this.score = new CMIScore;
-  this.total_time = new CMIComponent("total_time", "", "readonly", "CMITimespan");
-  this.lesson_mode = new CMIComponent("lesson_mode", "", "readonly", "CMIVocabularyMode");
-  this.exit = new CMIComponent("exit", "", "writeonly", "CMIVocabularyExit");
-  this.session_time = new CMIComponent("session_time", "", "writeonly", "CMITimespan");
+class CMICoreModel {
+  public _children;
+  public student_id;
+  public student_name;
+  public lesson_location;
+  public credit;
+  public lesson_status;
+  public entry;
+  public score;
+  public total_time;
+  public lesson_mode;
+  public exit;
+  public session_time;
+  constructor() {
+    this._children = new CMIComponent("_children", "student_id,student_name,lesson_location,credit,lesson_status,entry,score,total_time,lesson_mode,exit,session_time", "readonly", "CMIString255");
+    this.student_id = new CMIComponent("student_id", "", "readonly", "CMIIdentifier");
+    this.student_name = new CMIComponent("student_name", "", "readonly", "CMIString255");
+    this.lesson_location = new CMIComponent("lesson_location", "", "both", "CMIString255");
+    this.credit = new CMIComponent("credit", "", "readonly", "CMIVocabularyCredit");
+    this.lesson_status = new CMIComponent("lesson_status", "", "both", "CMIVocabularyStatus");
+    this.entry = new CMIComponent("entry", "", "readonly", "CMIVocabularyEntry");
+    this.score = new CMIScore;
+    this.total_time = new CMIComponent("total_time", "", "readonly", "CMITimespan");
+    this.lesson_mode = new CMIComponent("lesson_mode", "", "readonly", "CMIVocabularyMode");
+    this.exit = new CMIComponent("exit", "", "writeonly", "CMIVocabularyExit");
+    this.session_time = new CMIComponent("session_time", "", "writeonly", "CMITimespan");
+  }
 }
 
 
-function CMIScore() {
-  this._children = new CMIComponent("_children", "raw,min,max", "readonly", "CMIString255");
-  this.raw = new CMIComponent("raw", "", "both", "CMIDecimalOrCMIBlank");
-  this.max = new CMIComponent("max", "", "both", "CMIDecimalOrCMIBlank");
-  this.min = new CMIComponent("min", "", "both", "CMIDecimalOrCMIBlank");
+class CMIScore {
+  public _children
+  public raw
+  public max
+  public min
+  constructor() {
+    this._children = new CMIComponent("_children", "raw,min,max", "readonly", "CMIString255");
+    this.raw = new CMIComponent("raw", "", "both", "CMIDecimalOrCMIBlank");
+    this.max = new CMIComponent("max", "", "both", "CMIDecimalOrCMIBlank");
+    this.min = new CMIComponent("min", "", "both", "CMIDecimalOrCMIBlank");
+  }
 }
 
 
-function StudentPreferenceModel() {
-  this._children = new CMIComponent("_children", "audio,language,speed,text", "readonly", "CMIString255");
-  this.audio = new CMIComponent("audio", "0", "both", "CMISInteger");
-  this.language = new CMIComponent("language", "", "both", "CMIString255");
-  this.speed = new CMIComponent("speed", "0", "both", "CMISInteger");
-  this.text = new CMIComponent("text", "0", "both", "CMISInteger");
+class StudentPreferenceModel {
+  public _children
+  public audio
+  public language
+  public speed
+  public text
+  constructor() {
+    this._children = new CMIComponent("_children", "audio,language,speed,text", "readonly", "CMIString255");
+    this.audio = new CMIComponent("audio", "0", "both", "CMISInteger");
+    this.language = new CMIComponent("language", "", "both", "CMIString255");
+    this.speed = new CMIComponent("speed", "0", "both", "CMISInteger");
+    this.text = new CMIComponent("text", "0", "both", "CMISInteger");
+  }
 }
 
 
-function StudentDataModel() {
-  this._children = new CMIComponent("_count", "mastery_score,max_time_allowed,time_limit_action", "readonly", "CMIString255");
-  this.mastery_score = new CMIComponent("mastery_score", "", "readonly", "CMIDecimal");
-  this.max_time_allowed = new CMIComponent("max_time_allowed", "", "readonly", "CMITimespan");
-  this.time_limit_action = new CMIComponent("time_limit_action", "", "readonly", "CMIVocabularyTimeLimitAction");
+class StudentDataModel {
+  public _children
+  public mastery_score
+  public max_time_allowed
+  public time_limit_action
+  constructor() {
+    this._children = new CMIComponent("_count", "mastery_score,max_time_allowed,time_limit_action", "readonly", "CMIString255");
+    this.mastery_score = new CMIComponent("mastery_score", "", "readonly", "CMIDecimal");
+    this.max_time_allowed = new CMIComponent("max_time_allowed", "", "readonly", "CMITimespan");
+    this.time_limit_action = new CMIComponent("time_limit_action", "", "readonly", "CMIVocabularyTimeLimitAction");
+  }
 }
 
 
 
 /*
-*  The CMI objectives model
-*/
+ *  The CMI objectives model
+ */
 
 function ObjectivesModel() {
   this._children = new CMIComponent("_children", "id,score,status", "readonly", "CMIString255");
@@ -2662,307 +3079,91 @@ function ObjectiveArrayModel(index) {
       this.objArr[index] = new singleObjectiveModel();
       this._count.cmivalue = this._count.cmivalue + 1;
       return this.objArr[index];
-    }
-    else {
+    } else {
       return "false";
     }
-  }
-  else {
+  } else {
     // we must be talking about this one so return object..
     return this.objArr[index];
   }
 }
 
 
-function singleObjectiveModel() {
-  this.id = new CMIComponent("id", "", "both", "CMIIdentifier");
-  this.score = new objectiveScoreModel;
-  this.status = new CMIComponent("status", "", "both", "CMIVocabularyStatus");
-}
-
-function objectiveScoreModel() {
-  this._children = new CMIComponent("_children", "raw,min,max", "readonly", "CMIString255");
-  this.raw = new CMIComponent("raw", "", "both", "CMIDecimalOrCMIBlank");
-  this.min = new CMIComponent("min", "", "both", "CMIDecimalOrCMIBlank");
-  this.max = new CMIComponent("max", "", "both", "CMIDecimalOrCMIBlank");
-}
-
-
-
-/*
-*  The CMI interactions model
-*/
-
-function InteractionsModel() {
-  this._children = new CMIComponent("_children", "id,objectives,time,type,correct_responses,weighting,student_response,result,latency", "readonly", "CMIString255");
-  this._count = new CMIComponent("_count", 0, "readonly", "CMIInteger");
-  this.intArray = InteractionsArrayModel;
-  this.intArr = new Array();
-}
-
-
-function InteractionsArrayModel(index) {
-
-  if (index > this._count.cmivalue - 1) {
-    if (index == this._count.cmivalue) {
-      // then create new one...
-      this.intArr[index] = new singleInteractionModel();
-      this._count.cmivalue = this._count.cmivalue + 1;
-      return this.intArr[index];
-    }
-    else {
-      return "false";
-    }
-  }
-  else {
-    // we must be talking about this one so return object..
-    return this.intArr[index];
-  }
-}
-
-
-function singleInteractionModel() {
-  this.id = new CMIComponent("id", "", "writeonly", "CMIIdentifier");
-  this.objectives = new ObjectivesInteractionModel;
-  this.time = new CMIComponent("time", "", "writeonly", "CMITime");
-  this.type = new CMIComponent("type", "", "writeonly", "CMIVocabularyInteraction");
-  this.correct_responses = new CorrectResponsesInteractionModel;
-  this.weighting = new CMIComponent("weighting", "", "writeonly", "CMIDecimal");
-  this.student_response = new CMIComponent("student_response", "", "writeonly", "CMIFeedback");
-  this.result = new CMIComponent("result", "", "writeonly", "CMIVocabularyResult");
-  this.latency = new CMIComponent("latency", "", "writeonly", "CMITimespan");
-}
-
-
-function ObjectivesInteractionModel() {
-  this._count = new CMIComponent("_count", 0, "readonly", "CMIInteger");
-  this.objectivesInteractionArray = SingleObjectivesInteractionModel;
-  this.objectivesInteractionArr = new Array();
-}
-
-
-function SingleObjectivesInteractionModel(index) {
-  if (index > this._count.cmivalue - 1) {
-    if (index == this._count.cmivalue) {
-      // then create new one...
-      this.objectivesInteractionArr[index] = new SingleItemObjectivesInteractionModel();
-      this._count.cmivalue = this._count.cmivalue + 1;
-      return this.objectivesInteractionArr[index];
-    }
-    else {
-      return "false";
-    }
-  }
-  else {
-    // we must be talking about this one so return object..
-    return this.objectivesInteractionArr[index];
-  }
-}
-
-
-function SingleItemObjectivesInteractionModel() {
-  this.id = new CMIComponent("id", "", "writeonly", "CMIIdentifier");
-}
-
-
-
-function CorrectResponsesInteractionModel() {
-  this._count = new CMIComponent("_count", 0, "readonly", "CMIInteger");
-  this.correctResponsesInteractionArray = SingleCorrectResponsesInteractionModel;
-  this.correctResponsesInteractionArr = new Array();
-}
-
-
-function SingleCorrectResponsesInteractionModel(index) {
-  if (index > this._count.cmivalue - 1) {
-    if (index == this._count.cmivalue) {
-      // then create new one...
-      this.correctResponsesInteractionArr[index] = new SingleItemCorrectResponsesInteractionModel();
-      this._count.cmivalue = this._count.cmivalue + 1;
-      return this.correctResponsesInteractionArr[index];
-    }
-    else {
-      return "false";
-    }
-  }
-  else {
-    // we must be talking about this one so return object..
-    return this.correctResponsesInteractionArr[index];
-  }
-}
-
-
-function SingleItemCorrectResponsesInteractionModel() {
-  this.pattern = new CMIComponent("pattern", "", "writeonly", "CMIFeedback");
-}
-
-/*
-*
-*
-*/
-function showCurrentModelState(infoOrForm) {
-
-  var divider = "";
-  var titles = "";
-  if (infoOrForm == "info") {
-    divider = "\n";
-    equals = "=";
-    titles = "Current client CMI Datamodel\n\n";
-  }
-  else {
-    equals = "~r@l@ad~";
-    divider = "^r@l@ad^";
-    titles = "";
-  }
-
-  a = "cmi.core.student_id" + equals + API.cmi.core.student_id.cmivalue + divider;
-  b = "cmi.core.student_name" + equals + API.cmi.core.student_name.cmivalue + divider;
-  c = "cmi.core.lesson_location" + equals + API.cmi.core.lesson_location.cmivalue + divider;
-  d = "cmi.core.credit" + equals + API.cmi.core.credit.cmivalue + divider;
-  e = "cmi.core.lesson_status" + equals + API.cmi.core.lesson_status.cmivalue + divider;
-  f = "cmi.core.entry" + equals + API.cmi.core.entry.cmivalue + divider;
-  g = "cmi.core.score.raw" + equals + API.cmi.core.score.raw.cmivalue + divider;
-  h = "cmi.core.score.max" + equals + API.cmi.core.score.max.cmivalue + divider;
-  i = "cmi.core.score.min" + equals + API.cmi.core.score.min.cmivalue + divider;
-  j = "cmi.core.total_time" + equals + API.cmi.core.total_time.cmivalue + divider;
-  k = "cmi.core.lesson_mode" + equals + API.cmi.core.lesson_mode.cmivalue + divider;
-  l = "cmi.core.exit" + equals + API.cmi.core.exit.cmivalue + divider;
-  m = "cmi.core.session_time" + equals + API.cmi.core.session_time.cmivalue + divider;
-  n = "cmi.suspend_data" + equals + API.cmi.suspend_data.cmivalue + divider;
-  o = "cmi.launch_data" + equals + API.cmi.launch_data.cmivalue + divider;
-  p = "cmi.comments" + equals + API.cmi.comments.cmivalue + divider;
-  q = "cmi.comments_from_lms" + equals + API.cmi.comments_from_lms.cmivalue + divider;
-  r = "cmi.objectives._count" + equals + API.cmi.objectives._count.cmivalue + divider;
-
-  var s = "";
-  var objectivesCount = API.cmi.objectives._count.cmivalue;
-  for (count = 0; count < objectivesCount; count++) {
-    objHandle = API.cmi.objectives.objArray(count);
-    idval = objHandle.id.cmivalue;
-    scoreRaw = objHandle.score.raw.cmivalue;
-    scoreMax = objHandle.score.max.cmivalue;
-    scoreMin = objHandle.score.min.cmivalue;
-    statval = objHandle.status.cmivalue;
-    s = s + "cmi.objectives." + count + ".id" + equals + idval + divider;
-    s = s + "cmi.objectives." + count + ".score.raw" + equals + scoreRaw + divider;
-    s = s + "cmi.objectives." + count + ".score.max" + equals + scoreMax + divider;
-    s = s + "cmi.objectives." + count + ".score.min" + equals + scoreMin + divider;
-    s = s + "cmi.objectives." + count + ".status" + equals + statval + divider;
-  }
-
-
-  v = "cmi.student_data.mastery_score" + equals + API.cmi.student_data.mastery_score.cmivalue + divider;
-  w = "cmi.student_data.max_time_allowed" + equals + API.cmi.student_data.max_time_allowed.cmivalue + divider;
-  x = "cmi.student_data.time_limit_action" + equals + API.cmi.student_data.time_limit_action.cmivalue + divider;
-
-  y = "cmi.student_preference.audio" + equals + API.cmi.student_preference.audio.cmivalue + divider;
-  z = "cmi.student_preference.language" + equals + API.cmi.student_preference.language.cmivalue + divider;
-  zz = "cmi.student_preference.speed" + equals + API.cmi.student_preference.speed.cmivalue + divider;
-  zzz = "cmi.student_preference.text" + equals + API.cmi.student_preference.text.cmivalue + divider;
-
-  t = "cmi.interactions._count" + equals + API.cmi.interactions._count.cmivalue + divider;
-
-  var u = "";
-  var interactionsCount = API.cmi.interactions._count.cmivalue
-  for (intcount = 0; intcount < interactionsCount; intcount++) {
-    intHandle = API.cmi.interactions.intArray(intcount);
-
-    idval = intHandle.id.cmivalue;
-    u = u + "cmi.interactions." + intcount + ".id" + equals + idval + divider;
-
-    interObjCount = intHandle.objectives._count.cmivalue;
-    u = u + "cmi.interactions." + intcount + ".objectives._count" + equals + interObjCount + divider;
-
-    for (objcount = 0; objcount < interObjCount; objcount++) {
-      interactionObjectiveHandle = intHandle.objectives.objectivesInteractionArray(objcount);
-      objid = interactionObjectiveHandle.id.cmivalue;
-      u = u + "cmi.interactions." + intcount + ".objectives." + objcount + ".id" + equals + objid + divider;
-    }
-
-    srCount = intHandle.correct_responses._count.cmivalue;
-    u = u + "cmi.interactions." + intcount + ".correct_responses._count" + equals + srCount + divider;
-
-    for (objcount = 0; objcount < srCount; objcount++) {
-      interactionSRHandle = intHandle.correct_responses.correctResponsesInteractionArray(objcount);
-      patternid = interactionSRHandle.pattern.cmivalue;
-      u = u + "cmi.interactions." + intcount + ".correct_responses." + objcount + ".pattern" + equals + patternid + divider;
-    }
-
-
-    timeval = intHandle.time.cmivalue;
-    u = u + "cmi.interactions." + intcount + ".time" + equals + timeval + divider;
-
-    typeval = intHandle.type.cmivalue;
-    u = u + "cmi.interactions." + intcount + ".type" + equals + typeval + divider;
-
-    weightingval = intHandle.weighting.cmivalue;
-    u = u + "cmi.interactions." + intcount + ".weighting" + equals + weightingval + divider;
-
-    student_responseval = intHandle.student_response.cmivalue;
-    u = u + "cmi.interactions." + intcount + ".student_response" + equals + student_responseval + divider;
-
-    resultval = intHandle.result.cmivalue;
-    u = u + "cmi.interactions." + intcount + ".result" + equals + resultval + divider;
-
-    latencyval = intHandle.latency.cmivalue;
-    u = u + "cmi.interactions." + intcount + ".latency" + equals + latencyval + divider;
-  }
-
-  var alertString = titles + a + b + c + d + e + f + g + h + i + j + k + l + m + n + o + p + q + r + s + v + w + x + y + z + zz + zzz + t + u;
-  return alertString;
-
-}
-
-/*
-* a function used in debug mode to see the current cmi model
-*/
-function viewModel() {
-  return showCurrentModelState("info");
-}
-}
-
-/*
-* Top level object to hold complete CMI data model and API methods
-*/
-class GenericAPIAdaptor {
-  public cmi;
-  public LMSInitialize;
-  public LMSGetValue;
-  public LMSSetValue;
-  public LMSCommit;
-  public LMSFinish;
-  public LMSGetLastError;
-  public LMSGetErrorString;
-  public LMSGetDiagnostic;
-  public ServerSco;
+class singleObjectiveModel {
+  public id;
+  public score;
+  public status;
   constructor() {
-    this.cmi = new CMIModel;
-    this.LMSInitialize = ScormPlayerComponent.LMSInitializeMethod;
-    this.LMSGetValue = ScormPlayerComponent.LMSGetValueMethod;
-    this.LMSSetValue = this.LMSSetValueMethod;
-    this.LMSCommit = this.LMSCommitMethod;
-    this.LMSFinish = this.LMSFinishMethod;
-    this.LMSGetLastError = this.LMSGetLastErrorMethod;
-    this.LMSGetErrorString = this.LMSGetErrorStringMethod;
-    this.LMSGetDiagnostic = this.LMSGetDiagnosticMethod;
-    this.ServerSco = new ScormPlayerComponent.ServerScoSettings;
+    this.id = new CMIComponent("id", "", "both", "CMIIdentifier");
+    this.score = new objectiveScoreModel;
+    this.status = new CMIComponent("status", "", "both", "CMIVocabularyStatus");
   }
 }
 
+class objectiveScoreModel {
+  public _children
+  public raw
+  public min
+  public max
+  constructor() {
+    this._children = new CMIComponent("_children", "raw,min,max", "readonly", "CMIString255");
+    this.raw = new CMIComponent("raw", "", "both", "CMIDecimalOrCMIBlank");
+    this.min = new CMIComponent("min", "", "both", "CMIDecimalOrCMIBlank");
+    this.max = new CMIComponent("max", "", "both", "CMIDecimalOrCMIBlank");
+  }
+}
+
+
+
 /*
-  * A CMIComponent holds properties for each CMI element in the model.
-  * Here we keep the element name, it current value, its read/write status
-  * and finally it CMI datatype
-  */
-class CMIComponent {
-  public cminame;
-  public cmivalue;
-  public cmireadStatus;
-  public cmidatatype;
-  constructor(thename, thevalue, readstatus, datatype) {
-    this.cminame = thename;
-    this.cmivalue = thevalue;
-    this.cmireadStatus = readstatus;
-    this.cmidatatype = datatype;
+ *  The CMI interactions model
+ */
+
+class InteractionsModel {
+  public _children
+  public _count
+  public intArray
+  public intArr
+  constructor(private player: ScormPlayerComponent) {
+    this._children = new CMIComponent("_children", "id,objectives,time,type,correct_responses,weighting,student_response,result,latency", "readonly", "CMIString255");
+    this._count = new CMIComponent("_count", 0, "readonly", "CMIInteger");
+    this.intArray = this.player.InteractionsArrayModel;
+    this.intArr = new Array();
+  }
+}
+
+
+class singleInteractionModel {
+  public id;
+  public objectives;
+  public time;
+  public type;
+  public correct_responses;
+  public weighting;
+  public student_response;
+  public result;
+  public latency;
+  constructor(private player:ScormPlayerComponent) {
+    this.id = new CMIComponent("id", "", "writeonly", "CMIIdentifier");
+    this.objectives = new ObjectivesInteractionModel(this.player);
+    this.time = new CMIComponent("time", "", "writeonly", "CMITime");
+    this.type = new CMIComponent("type", "", "writeonly", "CMIVocabularyInteraction");
+    this.correct_responses = new this.player.CorrectResponsesInteractionModel;
+    this.weighting = new CMIComponent("weighting", "", "writeonly", "CMIDecimal");
+    this.student_response = new CMIComponent("student_response", "", "writeonly", "CMIFeedback");
+    this.result = new CMIComponent("result", "", "writeonly", "CMIVocabularyResult");
+    this.latency = new CMIComponent("latency", "", "writeonly", "CMITimespan");
+  }
+}
+
+
+class ObjectivesInteractionModel{
+   public _count;
+   public objectivesInteractionArray;
+   public objectivesInteractionArr;
+  constructor(private player:ScormPlayerComponent){
+  this._count = new CMIComponent("_count", 0, "readonly", "CMIInteger");
+  this.objectivesInteractionArray = this.player.SingleObjectivesInteractionModel;
+  this.objectivesInteractionArr = new Array();
   }
 }
