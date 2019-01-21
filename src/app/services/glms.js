@@ -1,4 +1,5 @@
-var gLMS = (function(){
+console.log("GLMS Ready for launch");
+(function(){
 
 	this._VERSION = "2.2.20130225";
 	
@@ -65,8 +66,8 @@ var gLMS = (function(){
 	 * Do not touch anything below
 	 * --------------------------------------------------
 	 */
-	this.scoWin;
-	this.API;
+	this.scoWin = {};
+	this.API = {};
 	this.hasTerminated = false;
 	this.hasInitialized = false;
 	this.optionsOpen = true;
@@ -361,8 +362,9 @@ var gLMS = (function(){
 			tmp += status;
 			tmp += '</div>';
 
-			$('debug').innerHTML += tmp;
-			$('debug').scrollTop = $('debug').scrollHeight;
+			// $('debug').innerHTML += tmp;
+			// $('debug').scrollTop = $('debug').scrollHeight;
+			console.log(tmp);
 		},
 		clearCookieData:function()
 		{
@@ -452,8 +454,8 @@ var gLMS = (function(){
 			initTimeout = 0;
 			timeoutErrorDisplayed = false;
 
-			var launchFileAltVal = $('launchFileAlt').value;
-			var cookieNameAltVal = $('cookieNameAlt').value;
+			var launchFileAltVal = '/courses/quiz/index_lms_html5.html';
+      var cookieNameAltVal = "localhost:3000";
 
 			if(launchFileAltVal.length > 0)
 			{
@@ -489,8 +491,8 @@ var gLMS = (function(){
 
 			try
 			{
-				var w = (($('winW').value != "") && ($('winW').value > 0)) ? $('winW').value : wWidth;
-				var h = (($('winH').value != "") && ($('winH').value > 0)) ? $('winH').value : wHeight;
+				var w =  wWidth;
+				var h =  wHeight;
 				var embedParam = '';
 				if(launchWithEmbeddedParam)
 				{
@@ -795,38 +797,38 @@ var gLMS = (function(){
             storageObject = cookieStorageObject;
         }
 
-		$('cookieNameAlt').value = cookieName;
+		// $('cookieNameAlt').value = cookieName;
 
-		$('winW').value = wWidth;
-		$('winH').value = wHeight;
+		// $('winW').value = wWidth;
+		// $('winH').value = wHeight;
 
-		$('wToolbarOption').checked = wToolbar;
-		$('wTitlebarOption').checked = wTitlebar;
-		$('wLocationOption').checked = wLocation;
-		$('wStatusOption').checked = wStatus;
-		$('wScrollbarsOption').checked = wScrollbars;
-		$('wResizableOption').checked = wResizable;
-		$('wMenubarOption').checked = wMenubar;
+		// $('wToolbarOption').checked = wToolbar;
+		// $('wTitlebarOption').checked = wTitlebar;
+		// $('wLocationOption').checked = wLocation;
+		// $('wStatusOption').checked = wStatus;
+		// $('wScrollbarsOption').checked = wScrollbars;
+		// $('wResizableOption').checked = wResizable;
+		// $('wMenubarOption').checked = wMenubar;
 
 		Utils.toggleDisplay('optionSet');
 		Utils.toggleDisplay('debug');
 
 		if(closeOnFinish)
 		{
-			$('closeOnFinishOption').checked = true;
+			// $('closeOnFinishOption').checked = true;
 		}
 
-		launchWithEmbeddedParam = $('toggleEmbeddedOption').checked;
-		launchWithCustomApiProperty = $('toggleCustomKeyValueOption').checked;
+		launchWithEmbeddedParam = false;
+		launchWithCustomApiProperty = false;
 		
-		$('searchString').disabled = !launchWithEmbeddedParam;
-		$('customApiKey').disabled = !launchWithCustomApiProperty;
-		$('customApiValue').disabled = !launchWithCustomApiProperty;
+		// $('searchString').disabled = !launchWithEmbeddedParam;
+		// $('customApiKey').disabled = !launchWithCustomApiProperty;
+		// $('customApiValue').disabled = !launchWithCustomApiProperty;
 
 
-		$('searchString').value = defaultSearchString;
-		$('customApiKey').value = defaultCustomApiKey;
-		$('customApiValue').value = defaultCustomApiValue;
+		// $('searchString').value = defaultSearchString;
+		// $('customApiKey').value = defaultCustomApiKey;
+		// $('customApiValue').value = defaultCustomApiValue;
 
         Utils.log('Storage type will be: '+storageObject.toString(),'info');
 
@@ -889,19 +891,12 @@ var gLMS = (function(){
 	{
 		this.init();
 	};
-});
+})();
 
 
 // Cookie Functions
 // ----------------------------------------------------------------------------
 // save/read/delete cookie functions for storing small chunks of data in the browser
-// 19990326
-
-// Copyright (C) 1999 Dan Steinman
-// Distributed under the terms of the GNU Library General Public License
-// Available at http://www.dansteinman.com/dynapi/
-
-// thanks to: Jesee Chisholm <JCHISHOLM@SENSORMATIC-VPD.com>
 
 function saveCookie(name,value,days)
 {
@@ -1018,42 +1013,42 @@ Date.prototype.toJSONString = function () {
 Number.prototype.toJSONString = function () {
     return isFinite(this) ? String(this) : "null";
 };
-Object.prototype.toJSONString = function () {
-    var a = ['{'], b, i, v;
+// Object.prototype.toJSONString = function () {
+//     var a = ['{'], b, i, v;
 
-    function p(s) {
-        if (b) {
-            a.push(',');
-        }
-        a.push(i.toJSONString(), ':', s);
-        b = true;
-    }
+//     function p(s) {
+//         if (b) {
+//             a.push(',');
+//         }
+//         a.push(i.toJSONString(), ':', s);
+//         b = true;
+//     }
 
-    for (i in this) {
-        if (this.hasOwnProperty(i)) {
-            v = this[i];
-            switch (typeof v) {
-            case 'undefined':
-            case 'function':
-            case 'unknown':
-                break;
-            case 'object':
-                if (v) {
-                    if (typeof v.toJSONString === 'function') {
-                        p(v.toJSONString());
-                    }
-                } else {
-                    p("null");
-                }
-                break;
-            default:
-                p(v.toJSONString());
-            }
-        }
-    }
-    a.push('}');
-    return a.join('');
-};
+//     for (i in this) {
+//         if (this.hasOwnProperty(i)) {
+//             v = this[i];
+//             switch (typeof v) {
+//             case 'undefined':
+//             case 'function':
+//             case 'unknown':
+//                 break;
+//             case 'object':
+//                 if (v) {
+//                     if (typeof v.toJSONString === 'function') {
+//                         p(v.toJSONString());
+//                     }
+//                 } else {
+//                     p("null");
+//                 }
+//                 break;
+//             default:
+//                 p(v.toJSONString());
+//             }
+//         }
+//     }
+//     a.push('}');
+//     return a.join('');
+// };
 (function (s){
     var m = {
         '\b': '\\b',
@@ -1194,6 +1189,7 @@ function CMIComponent(thename, thevalue, readstatus, datatype){
 * Top level object to hold complete CMI data model and API methods
 */
 function GenericAPIAdaptor(){
+	console.log("GenericAPIAdaptor");
 	this.cmi = new CMIModel;
 	this.LMSInitialize = LMSInitializeMethod;
 	this.LMSGetValue = LMSGetValueMethod;
