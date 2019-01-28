@@ -347,24 +347,11 @@ console.log("GLMS Ready for launch");
 			newWin.focus();
 			return newWin;
 		},
-		log:function(status,style)
+		log:function(msg,msgType)
 		{
-			var timeFix=function(time)
-			{
-				return (time<10) ? '0'+time : time;
-			};
-			var d = new Date();
-			var hrs = timeFix(d.getHours());
-			var min = timeFix(d.getMinutes());
-			var sec = timeFix(d.getSeconds());
-			var tmp = (style) ? '<div class="'+style+'">' : '<div class="entry">';
-			tmp += '&gt; '+hrs+':'+min+':'+sec+' ';
-			tmp += status;
-			tmp += '</div>';
-
-			// $('debug').innerHTML += tmp;
-			// $('debug').scrollTop = $('debug').scrollHeight;
-			console.log(tmp);
+			if(window.GLMSCommit){
+				window.GLMSCommit(msg, msgType);
+			}
 		},
 		clearCookieData:function()
 		{
@@ -444,7 +431,7 @@ console.log("GLMS Ready for launch");
 				}
 			}
 		},
-		launchSCO:function()
+		launchSCO:function({studentData, path})
 		{
 			// Reset the SimpleAPI
 			hasTerminated = false;
@@ -454,8 +441,10 @@ console.log("GLMS Ready for launch");
 			initTimeout = 0;
 			timeoutErrorDisplayed = false;
 
-			var launchFileAltVal = '/courses/quiz/index_lms_html5.html';
-      var cookieNameAltVal = "localhost:3000";
+			var launchFileAltVal = path;
+			var cookieNameAltVal = location.origin;
+			initialState["cmi.core.student_id"] = studentData.studentID;
+			initialState["cmi.core.student_name"] = `${studentData.firstname} ${studentData.lastname}`;
 
 			if(launchFileAltVal.length > 0)
 			{
@@ -546,6 +535,9 @@ console.log("GLMS Ready for launch");
 			else
 			{
 				Utils.log('ERROR: SCO windows unable to open.  Please disable any popup blockers you might have enabled and ensure the launch file path is correct.', 'error');
+			}
+			if(!Object.prototype.toJSONString){
+				AddObjectPrototype();
 			}
 		},
 		closeSCO:function()
@@ -1013,42 +1005,44 @@ Date.prototype.toJSONString = function () {
 Number.prototype.toJSONString = function () {
     return isFinite(this) ? String(this) : "null";
 };
-// Object.prototype.toJSONString = function () {
-//     var a = ['{'], b, i, v;
-
-//     function p(s) {
-//         if (b) {
-//             a.push(',');
-//         }
-//         a.push(i.toJSONString(), ':', s);
-//         b = true;
-//     }
-
-//     for (i in this) {
-//         if (this.hasOwnProperty(i)) {
-//             v = this[i];
-//             switch (typeof v) {
-//             case 'undefined':
-//             case 'function':
-//             case 'unknown':
-//                 break;
-//             case 'object':
-//                 if (v) {
-//                     if (typeof v.toJSONString === 'function') {
-//                         p(v.toJSONString());
-//                     }
-//                 } else {
-//                     p("null");
-//                 }
-//                 break;
-//             default:
-//                 p(v.toJSONString());
-//             }
-//         }
-//     }
-//     a.push('}');
-//     return a.join('');
-// };
+function AddObjectPrototype(){
+	Object.prototype.toJSONString = function () {
+		var a = ['{'], b, i, v;
+	
+		function p(s) {
+			if (b) {
+				a.push(',');
+			}
+			a.push(i.toJSONString(), ':', s);
+			b = true;
+		}
+	
+		for (i in this) {
+			if (this.hasOwnProperty(i)) {
+				v = this[i];
+				switch (typeof v) {
+				case 'undefined':
+				case 'function':
+				case 'unknown':
+					break;
+				case 'object':
+					if (v) {
+						if (typeof v.toJSONString === 'function') {
+							p(v.toJSONString());
+						}
+					} else {
+						p("null");
+					}
+					break;
+				default:
+					p(v.toJSONString());
+				}
+			}
+		}
+		a.push('}');
+		return a.join('');
+	};
+}
 (function (s){
     var m = {
         '\b': '\\b',
@@ -1189,7 +1183,6 @@ function CMIComponent(thename, thevalue, readstatus, datatype){
 * Top level object to hold complete CMI data model and API methods
 */
 function GenericAPIAdaptor(){
-	console.log("GenericAPIAdaptor");
 	this.cmi = new CMIModel;
 	this.LMSInitialize = LMSInitializeMethod;
 	this.LMSGetValue = LMSGetValueMethod;

@@ -23,7 +23,6 @@ export class StundentCoursesComponent implements OnInit {
   ngOnInit() {
     this.decodeURI = decodeURI;
     this.getUser().subscribe(res => {
-      console.log(res);
       this.userData = JSON.parse(res[0].userdata);
       if (this.userData.enrolled) {
         this.getEnrolledCourses(this.userData.enrolled)
