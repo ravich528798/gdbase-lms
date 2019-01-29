@@ -37,3 +37,5 @@ export const URL_COURSES = `${Domain}/courses`
 export const URL_ENROLL_USERS = `${URL_API}/enrollUsers.php`;
 
 export const URL_GET_ENROLLED_COURSES = `${URL_API}/get-enrolled-courses.php`;
+
+export const URL_GLMS_COMMIT = `${URL_API}/glms-commit.php`;

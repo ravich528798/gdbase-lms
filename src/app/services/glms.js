@@ -1,10 +1,12 @@
-console.log("GLMS Ready for launch");
+console.log("GLMS Loaded");
 (function(){
 
 	this._VERSION = "2.2.20130225";
+
+	this.GLMSReady = false;
 	
 	// Should we skip the automatic manifest check?
-	this.skipManifestCheck = false;
+	this.skipManifestCheck = true;
 
 	// The SCO's *default* launch file
 	this.launchFile = 'story.html';
@@ -349,7 +351,7 @@ console.log("GLMS Ready for launch");
 		},
 		log:function(msg,msgType)
 		{
-			if(window.GLMSCommit){
+			if(window.GLMSCommit &&	GLMSReady){
 				window.GLMSCommit(msg, msgType);
 			}
 		},
@@ -557,7 +559,7 @@ console.log("GLMS Ready for launch");
 		},
 		toggleDisplay:function(elm)
 		{
-			$(elm).style.display = ($(elm).style.display == 'block') ? 'none' : 'block';
+			// $(elm).style.display = ($(elm).style.display == 'block') ? 'none' : 'block';
 		},
 		toggleCloseOnFinishOption:function(chkd)
 		{
@@ -802,8 +804,8 @@ console.log("GLMS Ready for launch");
 		// $('wResizableOption').checked = wResizable;
 		// $('wMenubarOption').checked = wMenubar;
 
-		Utils.toggleDisplay('optionSet');
-		Utils.toggleDisplay('debug');
+		// Utils.toggleDisplay('optionSet');
+		// Utils.toggleDisplay('debug');
 
 		if(closeOnFinish)
 		{

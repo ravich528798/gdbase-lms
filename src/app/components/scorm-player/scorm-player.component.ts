@@ -1,7 +1,7 @@
 import {Component,OnInit, Inject} from '@angular/core';
 import {Router,ActivatedRoute} from '@angular/router';
 import {Observable} from 'rxjs';
-import {URL_GET_USER} from 'src/app/api';
+import {URL_GET_USER, URL_GLMS_COMMIT} from 'src/app/api';
 import {HttpClient} from '@angular/common/http';
 import { WindowWrapper } from 'src/app/directives/WindowWrapper';
 
@@ -30,6 +30,8 @@ export class ScormPlayerComponent implements OnInit {
 
     this.getUser().subscribe(res => {
       this.userData = res[0];
+      this.coursesData = this.userData.courses_data ? this.userData.courses_data : {};
+      this.win['GLMSReady'] = true;
       this.win['Utils'].launchSCO({
         path: this.launchPath,
         studentData: this.userData,
@@ -44,23 +46,58 @@ export class ScormPlayerComponent implements OnInit {
   });
 
   GLMSCommit = (msg,msgType) => {
-    console.log(msg, msgType, this.win['API'].cmi);
+    if(!this.coursesData[this.courseID]){
+      this.coursesData = this.buildCourseData(this.coursesData, this.win['API'].cmi);
+    }else{
+      this.coursesData[this.courseID].cmi = this.win['API'].cmi;
+    }
+    this.coursesData = this.addTimePathToLog(this.coursesData, msg, msgType);
+    this.http.post(URL_GLMS_COMMIT, {
+      studentID: this.userData.studentID,
+      coursesData: this.coursesData
+    }).subscribe(res => {
+      console.log(res);
+    },err=>{
+      console.log(err);
+    })
   }
 
-  buildCourseData(courses_data){
-    if(!courses_data){
-      courses_data[this.courseID] = {
-        cmi: this.win['API'].cmi,
-        logs:{
-          entries:{
-
-          },
-          errors:{
-
-          }
-        }
+  buildCourseData(courseData, cmi){
+    courseData[this.courseID] = {
+      cmi: cmi,
+      logs:{
+        entries:{},
+        errors:{},
       }
     }
-    
+    return courseData;
+  }
+
+  addTimePathToLog(data, msg, msgType){
+    const d = new Date(),
+          year = d.getFullYear().toString(),
+          month = (d.getMonth() + 1).toString(),
+          day = d.getDate().toString(),
+          time = `${d.getHours()}_${d.getMinutes()}_${d.getSeconds()}_${d.getMilliseconds()}`,
+      _msgType = msgType === 'entry' || msgType === 'info' ? 'entries': 'errors';
+      if(!data[this.courseID].logs[_msgType][year]){ // if year NA
+         data[this.courseID].logs[_msgType][year] = {};
+         data[this.courseID].logs[_msgType][year][month] = {};
+         data[this.courseID].logs[_msgType][year][month][day] = {};
+         data[this.courseID].logs[_msgType][year][month][day][time] = msg;
+         return data;
+      }else if(!data[this.courseID].logs[_msgType][year][month]){// if month NA
+        data[this.courseID].logs[_msgType][year][month] = {};
+         data[this.courseID].logs[_msgType][year][month][day] = {};
+         data[this.courseID].logs[_msgType][year][month][day][time] = msg;
+         return data;
+      }else if(!data[this.courseID].logs[_msgType][year][month][day]){ // if date NA
+        data[this.courseID].logs[_msgType][year][month][day] = {};
+        data[this.courseID].logs[_msgType][year][month][day][time] = msg;
+        return data;
+      }else{
+        data[this.courseID].logs[_msgType][year][month][day][time] = msg;
+        return data;
+      }
   }
 }
