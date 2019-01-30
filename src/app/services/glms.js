@@ -50,10 +50,10 @@ console.log("GLMS Loaded");
 	}
 
 	// The width of the SCO window when launched
-	this.wWidth = this.getViewport().width;
+	this.wWidth = '100%';
 
 	// The height of the SCO window when launched
-	this.wHeight = this.getViewport().height;
+	this.wHeight = this.getViewport().height - 10;
 
 	// SCO window default features
 	this.wToolbar = false;
@@ -127,9 +127,9 @@ console.log("GLMS Loaded");
 			if (lasterr != '0') {
 				var errorstr = this.api.LMSGetErrorString(lasterr);
 				var diag = this.api.LMSGetDiagnostic(lasterr);
-				var msg = "Error Calling: " + this.lastCmd + "<br>";
-				msg += "LMSGetLastError() = " + lasterr + "<br>";
-				msg += "LMSGetErrorString('" + lasterr + "') = " + errorstr + "<br>";
+				var msg = "Error Calling: " + this.lastCmd;
+				msg += "LMSGetLastError() = " + lasterr;
+				msg += "LMSGetErrorString('" + lasterr + "') = " + errorstr;
 				msg += "LMSGetDiagnostic('" + lasterr + "') = " + diag;
 				Utils.log(msg, 'error');
 			}

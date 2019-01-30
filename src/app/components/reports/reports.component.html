@@ -1,22 +1,94 @@
 <div class="reports-container">
+  <h3 class="mb-3" *ngIf="currentUser">Courses enrolled to {{currentUser.firstname}} {{currentUser.lastname}}</h3>
+  <hr>
+  <br>
   <mat-accordion>
-    <mat-expansion-panel>
-      <mat-expansion-panel-header>
-        <mat-panel-title>
-          Personal data
-        </mat-panel-title>
-        <mat-panel-description>
-          Type your name and age
-        </mat-panel-description>
+    <mat-expansion-panel *ngFor="let course of courses">
+      <mat-expansion-panel-header collapsedHeight="100px" expandedHeight="125px">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-sm-1 text-center">
+              <mat-icon mat-list-icon *ngIf="!parseJson(course.course_data).course_img">folder</mat-icon>
+              <div class="course-img" *ngIf="parseJson(course.course_data).course_img" [ngStyle]="{'background-image': 'url('+parseJson(course.course_data).course_img+')'}"></div>
+            </div>
+            <div class="col-sm-7 text-left">
+              <div class="col-sm-7 text-left">
+                <h4 mat-line>{{course.course_name}}</h4>
+                <p mat-line style="color: #6c757d;" [innerHTML]="decodeURI(parseJson(course.course_data).description)"></p>
+              </div>
+            </div>
+          </div>
+        </div>
       </mat-expansion-panel-header>
-  
-      <mat-form-field>
-        <input matInput placeholder="First name">
-      </mat-form-field>
-  
-      <mat-form-field>
-        <input matInput placeholder="Age">
-      </mat-form-field>
+      <div class="report-content" [ngClass]="{'no-data': !currentUser.courses_data[course.course_id]}">
+        <p *ngIf="!currentUser.courses_data[course.course_id]">Course has not been attempted yet.</p>
+        <div class="container-fluid data-list" *ngIf="currentUser.courses_data[course.course_id]">
+          <div class="row">
+            
+            <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12 data-cell">
+              
+              <b>Student ID : </b> {{currentUser.courses_data[course.course_id].cmi.core.student_id.cmivalue}}
+            
+            </div>
+            <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12 data-cell">
+              
+              <b>Student Name : </b> {{currentUser.courses_data[course.course_id].cmi.core.student_name.cmivalue}}
+            
+            </div>
+            <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12 data-cell">
+
+              <b>Entry Type : </b> {{currentUser.courses_data[course.course_id].cmi.core.entry.cmivalue}}
+
+            </div>
+            <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12 data-cell">
+
+              <b>Exit Type : </b> {{currentUser.courses_data[course.course_id].cmi.core.exit.cmivalue}}
+
+            </div>
+            <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12 data-cell">
+              
+              <b>Lesson Status : </b> {{currentUser.courses_data[course.course_id].cmi.core.lesson_status.cmivalue}}
+            
+            </div>
+            <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12 data-cell">
+              
+              <b>Max Score : </b> {{currentUser.courses_data[course.course_id].cmi.core.score.max.cmivalue}}
+            
+            </div>
+            <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12 data-cell">
+              
+              <b>Min Score : </b> {{currentUser.courses_data[course.course_id].cmi.core.score.min.cmivalue}}
+            
+            </div>
+            <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12 data-cell">
+              
+              <b>Student Score : </b> {{currentUser.courses_data[course.course_id].cmi.core.score.raw.cmivalue}}
+            
+            </div>
+            <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12 data-cell">
+              
+              <b>Last Session: </b> {{currentUser.courses_data[course.course_id].cmi.core.session_time.cmivalue}}
+            
+            </div>
+            <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12 data-cell">
+              
+              <b>Total Time Spent: </b> {{currentUser.courses_data[course.course_id].cmi.core.total_time.cmivalue}}
+            
+            </div>
+            <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12 data-cell">
+              
+              <b>Total Interactions: </b> {{currentUser.courses_data[course.course_id].cmi.interactions._count.cmivalue}}
+            
+            </div>
+            <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12 data-cell">
+              
+              <b>Email: </b> {{currentUser.email}}
+            
+            </div>
+          
+          </div>
+        </div>
+      </div>
     </mat-expansion-panel>
   </mat-accordion>
 </div>
