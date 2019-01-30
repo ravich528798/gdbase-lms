@@ -1,10 +1,10 @@
 console.log("GLMS Loaded");
-(function(){
+(function () {
 
 	this._VERSION = "2.2.20130225";
 
 	this.GLMSReady = false;
-	
+
 	// Should we skip the automatic manifest check?
 	this.skipManifestCheck = true;
 
@@ -12,7 +12,7 @@ console.log("GLMS Loaded");
 	this.launchFile = 'story.html';
 
 	// The *default* name of the cookie to be used within this session
-	this.cookieName = 'SimpleAPI_Data_'+_VERSION;
+	this.cookieName = 'SimpleAPI_Data_' + _VERSION;
 
 	// Should the *default* cookie name use the name of the parent folder instead?
 	this.useParentFolderAsCookieName = true;
@@ -49,19 +49,19 @@ console.log("GLMS Loaded");
 	// to avoid the appearance of unexpected behaviors within the SCO
 	// in subsequent tests...
 	this.initialState = {
-		'cmi.core._children':'student_id,student_name,lesson_status,lesson_location,lesson_mode,score,credit,entry,exit,session_time,total_time',
-		'cmi.core.score._children':'raw',
-		'cmi.core.student_id':'joe_student_001',
-		'cmi.core.student_name':'Joe Student',
-		'cmi.core.lesson_status':'not attempted',
-		'cmi.core.score.raw':'',
-		'cmi.core.lesson_location':'',
-		'cmi.suspend_data':'',
-		'cmi.core.session_time':'0000:00:00.00',
-		'cmi.core.credit':'credit', /* "credit" or "no-credit" */
-		'cmi.core.entry':'ab-initio', /* "resume" or "ab-initio" */
-		'cmi.core.lesson_mode':'normal', /* "browse",  "normal" or "review" */
-		'cmi.core.exit':'' /* "time-out", "suspend" or "logout" */
+		'cmi.core._children': 'student_id,student_name,lesson_status,lesson_location,lesson_mode,score,credit,entry,exit,session_time,total_time',
+		'cmi.core.score._children': 'raw',
+		'cmi.core.student_id': 'joe_student_001',
+		'cmi.core.student_name': 'Joe Student',
+		'cmi.core.lesson_status': 'not attempted',
+		'cmi.core.score.raw': '',
+		'cmi.core.lesson_location': '',
+		'cmi.suspend_data': '',
+		'cmi.core.session_time': '0000:00:00.00',
+		'cmi.core.credit': 'credit', /* "credit" or "no-credit" */
+		'cmi.core.entry': 'ab-initio', /* "resume" or "ab-initio" */
+		'cmi.core.lesson_mode': 'normal', /* "browse",  "normal" or "review" */
+		'cmi.core.exit': '' /* "time-out", "suspend" or "logout" */
 	};
 
 	/*
@@ -75,15 +75,14 @@ console.log("GLMS Loaded");
 	this.optionsOpen = true;
 	this.initTimeoutMax = 20000;
 	this.initTimeout = 0;
-	this.fullPath = document.location.href.substr(0,document.location.href.lastIndexOf('/'))
-	this.parentFolder = fullPath.substr(fullPath.lastIndexOf('/')+1,fullPath.length);
+	this.fullPath = document.location.href.substr(0, document.location.href.lastIndexOf('/'))
+	this.parentFolder = fullPath.substr(fullPath.lastIndexOf('/') + 1, fullPath.length);
 	this.timeoutErrorDisplayed = false;
 	this.launchWithEmbeddedParam = false;
 	this.launchWithCustomApiProperty = false;
-    this.storageObject;
+	this.storageObject;
 
-	this.SimpleAPI = function(cookiename,api,initData)
-	{
+	this.SimpleAPI = function (cookiename, api, initData) {
 		this.api = api;
 		this.initData = initData;
 		this.__data = null;
@@ -93,80 +92,67 @@ console.log("GLMS Loaded");
 		this.lastError = "0";
 		this.lastCmd = '';
 
-		this.logCommand=function()
-		{
-			Utils.log(this.lastCmd,'entry');
+		this.logCommand = function () {
+			Utils.log(this.lastCmd, 'entry');
 			var lasterr = this.api.LMSGetLastError();
-			if (lasterr != '0')
-			{
+			if (lasterr != '0') {
 				var errorstr = this.api.LMSGetErrorString(lasterr);
 				var diag = this.api.LMSGetDiagnostic(lasterr);
 				var msg = "Error Calling: " + this.lastCmd + "<br>";
 				msg += "LMSGetLastError() = " + lasterr + "<br>";
 				msg += "LMSGetErrorString('" + lasterr + "') = " + errorstr + "<br>";
 				msg += "LMSGetDiagnostic('" + lasterr + "') = " + diag;
-				Utils.log(msg,'error');
+				Utils.log(msg, 'error');
 			}
 		};
 
 		// LMSInitialize
-		this.LMSInitialize=function(arg)
-		{
+		this.LMSInitialize = function (arg) {
 			var success = this.api.LMSInitialize(arg);
 			this.lastCmd = "LMSInitialize('" + arg + "') = " + success;
 			this.logCommand();
 			this.initialized = (success === 'true') ? true : false;
-			if(this.initialized)
-			{
+			if (this.initialized) {
 				this.terminated = false;
 				hasInitialized = true;
-				for(var o in this.api)
-				{
-					if(typeof this.api[o] != 'function')
-					{
+				for (var o in this.api) {
+					if (typeof this.api[o] != 'function') {
 						this[o] = this.api[o];
 					}
 				}
 
 				this.__data = Utils.getInitAPIData(this.initData);
-				for(var el in this.__data)
-				{
-					loadDataIntoModel(el,this.__data[el]);
+				for (var el in this.__data) {
+					loadDataIntoModel(el, this.__data[el]);
 				}
 			}
 			return success;
 		};
 
 		// LMSFinish
-		this.LMSFinish=function(arg)
-		{
+		this.LMSFinish = function (arg) {
 			var success = this.api.LMSFinish(arg);
 			this.lastCmd = "LMSFinish('" + arg + "') = " + success;
 			this.logCommand();
-			if(success === 'true')
-			{
+			if (success === 'true') {
 				this.initialized = false;
 				this.terminated = true;
 				hasTerminated = true;
-				if(this.__data['cmi.core.session_time'] && (this.__data['cmi.core.session_time'].length > 0))
-				{
-					if(this.__data['cmi.core.total_time'] == null || this.__data['cmi.core.total_time'] == '')
-					{
+				if (this.__data['cmi.core.session_time'] && (this.__data['cmi.core.session_time'].length > 0)) {
+					if (this.__data['cmi.core.total_time'] == null || this.__data['cmi.core.total_time'] == '') {
 						this.__data['cmi.core.total_time'] = '0000:00:00.00';
 					}
 					var totalTime = Utils.addTime(this.__data['cmi.core.total_time'], this.__data['cmi.core.session_time']);
 					this.__data['cmi.core.total_time'] = totalTime;
-					
-					var cdata = this.__data.toJSONString();
-                    storageObject.persist(this.cookiename,cdata,365);
 
-					Utils.log('Total Time (cmi.core.total_time): '+totalTime,'info');
+					var cdata = this.__data.toJSONString();
+					storageObject.persist(this.cookiename, cdata, 365);
+
+					Utils.log('Total Time (cmi.core.total_time): ' + totalTime, 'info');
 				}
 
-				if(closeOnFinish)
-				{
-					if(scoWin && !scoWin.closed)
-					{
+				if (closeOnFinish) {
+					if (scoWin && !scoWin.closed) {
 						Utils.closeSCO();
 					}
 				}
@@ -175,8 +161,7 @@ console.log("GLMS Loaded");
 		};
 
 		// LMSGetValue
-		this.LMSGetValue=function(name)
-		{
+		this.LMSGetValue = function (name) {
 			var value = unescape(this.api.LMSGetValue(name));
 			this.lastCmd = "LMSGetValue('" + name + "') = " + value;
 			this.logCommand();
@@ -184,57 +169,50 @@ console.log("GLMS Loaded");
 		};
 
 		// LMSSetValue
-		this.LMSSetValue=function(name, value)
-		{
+		this.LMSSetValue = function (name, value) {
 			var success = this.api.LMSSetValue(name, escape(value));
 			this.lastCmd = "LMSSetValue('" + name + "','" + value + "') = " + success;
 			this.logCommand();
 
-			if(success === 'true')
-			{
+			if (success === 'true') {
 				this.__data[name] = value;
 			}
-			
+
 			return success;
 		};
 
 		// LMSCommit
-		this.LMSCommit=function(arg)
-		{
+		this.LMSCommit = function (arg) {
 			var success = this.api.LMSCommit(arg);
 			this.lastCmd = "LMSCommit('" + arg + "') = " + success;
 			this.logCommand();
 
-			if(success === 'true')
-			{
+			if (success === 'true') {
 				var cdata = this.__data.toJSONString();
-                storageObject.persist(this.cookiename,cdata,365);
+				storageObject.persist(this.cookiename, cdata, 365);
 			}
-			
+
 			return success;
 		};
 
 		// LMSGetErrorString
-		this.LMSGetErrorString=function(arg)
-		{
+		this.LMSGetErrorString = function (arg) {
 			var errorstr = this.api.LMSGetErrorString(arg);
-			Utils.log("LMSGetErrorString('" + arg + "') = " + errorstr,'entry');
+			Utils.log("LMSGetErrorString('" + arg + "') = " + errorstr, 'entry');
 			return errorstr;
 		};
 
 		// LMSGetLastError
-		this.LMSGetLastError=function()
-		{
+		this.LMSGetLastError = function () {
 			var lasterr = this.api.LMSGetLastError();
-			Utils.log("LMSGetLastError() = " + lasterr,'entry');
+			Utils.log("LMSGetLastError() = " + lasterr, 'entry');
 			return lasterr;
 		};
 
 		// LMSGetDiagnostic
-		this.LMSGetDiagnostic=function(arg)
-		{
+		this.LMSGetDiagnostic = function (arg) {
 			var diag = this.api.LMSGetDiagnostic(arg);
-			Utils.log("LMSGetDiagnostic('" + arg + "') = " + diag,'entry');
+			Utils.log("LMSGetDiagnostic('" + arg + "') = " + diag, 'entry');
 			return diag;
 		};
 	};
@@ -242,44 +220,34 @@ console.log("GLMS Loaded");
 	// Utilities
 	// ----------------------------------------------------------------------------
 	this.Utils = {
-		getInitAPIData:function(initData)
-		{
-			if(storageObject.retrieve(API.cookiename) !== null && storageObject.retrieve(API.cookiename) !== undefined)
-			{
+		getInitAPIData: function (initData) {
+			if (storageObject.retrieve(API.cookiename) !== null && storageObject.retrieve(API.cookiename) !== undefined) {
 				return storageObject.retrieve(API.cookiename).parseJSON();
 			}
-			else
-			{
+			else {
 				return initData;
 			}
 		},
-		dumpAPI:function()
-		{
-			if(API.__data)
-			{
-				Utils.log('<b>Dumping API object:</b> <blockquote> ' + this.formatAPIData(API.__data.toJSONString()) + '</blockquote>','info');
+		dumpAPI: function () {
+			if (API.__data) {
+				Utils.log('<b>Dumping API object:</b> <blockquote> ' + this.formatAPIData(API.__data.toJSONString()) + '</blockquote>', 'info');
 			}
-			else
-			{
-				Utils.log('ERROR: API object contains no data.','error');
+			else {
+				Utils.log('ERROR: API object contains no data.', 'error');
 			}
 		},
 
-		dumpExistingAPIData:function()
-		{
-			if(storageObject.retrieve(cookieName) !== undefined && storageObject.retrieve(cookieName) !== null)
-			{
+		dumpExistingAPIData: function () {
+			if (storageObject.retrieve(cookieName) !== undefined && storageObject.retrieve(cookieName) !== null) {
 				var existingData = storageObject.retrieve(cookieName);
-				Utils.log('<b>Existing API Data (from '+storageObject.toString()+' &quot;'+cookieName+'&quot; - To be used in API during initialization):</b> <blockquote> ' + this.formatAPIData(existingData) + '</blockquote>','info');
+				Utils.log('<b>Existing API Data (from ' + storageObject.toString() + ' &quot;' + cookieName + '&quot; - To be used in API during initialization):</b> <blockquote> ' + this.formatAPIData(existingData) + '</blockquote>', 'info');
 			}
-			else
-			{
-				Utils.log('No Existing API data found in &quot;'+cookieName+'&quot;. Will use default init data.','info');
+			else {
+				Utils.log('No Existing API data found in &quot;' + cookieName + '&quot;. Will use default init data.', 'info');
 			}
 		},
 
-		formatAPIData:function(str)
-		{
+		formatAPIData: function (str) {
 			var html;
 			html = this.replaceAll(str, '{"', '{<br>"');
 			html = this.replaceAll(html, '"}', '"<br>}');
@@ -288,13 +256,11 @@ console.log("GLMS Loaded");
 			return html;
 		},
 
-		replaceAll:function(text, strA, strB)
-		{
-			return text.replace( new RegExp(strA,"g"), strB );    
+		replaceAll: function (text, strA, strB) {
+			return text.replace(new RegExp(strA, "g"), strB);
 		},
 
-		addTime:function(first, second)
-		{
+		addTime: function (first, second) {
 			var sFirst = first.split(":");
 			var sSecond = second.split(":");
 			var cFirst = sFirst[2].split(".");
@@ -303,11 +269,11 @@ console.log("GLMS Loaded");
 
 			FirstCents = 0;  //Cents
 			if (cFirst.length > 1) {
-				FirstCents = parseInt(cFirst[1],10);
+				FirstCents = parseInt(cFirst[1], 10);
 			}
 			SecondCents = 0;
 			if (cSecond.length > 1) {
-				SecondCents = parseInt(cSecond[1],10);
+				SecondCents = parseInt(cSecond[1], 10);
 			}
 			var cents = FirstCents + SecondCents;
 			change = Math.floor(cents / 100);
@@ -316,21 +282,21 @@ console.log("GLMS Loaded");
 				cents = "0" + cents.toString();
 			}
 
-			var secs = parseInt(cFirst[0],10)+parseInt(cSecond[0],10)+change;  //Seconds
+			var secs = parseInt(cFirst[0], 10) + parseInt(cSecond[0], 10) + change;  //Seconds
 			change = Math.floor(secs / 60);
 			secs = secs - (change * 60);
 			if (Math.floor(secs) < 10) {
 				secs = "0" + secs.toString();
 			}
 
-			mins = parseInt(sFirst[1],10)+parseInt(sSecond[1],10)+change;   //Minutes
+			mins = parseInt(sFirst[1], 10) + parseInt(sSecond[1], 10) + change;   //Minutes
 			change = Math.floor(mins / 60);
 			mins = mins - (change * 60);
 			if (mins < 10) {
 				mins = "0" + mins.toString();
 			}
 
-			hours = parseInt(sFirst[0],10)+parseInt(sSecond[0],10)+change;  //Hours
+			hours = parseInt(sFirst[0], 10) + parseInt(sSecond[0], 10) + change;  //Hours
 			if (hours < 10) {
 				hours = "0" + hours.toString();
 			}
@@ -341,100 +307,80 @@ console.log("GLMS Loaded");
 				return hours + ":" + mins + ":" + secs;
 			}
 		},
-		openWindow:function(winURL,winName,winW,winH,winOpts)
-		{
-			winOptions = winOpts+",width=" + winW + ",height=" + winH;
-			newWin = window.open(winURL,winName,winOptions);
-			newWin.moveTo(0,0);
+		openWindow: function (winURL, winName, winW, winH, winOpts) {
+			winOptions = winOpts + ",width=" + winW + ",height=" + winH + ",resizable=1";
+			newWin = window.open(winURL, winName, winOptions);
+			newWin.moveTo(0, 0);
 			newWin.focus();
 			return newWin;
 		},
-		log:function(msg,msgType)
-		{
-			if(window.GLMSCommit &&	GLMSReady){
+		log: function (msg, msgType) {
+			if (window.GLMSCommit && GLMSReady) {
 				window.GLMSCommit(msg, msgType);
 			}
 		},
-		clearCookieData:function()
-		{
+		clearCookieData: function () {
 			var cookieNameAltVal = $('cookieNameAlt').value;
 
-			if(cookieNameAltVal.length > 0)
-			{
-				if(storageObject.retrieve(cookieNameAltVal))
-				{
+			if (cookieNameAltVal.length > 0) {
+				if (storageObject.retrieve(cookieNameAltVal)) {
 					storageObject.remove(cookieNameAltVal);
-					Utils.log(storageObject.toString()+'"'+$('cookieNameAlt').value+'" Cleared','info');
+					Utils.log(storageObject.toString() + '"' + $('cookieNameAlt').value + '" Cleared', 'info');
 				}
-				else
-				{
-					Utils.log(storageObject.toString()+'"'+$('cookieNameAlt').value+'" Not Found','error');
+				else {
+					Utils.log(storageObject.toString() + '"' + $('cookieNameAlt').value + '" Not Found', 'error');
 				}
 			}
-			else
-			{
-				if(storageObject.retrieve(cookieName))
-				{
+			else {
+				if (storageObject.retrieve(cookieName)) {
 					storageObject.remove(cookieName);
-					Utils.log(storageObject.toString()+'"'+cookieName+'" Cleared','info');
+					Utils.log(storageObject.toString() + '"' + cookieName + '" Cleared', 'info');
 				}
-				else
-				{
-					Utils.log(storageObject.toString()+'"'+cookieName+'" Not Found','error');
+				else {
+					Utils.log(storageObject.toString() + '"' + cookieName + '" Not Found', 'error');
 				}
 			}
 		},
-		genNewSessionName:function()
-		{
+		genNewSessionName: function () {
 			var d = new Date();
 			var hrs = d.getHours();
 			var min = d.getMinutes();
 			var sec = d.getSeconds();
 
-			if(useParentFolderAsCookieName)
-			{
-				var tmp = parentFolder+'_';
+			if (useParentFolderAsCookieName) {
+				var tmp = parentFolder + '_';
 			}
-			else
-			{
+			else {
 				var tmp = 'SimpleAPI_Data_';
 			}
-			
-			tmp += hrs+'.'+min+'.'+sec;
+
+			tmp += hrs + '.' + min + '.' + sec;
 
 			$('cookieNameAlt').value = tmp;
 		},
-		watchWin:function()
-		{
-			if(scoWin && !scoWin.closed)
-			{
+		watchWin: function () {
+			if (scoWin && !scoWin.closed) {
 				initTimeout += 1000;
-				if(initTimeout >= initTimeoutMax)
-				{
-					if(!API.initialized && !timeoutErrorDisplayed)
-					{
+				if (initTimeout >= initTimeoutMax) {
+					if (!API.initialized && !timeoutErrorDisplayed) {
 						this.log('ERROR: LMSInitialize not called within 20 seconds from launching.', 'error');
 						timeoutErrorDisplayed = true;
 					}
 				}
-				
-				setTimeout(function(){Utils.watchWin()},1000);
+
+				setTimeout(function () { Utils.watchWin() }, 1000);
 			}
-			else
-			{
-				this.log('SCO Closed','info');
-				if(!hasInitialized)
-				{
+			else {
+				this.log('SCO Closed', 'info');
+				if (!hasInitialized) {
 					this.log('ERROR: LMSInitialize was never called.', 'error');
 				}
-				if(!hasTerminated)
-				{
+				if (!hasTerminated) {
 					this.log('ERROR: LMSFinish was never called.', 'error');
 				}
 			}
 		},
-		launchSCO:function({studentData, path})
-		{
+		launchSCO: function ({ studentData, path }) {
 			// Reset the SimpleAPI
 			hasTerminated = false;
 			hasInitialized = false;
@@ -448,57 +394,45 @@ console.log("GLMS Loaded");
 			initialState["cmi.core.student_id"] = studentData.studentID;
 			initialState["cmi.core.student_name"] = `${studentData.firstname} ${studentData.lastname}`;
 
-			if(launchFileAltVal.length > 0)
-			{
+			if (launchFileAltVal.length > 0) {
 				launchFile = launchFileAltVal;
-				if(launchFileAltVal.indexOf(":") == 1)
-				{
-					launchFile = "file:///"+launchFile;
+				if (launchFileAltVal.indexOf(":") == 1) {
+					launchFile = "file:///" + launchFile;
 				}
 			}
 
-			if(cookieNameAltVal.length > 0)
-			{
+			if (cookieNameAltVal.length > 0) {
 				API.cookiename = cookieName = cookieNameAltVal;
 			}
 
-			if(launchWithCustomApiProperty)
-			{
-				try
-				{
+			if (launchWithCustomApiProperty) {
+				try {
 					var key = $('customApiKey').value;
 					var val = $('customApiValue').value;
-					if(key && val)
-					{
+					if (key && val) {
 						API[key] = val;
 					}
-					Utils.log('Injected custom key/value into API object: '+key+'='+val,'info');
+					Utils.log('Injected custom key/value into API object: ' + key + '=' + val, 'info');
 				}
-				catch(e)
-				{
-					Utils.log('ERROR: Cannot inject custom key/value into API object: '+key+'='+val+ '('+e+')','error');
+				catch (e) {
+					Utils.log('ERROR: Cannot inject custom key/value into API object: ' + key + '=' + val + '(' + e + ')', 'error');
 				}
 			}
 
-			try
-			{
-				var w =  wWidth;
-				var h =  wHeight;
+			try {
+				var w = wWidth;
+				var h = wHeight;
 				var embedParam = '';
-				if(launchWithEmbeddedParam)
-				{
-					try
-					{
+				if (launchWithEmbeddedParam) {
+					try {
 						embedParam = $('searchString').value;
-						Utils.log('Appending search string to launch file: '+$('searchString').value,'info');
+						Utils.log('Appending search string to launch file: ' + $('searchString').value, 'info');
 					}
-					catch(e)
-					{
+					catch (e) {
 						embedParam = '';
 					}
 				}
-				else
-				{
+				else {
 					embedParam = '';
 				}
 
@@ -510,79 +444,64 @@ console.log("GLMS Loaded");
 				opts += (wScrollbars) ? 'scrollbars=yes,' : '';
 				opts += (wResizable) ? 'resizable=yes,' : '';
 				opts += (wMenubar) ? 'menubar=yes,' : '';
-				opts = opts.substring(0, opts.length-1)
-				
-				Utils.log("Launching SCO win with options: "+opts)
-				
-				scoWin = this.openWindow(launchFile+embedParam,"SCOwindow",w,h,opts);
+				opts = opts.substring(0, opts.length - 1)
+
+				Utils.log("Launching SCO win with options: " + opts)
+
+				scoWin = this.openWindow(launchFile + embedParam, "SCOwindow", w, h, opts);
 			}
-			catch (e)
-			{
-				Utils.log('ERROR: '+e.description, 'error');
+			catch (e) {
+				Utils.log('ERROR: ' + e.description, 'error');
 			}
-			
-			if(scoWin !== null)
-			{
-				try
-				{
-					Utils.log('SCO Launched','info');
+
+			if (scoWin !== null) {
+				try {
+					Utils.log('SCO Launched', 'info');
 					scoWin.focus();
 					this.watchWin();
 				}
-				catch (e)
-				{
-					Utils.log('ERROR: '+err.description,'error');
+				catch (e) {
+					Utils.log('ERROR: ' + err.description, 'error');
 				}
 			}
-			else
-			{
+			else {
 				Utils.log('ERROR: SCO windows unable to open.  Please disable any popup blockers you might have enabled and ensure the launch file path is correct.', 'error');
 			}
-			if(!Object.prototype.toJSONString){
+			if (!Object.prototype.toJSONString) {
 				AddObjectPrototype();
 			}
 		},
-		closeSCO:function()
-		{
-			try
-			{
-				if(scoWin && !scoWin.closed)
-				{
-					Utils.log('Attempting to close SCO window...','info');
+		closeSCO: function () {
+			try {
+				if (scoWin && !scoWin.closed) {
+					Utils.log('Attempting to close SCO window...', 'info');
 					scoWin.close();
 				}
 			}
-			catch(e)
-			{
-				Utils.log('ERROR: Unable to close SCO window ('+e.description+')','error');
+			catch (e) {
+				Utils.log('ERROR: Unable to close SCO window (' + e.description + ')', 'error');
 			}
 		},
-		toggleDisplay:function(elm)
-		{
+		toggleDisplay: function (elm) {
 			// $(elm).style.display = ($(elm).style.display == 'block') ? 'none' : 'block';
 		},
-		toggleCloseOnFinishOption:function(chkd)
-		{
+		toggleCloseOnFinishOption: function (chkd) {
 			closeOnFinish = chkd;
 		},
-		toggleEmbeddedParam:function(chkd)
-		{
+		toggleEmbeddedParam: function (chkd) {
 			launchWithEmbeddedParam = chkd;
 			$('searchString').disabled = !chkd;
 
 		},
-		toggleCustomKeyValueOption:function(chkd)
-		{
+		toggleCustomKeyValueOption: function (chkd) {
 			launchWithCustomApiProperty = chkd;
 			$('customApiKey').disabled = !chkd;
 			$('customApiValue').disabled = !chkd;
 		},
-		toggleWindowOption:function(prop,el)
-		{
+		toggleWindowOption: function (prop, el) {
 			window[prop] = el.checked;
 		},
-		enableAllWindowOptions:function()
-		{
+		enableAllWindowOptions: function () {
 			wToolbar = true;
 			wTitlebar = true;
 			wLocation = true;
@@ -598,8 +517,7 @@ console.log("GLMS Loaded");
 			$('wResizableOption').checked = true;
 			$('wMenubarOption').checked = true;
 		},
-		disableAllWindowOptions:function()
-		{
+		disableAllWindowOptions: function () {
 			wToolbar = false;
 			wTitlebar = false;
 			wLocation = false;
@@ -615,21 +533,18 @@ console.log("GLMS Loaded");
 			$('wResizableOption').checked = false;
 			$('wMenubarOption').checked = false;
 		},
-		loadManifest:function()
-		{
+		loadManifest: function () {
 			var xmlDoc = null;
-			var file = fullPath+"/imsmanifest.xml";
+			var file = fullPath + "/imsmanifest.xml";
 
-			var useManifest=function()
-			{
-				try
-				{
+			var useManifest = function () {
+				try {
 					var m = xmlDoc.getElementsByTagName("manifest")[0];
-					
+
 					var orgs = xmlDoc.getElementsByTagName("organizations")[0];
 					var org = orgs.getElementsByTagName("organization")[0];
 					var orgTitle = org.getElementsByTagName("title")[0].firstChild.nodeValue;
-					
+
 					var items = org.getElementsByTagName("item");
 					var item = items[0];
 					var itemTitle = item.getElementsByTagName("title")[0].firstChild.nodeValue;
@@ -640,24 +555,21 @@ console.log("GLMS Loaded");
 					var resources = xmlDoc.getElementsByTagName("resources")[0];
 					var resource = resources.getElementsByTagName("resource");
 					var itemResource = null;
-					for(var i=0;i<resource.length;i++)
-					{
+					for (var i = 0; i < resource.length; i++) {
 						var id = resource[i].getAttribute("identifier");
 						var scormtype = resource[i].getAttribute("adlcp:scormtype");
-						if(id == itemIdentifierRef && scormtype.toLowerCase() == "sco")
-						{
+						if (id == itemIdentifierRef && scormtype.toLowerCase() == "sco") {
 							itemResource = resource[i];
 						}
 					}
 					var itemResourceHref = itemResource.getAttribute("href");
-					
-					Utils.log('IMS Manifest: Organization Title = &quot;'+orgTitle+'&quot;','entry');
-					if(items.length > 1)
-					{
-						Utils.log('IMS Manifest: SimpleAPI detected multiple SCO references - Only the first will be launched.','entry');
+
+					Utils.log('IMS Manifest: Organization Title = &quot;' + orgTitle + '&quot;', 'entry');
+					if (items.length > 1) {
+						Utils.log('IMS Manifest: SimpleAPI detected multiple SCO references - Only the first will be launched.', 'entry');
 					}
-					Utils.log('IMS Manifest: First SCO Item = &quot;'+itemTitle+'&quot; (Mastery Score: '+itemMasteryScore+' / Identifier: &quot;'+itemIdentifier+'&quot;)','entry');
-					Utils.log('IMS Manifest: Resource &quot;'+itemIdentifierRef+'&quot; HREF for Item &quot;'+itemIdentifier+'&quot; = &quot;'+itemResourceHref+'&quot;');
+					Utils.log('IMS Manifest: First SCO Item = &quot;' + itemTitle + '&quot; (Mastery Score: ' + itemMasteryScore + ' / Identifier: &quot;' + itemIdentifier + '&quot;)', 'entry');
+					Utils.log('IMS Manifest: Resource &quot;' + itemIdentifierRef + '&quot; HREF for Item &quot;' + itemIdentifier + '&quot; = &quot;' + itemResourceHref + '&quot;');
 
 					var obj = {};
 					obj.id = m.getAttribute("identifier");
@@ -670,10 +582,9 @@ console.log("GLMS Loaded");
 
 					return obj;
 				}
-				catch(e)
-				{
-					error=e.message;
-					Utils.log('IMS Manifest: Cannot locate or parse manifest - '+error,'error');
+				catch (e) {
+					error = e.message;
+					Utils.log('IMS Manifest: Cannot locate or parse manifest - ' + error, 'error');
 					return false;
 				}
 			};
@@ -687,46 +598,40 @@ console.log("GLMS Loaded");
 			}
 			*/
 
-			
+
 			try //Internet Explorer
 			{
-				xmlDoc=new ActiveXObject("Microsoft.XMLDOM");
-				xmlDoc.async=false;
-				xmlDoc.onreadystatechange = function()
-				{
-					if(xmlDoc.readyState == 4)
-					{
+				xmlDoc = new ActiveXObject("Microsoft.XMLDOM");
+				xmlDoc.async = false;
+				xmlDoc.onreadystatechange = function () {
+					if (xmlDoc.readyState == 4) {
 						useManifest();
 					}
 				}
 				var success = xmlDoc.load(file);
 			}
-			catch(e)
-			{
+			catch (e) {
 				try //Firefox, Mozilla, Opera, etc.
 				{
-					xmlDoc=document.implementation.createDocument("","",null);
-					xmlDoc.async=false;
-					xmlDoc.onload = function()
-					{
+					xmlDoc = document.implementation.createDocument("", "", null);
+					xmlDoc.async = false;
+					xmlDoc.onload = function () {
 						useManifest();
 					};
 					var success = xmlDoc.load(file);
 				}
-				catch(e)
-				{
+				catch (e) {
 					try //Google Chrome
 					{
 						var xmlhttp = new window.XMLHttpRequest();
-						xmlhttp.open("GET",file,false);
+						xmlhttp.open("GET", file, false);
 						xmlhttp.send(null);
 						xmlDoc = xmlhttp.responseXML.documentElement;
 						//alert(success);
 					}
-					catch(e)
-					{
-						error=e.message;
-						Utils.log('IMS Manifest: Cannot locate or parse manifest - '+error,'error');
+					catch (e) {
+						error = e.message;
+						Utils.log('IMS Manifest: Cannot locate or parse manifest - ' + error, 'error');
 
 						return false;
 					}
@@ -737,59 +642,48 @@ console.log("GLMS Loaded");
 
 	// General/Global
 	// ----------------------------------------------------------------------------
-	this.init=function()
-	{
+	this.init = function () {
 		scoWin = null;
 		var manifestObj = null;
 
-		if(!skipManifestCheck)
-		{
+		if (!skipManifestCheck) {
 			var manifestObj = Utils.loadManifest();
 		}
 
-		if(!manifestObj)
-		{
-			if(useParentFolderAsCookieName)
-			{
+		if (!manifestObj) {
+			if (useParentFolderAsCookieName) {
 				cookieName = parentFolder;
 			}
 		}
-		else
-		{
-			if(manifestObj.id)
-			{
+		else {
+			if (manifestObj.id) {
 				cookieName = manifestObj.id;
 			}
-			
-			if(manifestObj.itemResourceHref)
-			{
+
+			if (manifestObj.itemResourceHref) {
 				$('launchFileAlt').value = manifestObj.itemResourceHref;
 			}
 		}
 
 		var api = new GenericAPIAdaptor();
-		API = new SimpleAPI(cookieName,api,initialState);
+		API = new SimpleAPI(cookieName, api, initialState);
 
-        // test for localStorage
-        if(typeof(Storage) !== "undefined")
-        {
-            try {
-              if (('localStorage' in window) && window['localStorage'] && window.localStorage !== null)
-              {
-                storageObject = localStorageObject;
-              }
-              else
-              {
-                storageObject = cookieStorageObject;
-              }
-            } catch(e) {
-              storageObject = cookieStorageObject;
-            }
-        }
-        else
-        {
-            storageObject = cookieStorageObject;
-        }
+		// test for localStorage
+		if (typeof (Storage) !== "undefined") {
+			try {
+				if (('localStorage' in window) && window['localStorage'] && window.localStorage !== null) {
+					storageObject = localStorageObject;
+				}
+				else {
+					storageObject = cookieStorageObject;
+				}
+			} catch (e) {
+				storageObject = cookieStorageObject;
+			}
+		}
+		else {
+			storageObject = cookieStorageObject;
+		}
 
 		// $('cookieNameAlt').value = cookieName;
 
@@ -807,14 +701,13 @@ console.log("GLMS Loaded");
 		// Utils.toggleDisplay('optionSet');
 		// Utils.toggleDisplay('debug');
 
-		if(closeOnFinish)
-		{
+		if (closeOnFinish) {
 			// $('closeOnFinishOption').checked = true;
 		}
 
 		launchWithEmbeddedParam = false;
 		launchWithCustomApiProperty = false;
-		
+
 		// $('searchString').disabled = !launchWithEmbeddedParam;
 		// $('customApiKey').disabled = !launchWithCustomApiProperty;
 		// $('customApiValue').disabled = !launchWithCustomApiProperty;
@@ -824,65 +717,54 @@ console.log("GLMS Loaded");
 		// $('customApiKey').value = defaultCustomApiKey;
 		// $('customApiValue').value = defaultCustomApiValue;
 
-        Utils.log('Storage type will be: '+storageObject.toString(),'info');
+		Utils.log('Storage type will be: ' + storageObject.toString(), 'info');
 
 		Utils.dumpExistingAPIData();
 	};
 
-	this.sendSimApi=function(simAPI,title,totalToInclude,totalIncorrect,incStepNumberList)
-	{
-		Utils.log('Sim API Object: '+simAPI,'info');
-		Utils.log('Sim Title: '+title,'info');
+	this.sendSimApi = function (simAPI, title, totalToInclude, totalIncorrect, incStepNumberList) {
+		Utils.log('Sim API Object: ' + simAPI, 'info');
+		Utils.log('Sim Title: ' + title, 'info');
 	};
 
-	this.$=function(id)
-	{
+	this.$ = function (id) {
 		var el = document.getElementById(id);
 		return el;
 	};
 
-    // Cookie Object interface
-    this.cookieStorageObject={
-        persist:function(name,data,lifetime)
-        {
-            saveCookie(name,data,lifetime)
-        },
-        retrieve:function(name)
-        {
-            return readCookie(name);
-        },
-        remove:function(name)
-        {
-            deleteCookie(name);
-        },
-        toString:function()
-        {
-            return "Cookie";
-        }
-    };
+	// Cookie Object interface
+	this.cookieStorageObject = {
+		persist: function (name, data, lifetime) {
+			saveCookie(name, data, lifetime)
+		},
+		retrieve: function (name) {
+			return readCookie(name);
+		},
+		remove: function (name) {
+			deleteCookie(name);
+		},
+		toString: function () {
+			return "Cookie";
+		}
+	};
 
-    // LocalStorage Interface
-    this.localStorageObject={
-        persist: function(name,data,lifetime)
-        {
-            localStorage[name] = data;
-        },
-        retrieve:function(name)
-        {
-            return localStorage[name];
-        },
-        remove:function(name)
-        {
-            delete localStorage[name];
-        },
-        toString:function()
-        {
-            return "LocalStorage";
-        }
-    };
+	// LocalStorage Interface
+	this.localStorageObject = {
+		persist: function (name, data, lifetime) {
+			localStorage[name] = data;
+		},
+		retrieve: function (name) {
+			return localStorage[name];
+		},
+		remove: function (name) {
+			delete localStorage[name];
+		},
+		toString: function () {
+			return "LocalStorage";
+		}
+	};
 
-	window.onload=function()
-	{
+	window.onload = function () {
 		this.init();
 	};
 })();
@@ -892,35 +774,29 @@ console.log("GLMS Loaded");
 // ----------------------------------------------------------------------------
 // save/read/delete cookie functions for storing small chunks of data in the browser
 
-function saveCookie(name,value,days)
-{
-	if(days)
-	{
+function saveCookie(name, value, days) {
+	if (days) {
 		var date = new Date();
-		date.setTime(date.getTime()+(days*24*60*60*1000));
-		var expires = "; expires="+date.toGMTString();
+		date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+		var expires = "; expires=" + date.toGMTString();
 	}
-	else
-	{
+	else {
 		expires = "";
 	}
-	document.cookie = name+"="+value+expires+"; path=/";
+	document.cookie = name + "=" + value + expires + "; path=/";
 }
-function readCookie(name)
-{
+function readCookie(name) {
 	var nameEQ = name + "=";
 	var ca = document.cookie.split(';');
-	for(var i=0;i<ca.length;i++)
-	{
+	for (var i = 0; i < ca.length; i++) {
 		var c = ca[i];
-		while (c.charAt(0)==' ') c = c.substring(1,c.length);
-		if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+		while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+		if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
 	}
 	return null;
 }
-function deleteCookie(name)
-{
-	saveCookie(name,"",-1);
+function deleteCookie(name) {
+	saveCookie(name, "", -1);
 }
 
 // JSON
@@ -955,62 +831,62 @@ function deleteCookie(name)
 */
 
 Array.prototype.toJSONString = function () {
-    var a = ['['], b, i, l = this.length, v;
+	var a = ['['], b, i, l = this.length, v;
 
-    function p(s) {
-        if (b) {
-            a.push(',');
-        }
-        a.push(s);
-        b = true;
-    }
+	function p(s) {
+		if (b) {
+			a.push(',');
+		}
+		a.push(s);
+		b = true;
+	}
 
-    for (i = 0; i < l; i += 1) {
-        v = this[i];
-        switch (typeof v) {
-        case 'undefined':
-        case 'function':
-        case 'unknown':
-            break;
-        case 'object':
-            if (v) {
-                if (typeof v.toJSONString === 'function') {
-                    p(v.toJSONString());
-                }
-            } else {
-                p("null");
-            }
-            break;
-        default:
-            p(v.toJSONString());
-        }
-    }
-    a.push(']');
-    return a.join('');
+	for (i = 0; i < l; i += 1) {
+		v = this[i];
+		switch (typeof v) {
+			case 'undefined':
+			case 'function':
+			case 'unknown':
+				break;
+			case 'object':
+				if (v) {
+					if (typeof v.toJSONString === 'function') {
+						p(v.toJSONString());
+					}
+				} else {
+					p("null");
+				}
+				break;
+			default:
+				p(v.toJSONString());
+		}
+	}
+	a.push(']');
+	return a.join('');
 };
 Boolean.prototype.toJSONString = function () {
-    return String(this);
+	return String(this);
 };
 Date.prototype.toJSONString = function () {
 
-    function f(n) {
-        return n < 10 ? '0' + n : n;
-    }
+	function f(n) {
+		return n < 10 ? '0' + n : n;
+	}
 
-    return '"' + this.getFullYear() + '-' +
-            f(this.getMonth() + 1) + '-' +
-            f(this.getDate()) + 'T' +
-            f(this.getHours()) + ':' +
-            f(this.getMinutes()) + ':' +
-            f(this.getSeconds()) + '"';
+	return '"' + this.getFullYear() + '-' +
+		f(this.getMonth() + 1) + '-' +
+		f(this.getDate()) + 'T' +
+		f(this.getHours()) + ':' +
+		f(this.getMinutes()) + ':' +
+		f(this.getSeconds()) + '"';
 };
 Number.prototype.toJSONString = function () {
-    return isFinite(this) ? String(this) : "null";
+	return isFinite(this) ? String(this) : "null";
 };
-function AddObjectPrototype(){
+function AddObjectPrototype() {
 	Object.prototype.toJSONString = function () {
 		var a = ['{'], b, i, v;
-	
+
 		function p(s) {
 			if (b) {
 				a.push(',');
@@ -1018,26 +894,26 @@ function AddObjectPrototype(){
 			a.push(i.toJSONString(), ':', s);
 			b = true;
 		}
-	
+
 		for (i in this) {
 			if (this.hasOwnProperty(i)) {
 				v = this[i];
 				switch (typeof v) {
-				case 'undefined':
-				case 'function':
-				case 'unknown':
-					break;
-				case 'object':
-					if (v) {
-						if (typeof v.toJSONString === 'function') {
-							p(v.toJSONString());
+					case 'undefined':
+					case 'function':
+					case 'unknown':
+						break;
+					case 'object':
+						if (v) {
+							if (typeof v.toJSONString === 'function') {
+								p(v.toJSONString());
+							}
+						} else {
+							p("null");
 						}
-					} else {
-						p("null");
-					}
-					break;
-				default:
-					p(v.toJSONString());
+						break;
+					default:
+						p(v.toJSONString());
 				}
 			}
 		}
@@ -1045,41 +921,41 @@ function AddObjectPrototype(){
 		return a.join('');
 	};
 }
-(function (s){
-    var m = {
-        '\b': '\\b',
-        '\t': '\\t',
-        '\n': '\\n',
-        '\f': '\\f',
-        '\r': '\\r',
-        '"' : '\\"',
-        '\\': '\\\\'
-    };
-    s.parseJSON = function () {
-        try {
-            if (/^("(\\.|[^"\\\n\r])*?"|[,:{}\[\]0-9.\-+Eaeflnr-u \n\r\t])+?$/.
-                    test(this)) {
-                return eval('(' + this + ')');
-            }
-        } catch (e) {
-        }
-        throw new SyntaxError("parseJSON");
-    };
-    s.toJSONString = function () {
-        if (/["\\\x00-\x1f]/.test(this)) {
-            return '"' + this.replace(/([\x00-\x1f\\"])/g, function(a, b) {
-                var c = m[b];
-                if (c) {
-                    return c;
-                }
-                c = b.charCodeAt();
-                return '\\u00' +
-                    Math.floor(c / 16).toString(16) +
-                    (c % 16).toString(16);
-            }) + '"';
-        }
-        return '"' + this + '"';
-    };
+(function (s) {
+	var m = {
+		'\b': '\\b',
+		'\t': '\\t',
+		'\n': '\\n',
+		'\f': '\\f',
+		'\r': '\\r',
+		'"': '\\"',
+		'\\': '\\\\'
+	};
+	s.parseJSON = function () {
+		try {
+			if (/^("(\\.|[^"\\\n\r])*?"|[,:{}\[\]0-9.\-+Eaeflnr-u \n\r\t])+?$/.
+				test(this)) {
+				return eval('(' + this + ')');
+			}
+		} catch (e) {
+		}
+		throw new SyntaxError("parseJSON");
+	};
+	s.toJSONString = function () {
+		if (/["\\\x00-\x1f]/.test(this)) {
+			return '"' + this.replace(/([\x00-\x1f\\"])/g, function (a, b) {
+				var c = m[b];
+				if (c) {
+					return c;
+				}
+				c = b.charCodeAt();
+				return '\\u00' +
+					Math.floor(c / 16).toString(16) +
+					(c % 16).toString(16);
+			}) + '"';
+		}
+		return '"' + this + '"';
+	};
 })(String.prototype);
 
 /**
@@ -1135,27 +1011,27 @@ function AddObjectPrototype(){
 * -----------------------------------------------------------------------------------------------
 */
 
-var looseChecking ="false";
+var looseChecking = "false";
 
 /*
 * Function to initially load the server model CMI elements into the javascript
 * model, when this page first loads.
 */
-function loadDataIntoModel(element, value){
-  if (element != "cmi.interactions._count" && element != "cmi.interactions._count"){
-        if (element.indexOf("cmi.objectives") != -1){
-             dealWithSettingObjectives(element, value);
-        }
-        else if (element.indexOf("cmi.interactions") != -1){
-             dealWithSettingInteractions(element, value);
-        }
-        else{
-           var result = eval ("API."+element);
-           if (result != null){
-                result.cmivalue = value;
-           }
-        }
-  }
+function loadDataIntoModel(element, value) {
+	if (element != "cmi.interactions._count" && element != "cmi.interactions._count") {
+		if (element.indexOf("cmi.objectives") != -1) {
+			dealWithSettingObjectives(element, value);
+		}
+		else if (element.indexOf("cmi.interactions") != -1) {
+			dealWithSettingInteractions(element, value);
+		}
+		else {
+			var result = eval("API." + element);
+			if (result != null) {
+				result.cmivalue = value;
+			}
+		}
+	}
 }
 
 /*
@@ -1163,7 +1039,7 @@ function loadDataIntoModel(element, value){
 *  Used to store server specific settings and error codes etc..
 *  Is accessed as an object inside this implementation of the API object.
 */
-function ServerScoSettings(){
+function ServerScoSettings() {
 	this.isInitialized = "false";
 	this.lastError = "0";
 	this.checkDataTypeAndVocab = scoCheckDataTypeAndVocab;
@@ -1174,17 +1050,17 @@ function ServerScoSettings(){
 * Here we keep the element name, it current value, its read/write status
 * and finally it CMI datatype
 */
-function CMIComponent(thename, thevalue, readstatus, datatype){
-	this.cminame=thename;
-	this.cmivalue=thevalue;
-	this.cmireadStatus=readstatus;
-	this.cmidatatype=datatype;
+function CMIComponent(thename, thevalue, readstatus, datatype) {
+	this.cminame = thename;
+	this.cmivalue = thevalue;
+	this.cmireadStatus = readstatus;
+	this.cmidatatype = datatype;
 }
 
 /*
 * Top level object to hold complete CMI data model and API methods
 */
-function GenericAPIAdaptor(){
+function GenericAPIAdaptor() {
 	this.cmi = new CMIModel;
 	this.LMSInitialize = LMSInitializeMethod;
 	this.LMSGetValue = LMSGetValueMethod;
@@ -1206,19 +1082,19 @@ function GenericAPIAdaptor(){
 /*
 * LMSInitialize. Initialize this sco (if it is one)
 */
-function LMSInitializeMethod(parameter){
-    // check that this has been called with an empty string...
-	if (parameter != ""){
+function LMSInitializeMethod(parameter) {
+	// check that this has been called with an empty string...
+	if (parameter != "") {
 		this.ServerSco.lastError = "201"
 		return "false";
 	}
-    // check that we are not already initialized...
-    if(this.ServerSco.isInitialized == "false"){
+	// check that we are not already initialized...
+	if (this.ServerSco.isInitialized == "false") {
 		this.ServerSco.isInitialized = "true";
 		this.ServerSco.lastError = "0"
 		return "true";
 	}
-	else{
+	else {
 		this.ServerSco.lastError = "101"
 		return "false";
 	}
@@ -1227,19 +1103,19 @@ function LMSInitializeMethod(parameter){
 /*
 * LMSFinish. Finish this sco session.
 */
-function LMSFinishMethod(parameter){
-    // check that this has been called with an empty string...
-	if (parameter != ""){
+function LMSFinishMethod(parameter) {
+	// check that this has been called with an empty string...
+	if (parameter != "") {
 		this.ServerSco.lastError = "201";
 		return "false";
 	}
-    // make sure that the server is initialized...
-	if (this.ServerSco.isInitialized=="true"){
-     		this.ServerSco.isInitialized = "false";
-			this.ServerSco.lastError = "0";
-			return "true";
+	// make sure that the server is initialized...
+	if (this.ServerSco.isInitialized == "true") {
+		this.ServerSco.isInitialized = "false";
+		this.ServerSco.lastError = "0";
+		return "true";
 	}
-    else{
+	else {
 		// not initialized
 		this.ServerSco.lastError = "301";
 		return "false";
@@ -1251,39 +1127,39 @@ function LMSFinishMethod(parameter){
 /*
 * LMSCommit.  Method to update/persist any changed items in the CMI datamodel
 */
-function LMSCommitMethod(parameter){
-    // check that this has been called with an empty string...
-	if (parameter!=""){
+function LMSCommitMethod(parameter) {
+	// check that this has been called with an empty string...
+	if (parameter != "") {
 		this.ServerSco.lastError = "201"
 		return "false";
 	}
-	if (this.ServerSco.isInitialized == "true"){
-			this.ServerSco.lastError = "0";
-			return "true";
+	if (this.ServerSco.isInitialized == "true") {
+		this.ServerSco.lastError = "0";
+		return "true";
 	}
-	else{
+	else {
 		// not initialized
 		this.ServerSco.lastError = "301";
 		return "false";
 	}
 }
 
-function dealWithGettingObjectives(element){
+function dealWithGettingObjectives(element) {
 	// RETURN _CHILDREN
-	if (element == "cmi.objectives._children"){
+	if (element == "cmi.objectives._children") {
 		API.ServerSco.lastError = "0";
 		return API.cmi.objectives._children.cmivalue;
 	}
 
 	// RETURN _COUNT
-	if (element == "cmi.objectives._count"){
+	if (element == "cmi.objectives._count") {
 		API.ServerSco.lastError = "0";
 		return API.cmi.objectives._count.cmivalue;
 	}
 
 	// ELSE CHECK THAT THE ELEMENT IS VALID AND HAS AT LEAST 3 PARAMS
 	var cmiArray = element.split(".");
-	if (cmiArray.length < 3){
+	if (cmiArray.length < 3) {
 		API.ServerSco.lastError = "201";
 		return "";
 	}
@@ -1292,47 +1168,47 @@ function dealWithGettingObjectives(element){
 
 	// IF 3RD ARG IS NOT A NUMBER THEN THROW ERROR
 	// need to check cmiArray[2] to see if its a number
-	if (isNaN(cmiArray[2])){
+	if (isNaN(cmiArray[2])) {
 		API.ServerSco.lastError = "401";
 		return "";
 	}
 
 	// IF ITS A NUMBER MAKE SURE ITS IN THE ARRAY BOUNDS
-	if(cmiArray[2] >= theCount){
+	if (cmiArray[2] >= theCount) {
 		// call to array is out of bounds
 		API.ServerSco.lastError = "201";
 		return "";
 	}
-	else{	// WEVE GOT TO THE POINT OF VALIDATING cmi.objective.n
+	else {	// WEVE GOT TO THE POINT OF VALIDATING cmi.objective.n
 		// does this element exist in the objectives array? - sanity check...
-		var mystr = "API."+cmiArray[0] + "." + cmiArray[1] + ".objArray(" + cmiArray[2] + ");";
+		var mystr = "API." + cmiArray[0] + "." + cmiArray[1] + ".objArray(" + cmiArray[2] + ");";
 		ans = eval(mystr);
 		//if it doesn't exist
-		if (ans == null){
+		if (ans == null) {
 			API.ServerSco.lastError = "201";
 			return "";
 		}
-		else{
+		else {
 			// we need to see if the call is asking for a valid element under cmi.objectives.n
 			// we can trust the element parameter now to call the following...
 			subelementstr = "ans";
-			for (i=3;i<cmiArray.length;i++){
+			for (i = 3; i < cmiArray.length; i++) {
 				subelementstr = subelementstr + "." + cmiArray[i];
 			}
 
 			var objTest = eval(subelementstr);
-			if (objTest == null){
+			if (objTest == null) {
 				API.ServerSco.lastError = "201";
 				return "false";
 			}
 
 			subelementstr = subelementstr + ".cmivalue;";
 			res = eval(subelementstr);
-			if (res == null){
+			if (res == null) {
 				API.ServerSco.lastError = "201";
 				return "";
 			}
-			else{
+			else {
 				API.ServerSco.lastError = "0";
 				return res;
 			}
@@ -1340,15 +1216,15 @@ function dealWithGettingObjectives(element){
 	}
 }
 
-function dealWithGettingInteractions(element){
+function dealWithGettingInteractions(element) {
 	// RETURN _CHILDREN
-	if (element == "cmi.interactions._children"){
+	if (element == "cmi.interactions._children") {
 		API.ServerSco.lastError = "0";
 		return API.cmi.interactions._children.cmivalue;
 	}
 
 	// RETURN _COUNT
-	if (element == "cmi.interactions._count"){
+	if (element == "cmi.interactions._count") {
 		API.ServerSco.lastError = "0";
 		return API.cmi.interactions._count.cmivalue;
 	}
@@ -1356,7 +1232,7 @@ function dealWithGettingInteractions(element){
 	// ELSE CHECK THAT THE ELEMENT IS VALID AND HAS AT LEAST 3 PARAMS, DOESNT HAVE
 	// MORE THAN 6 PARAMS  - IF SO, ITS ILLEGAL
 	var cmiArray = element.split(".");
-	if (cmiArray.length < 3 || cmiArray.length > 6){
+	if (cmiArray.length < 3 || cmiArray.length > 6) {
 		API.ServerSco.lastError = "201";
 		return "";
 	}
@@ -1365,55 +1241,55 @@ function dealWithGettingInteractions(element){
 
 	// IF 3RD ARG IS NOT A NUMBER THEN THROW ERROR
 	// need to check cmiArray[2] to see if its a number
-	if (isNaN(cmiArray[2])){
+	if (isNaN(cmiArray[2])) {
 		API.ServerSco.lastError = "401";
 		return "";
 	}
 
 	// IF ITS A NUMBER MAKE SURE ITS IN THE ARRAY BOUNDS
-	if(cmiArray[2] >= theCount){
+	if (cmiArray[2] >= theCount) {
 		// call to array is out of bounds
 		API.ServerSco.lastError = "201";
 		return "";
 	}
-	else{	// WEVE GOT TO THE POINT OF VALIDATING cmi.interactions.n
+	else {	// WEVE GOT TO THE POINT OF VALIDATING cmi.interactions.n
 		// does this element exist in the interactions array? - sanity check...
 		//
 		// We are checking that 'cmi.interactions.n' exists
-		var mystr = "API."+cmiArray[0] + "." + cmiArray[1] + ".intArray(" + cmiArray[2] + ")";
+		var mystr = "API." + cmiArray[0] + "." + cmiArray[1] + ".intArray(" + cmiArray[2] + ")";
 		ans = eval(mystr);
 		//if it doesn't exist
-		if (ans==null){
+		if (ans == null) {
 			API.ServerSco.lastError = "201";
 			return "";
 		}
-		else{
+		else {
 			// if theres 4 bits to the element path then try to see if object exists
-			if (cmiArray.length == 4){
-				strleaf = "ans."+ cmiArray[3] + ";";
-				var doesLeafExist = eval (strleaf);
-				if (doesLeafExist == null){
+			if (cmiArray.length == 4) {
+				strleaf = "ans." + cmiArray[3] + ";";
+				var doesLeafExist = eval(strleaf);
+				if (doesLeafExist == null) {
 					API.ServerSco.lastError = "201";
 					return "";
 				}
-				else{
+				else {
 					// NEXT CHECK THAT THIS ELEMENT IS NOT WRITEONLY
-					strleafstatus = mystr + "."+ cmiArray[3] + ".cmireadStatus;";
+					strleafstatus = mystr + "." + cmiArray[3] + ".cmireadStatus;";
 					var leafstatus = eval(strleafstatus);
-					if (leafstatus == "writeonly"){
+					if (leafstatus == "writeonly") {
 						API.ServerSco.lastError = "404";
 						return "";
 					}
 
 					// WE CAN NOW TRY TO GET THE FULL OBJECT REFERENCE
-					var strleafval = mystr + "."+ cmiArray[3] + ".cmivalue;";
+					var strleafval = mystr + "." + cmiArray[3] + ".cmivalue;";
 					var leafVal = eval(strleafval);
-					if (leafVal == null){
+					if (leafVal == null) {
 						// IT FAILED AT THE FINAL HURDLE...
 						API.ServerSco.lastError = "201";
 						return "";
 					}
-					else{
+					else {
 						API.ServerSco.lastError = "0";
 						return leafVal;
 					}
@@ -1421,50 +1297,50 @@ function dealWithGettingInteractions(element){
 				}
 			}
 			// if theres 5 bits to the element path then try to see if object exists
-			if (cmiArray.length == 5){
+			if (cmiArray.length == 5) {
 				// check object exists
-				strbranch = "ans."+ cmiArray[3] + ";";
-				var doesLeafExist = eval (strbranch);
-				if (doesLeafExist == null){
+				strbranch = "ans." + cmiArray[3] + ";";
+				var doesLeafExist = eval(strbranch);
+				if (doesLeafExist == null) {
 					API.ServerSco.lastError = "201";
 					return "";
 				}
 
 				// check final object exists in the array list...
-				nextstrbranch = "ans."+ cmiArray[3] + "." + cmiArray[4] + ";";
-				var doesLeafExist = eval (nextstrbranch);
-				if (doesLeafExist == null){
+				nextstrbranch = "ans." + cmiArray[3] + "." + cmiArray[4] + ";";
+				var doesLeafExist = eval(nextstrbranch);
+				if (doesLeafExist == null) {
 					API.ServerSco.lastError = "201";
 					return "";
 				}
 
 				// check for write only
-				strread = "ans."+ cmiArray[3] + "." + cmiArray[4] + ".cmireadStatus;";
-				var isWriteOnly = eval (strread);
-				if (isWriteOnly == "writeonly"){
+				strread = "ans." + cmiArray[3] + "." + cmiArray[4] + ".cmireadStatus;";
+				var isWriteOnly = eval(strread);
+				if (isWriteOnly == "writeonly") {
 					API.ServerSco.lastError = "404";
 					return "";
 				}
 
 				// see if value exists
-				strleaf = "ans."+ cmiArray[3] + "." + cmiArray[4] + ".cmivalue;";
-				var doesLeafExist = eval (strleaf);
-				if (doesLeafExist == null){
+				strleaf = "ans." + cmiArray[3] + "." + cmiArray[4] + ".cmivalue;";
+				var doesLeafExist = eval(strleaf);
+				if (doesLeafExist == null) {
 					API.ServerSco.lastError = "201";
 					return "";
 				}
-				else{
+				else {
 					API.ServerSco.lastError = "0";
 					return doesLeafExist;
 				}
 
 			}
 			// if theres 6 bits to the element path then try to see if object exists
-			if (cmiArray.length == 6){
+			if (cmiArray.length == 6) {
 				// check object exists
-				strbranch = "ans."+ cmiArray[3];
-				var doesBranchExist = eval (strbranch);
-				if (doesBranchExist == null){
+				strbranch = "ans." + cmiArray[3];
+				var doesBranchExist = eval(strbranch);
+				if (doesBranchExist == null) {
 					API.ServerSco.lastError = "201";
 					return "";
 				}
@@ -1472,7 +1348,7 @@ function dealWithGettingInteractions(element){
 
 				// IF 5TH ARG IS NOT A NUMBER THEN THROW ERROR
 				// need to check cmiArray[4] to see if its a number
-				if (isNaN(cmiArray[4])){
+				if (isNaN(cmiArray[4])) {
 					API.ServerSco.lastError = "401";
 					return "";
 				}
@@ -1483,73 +1359,73 @@ function dealWithGettingInteractions(element){
 				var theCount = "ans." + cmiArray[3] + "._count.cmivalue;";
 				var hasCount = eval(theCount);
 				// CANT FIND _COUNT FOR THIS ELEMENT, SO THROW AN ERROR...
-				if (hasCount == null){
+				if (hasCount == null) {
 					API.ServerSco.lastError = "201";
 					return "";
 				}
 				// next need to check to see if array ref is in array bounds
-				if(cmiArray[4] >= hasCount || cmiArray[4] < 0){
+				if (cmiArray[4] >= hasCount || cmiArray[4] < 0) {
 					// call to array is out of bounds
 					API.ServerSco.lastError = "201";
 					return "";
 				}
 				// make sure that array index 4 is either 'objectives' or 'correct_responses'
-				if (cmiArray[3] == "objectives"){
+				if (cmiArray[3] == "objectives") {
 					// next check that there is an object here at this array index...
 					var arrayIndex2Check = eval("ans." + cmiArray[3] + ".objectivesInteractionArray(" + cmiArray[4] + ")");
 					// check for null
-					if (arrayIndex2Check == null){
+					if (arrayIndex2Check == null) {
 						API.ServerSco.lastError = "201";
 						return "";
 					}
-					else{
+					else {
 						// next check that the last element is valid...
-						finalObjectCheck = eval ("arrayIndex2Check." + cmiArray[5]);
-						if (finalObjectCheck == null){
+						finalObjectCheck = eval("arrayIndex2Check." + cmiArray[5]);
+						if (finalObjectCheck == null) {
 							API.ServerSco.lastError = "201";
 							return "";
 						}
-						else{
+						else {
 							// call must be to a valid element in the model so...
 							// check it for writeonly...
-							isWriteonly = eval ("finalObjectCheck.cmireadStatus");
-							if (isWriteonly == "writeonly"){
+							isWriteonly = eval("finalObjectCheck.cmireadStatus");
+							if (isWriteonly == "writeonly") {
 								API.ServerSco.lastError = "404";
 								return "";
 							}
-							else{
+							else {
 								API.ServerSco.lastError = "0";
-								return eval ("finalObjectCheck.cmivalue");
+								return eval("finalObjectCheck.cmivalue");
 							}
 						}
 					}
 				}
-				else if (cmiArray[3] == "correct_responses"){
+				else if (cmiArray[3] == "correct_responses") {
 					// next check that there is an object here at this array index...
 					var arrayIndex2Check = eval("ans." + cmiArray[3] + ".correctResponsesInteractionArray(" + cmiArray[4] + ")");
 					// check for null
-					if (arrayIndex2Check == null){
+					if (arrayIndex2Check == null) {
 						API.ServerSco.lastError = "201";
 						return "";
 					}
-					else{
+					else {
 						// next check that the last element is valid...
-						finalObjectCheck = eval ("arrayIndex2Check." + cmiArray[5]);
-						if (finalObjectCheck == null){
+						finalObjectCheck = eval("arrayIndex2Check." + cmiArray[5]);
+						if (finalObjectCheck == null) {
 							API.ServerSco.lastError = "201";
 							return "";
 						}
-						else{
+						else {
 							// call must be to a valid element in the model so...
 							// check it for writeonly...
-							isWriteonly = eval ("finalObjectCheck.cmireadStatus");
-							if (isWriteonly == "writeonly"){
+							isWriteonly = eval("finalObjectCheck.cmireadStatus");
+							if (isWriteonly == "writeonly") {
 								API.ServerSco.lastError = "404";
 								return "";
 							}
-							else{
+							else {
 								API.ServerSco.lastError = "0";
-								return eval ("finalObjectCheck.cmivalue");
+								return eval("finalObjectCheck.cmivalue");
 							}
 						}
 					}
@@ -1565,29 +1441,29 @@ function dealWithGettingInteractions(element){
 	}
 }
 
-function dealWithSettingObjectives(element, value){
+function dealWithSettingObjectives(element, value) {
 	//  _CHILDREN ARE READONLY
-	if (element == "cmi.objectives._children"){
+	if (element == "cmi.objectives._children") {
 		API.ServerSco.lastError = "402";
 		return "false";
 	}
 
 	//  _COUNT IS READ ONLY
-	if (element == "cmi.objectives._count"){
+	if (element == "cmi.objectives._count") {
 		API.ServerSco.lastError = "402";
 		return "false";
 	}
 
 	// ELSE CHECK THAT THE ELEMENT IS VALID AND HAS AT LEAST 3 PARAMS
 	var cmiArray = element.split(".");
-	if (cmiArray.length < 3){
+	if (cmiArray.length < 3) {
 		API.ServerSco.lastError = "201";
 		return "false";
 	}
 
 	// IF 3RD ARG IS NOT A NUMBER THEN THROW ERROR
 	// need to check cmiArray[2] to see if its a number
-	if (isNaN(cmiArray[2])){
+	if (isNaN(cmiArray[2])) {
 		API.ServerSco.lastError = "401";
 		return "false";
 	}
@@ -1596,29 +1472,29 @@ function dealWithSettingObjectives(element, value){
 	var theCount = API.cmi.objectives._count.cmivalue;
 
 	// IF ITS A NUMBER MAKE SURE ITS IN THE ARRAY BOUNDS
-	if(cmiArray[2] > theCount || cmiArray[2] < 0){
+	if (cmiArray[2] > theCount || cmiArray[2] < 0) {
 		// call to array is out of bounds
 		API.ServerSco.lastError = "201";
 		return "false";
 	}
-	else if(cmiArray[2] == theCount || cmiArray[2]  < theCount){
+	else if (cmiArray[2] == theCount || cmiArray[2] < theCount) {
 
 		//create a new one
 		var existingObjectiveHandle = API.cmi.objectives.objArray(cmiArray[2]);
-		if (existingObjectiveHandle == null){
+		if (existingObjectiveHandle == null) {
 			API.ServerSco.lastError = "101";
 			return "false";
 		}
-		else{
+		else {
 			// we need to see if the call is asking for a valid element under cmi.objectives.n
 			// we can trust the element parameter now to call the following...
 			subelementstr = "existingObjectiveHandle";
-			for (i=3;i<cmiArray.length;i++){
+			for (i = 3; i < cmiArray.length; i++) {
 				subelementstr = subelementstr + "." + cmiArray[i];
 			}
 
 			var objTest = eval(subelementstr);
-			if (objTest == null){
+			if (objTest == null) {
 				API.ServerSco.lastError = "201";
 				return "false";
 
@@ -1627,41 +1503,41 @@ function dealWithSettingObjectives(element, value){
 			var subelementstrWithoutLeaf = subelementstr;
 			subelementstr = subelementstr + ".cmireadStatus;";
 			res = eval(subelementstr);
-			if (res == null){
+			if (res == null) {
 				API.ServerSco.lastError = "101";
 				return "false";
 			}
-			else{
-				if (res == "readonly"){
+			else {
+				if (res == "readonly") {
 					API.ServerSco.lastError = "403";
 					return "false";
 				}
-				else{
+				else {
 
-                    // check the datatype and vocabulary...
-                    var datatype = objTest.cmidatatype;
-                    res = API.ServerSco.checkDataTypeAndVocab(element, value, datatype);
+					// check the datatype and vocabulary...
+					var datatype = objTest.cmidatatype;
+					res = API.ServerSco.checkDataTypeAndVocab(element, value, datatype);
 
-                    if (res == "true"){
-                        // correct datatype...
-  			            // WE CAN NOW TRY TO SET THE FULL OBJECT REFERENCE
-					    var strleafval = "objTest.cmivalue =\"" + value + "\";";
-					    var leafVal = eval(strleafval);
-					    if (leafVal == null){
-						    // IT FAILED AT THE FINAL HURDLE...
-						    API.ServerSco.lastError = "201";
-						    return "false";
-					   }
-					   else{
-						    API.ServerSco.lastError = "0";
-						    return "true";
-					   }
-                   }
-                   else{
-                       // incorrect data type...
-			           API.ServerSco.lastError = "405";
-                       return "false";
-                   }
+					if (res == "true") {
+						// correct datatype...
+						// WE CAN NOW TRY TO SET THE FULL OBJECT REFERENCE
+						var strleafval = "objTest.cmivalue =\"" + value + "\";";
+						var leafVal = eval(strleafval);
+						if (leafVal == null) {
+							// IT FAILED AT THE FINAL HURDLE...
+							API.ServerSco.lastError = "201";
+							return "false";
+						}
+						else {
+							API.ServerSco.lastError = "0";
+							return "true";
+						}
+					}
+					else {
+						// incorrect data type...
+						API.ServerSco.lastError = "405";
+						return "false";
+					}
 
 				}
 			}
@@ -1669,15 +1545,15 @@ function dealWithSettingObjectives(element, value){
 	}
 }
 
-function dealWithSettingInteractions(element, value){
+function dealWithSettingInteractions(element, value) {
 	//  _CHILDREN ARE READONLY
-	if (element == "cmi.interactions._children"){
+	if (element == "cmi.interactions._children") {
 		API.ServerSco.lastError = "402";
 		return "false";
 	}
 
 	//  _COUNT IS READ ONLY
-	if (element == "cmi.interactions._count"){
+	if (element == "cmi.interactions._count") {
 		API.ServerSco.lastError = "402";
 		return "false";
 	}
@@ -1685,7 +1561,7 @@ function dealWithSettingInteractions(element, value){
 	// ELSE CHECK THAT THE ELEMENT IS VALID AND HAS AT LEAST 3 PARAMS, DOESNT HAVE
 	// MORE THAN 6 PARAMS  - ALL ILLEGAL
 	var cmiArray = element.split(".");
-	if (cmiArray.length < 3 || cmiArray.length > 6){
+	if (cmiArray.length < 3 || cmiArray.length > 6) {
 		API.ServerSco.lastError = "201";
 		return "false";
 	}
@@ -1694,7 +1570,7 @@ function dealWithSettingInteractions(element, value){
 
 	// IF 3RD ARG IS NOT A NUMBER THEN THROW ERROR
 	// need to check cmiArray[2] to see if its a number
-	if (isNaN(cmiArray[2])){
+	if (isNaN(cmiArray[2])) {
 		API.ServerSco.lastError = "401";
 		return "false";
 	}
@@ -1702,128 +1578,128 @@ function dealWithSettingInteractions(element, value){
 	var theCount = API.cmi.interactions._count.cmivalue;
 
 	// IF ITS A NUMBER MAKE SURE ITS IN THE ARRAY BOUNDS
-	if(cmiArray[2] > theCount || cmiArray[2] < 0){
+	if (cmiArray[2] > theCount || cmiArray[2] < 0) {
 		// call to array is out of bounds
 		API.ServerSco.lastError = "201";
 		return "false";
 	}
-	else if(cmiArray[2] <= theCount){
+	else if (cmiArray[2] <= theCount) {
 
 		//create a new one or get existing object
 		var existingObjectiveHandle = API.cmi.interactions.intArray(cmiArray[2]);
-		if (existingObjectiveHandle == null){
+		if (existingObjectiveHandle == null) {
 			API.ServerSco.lastError = "101";
 			return "false";
 		}
-		else{
+		else {
 			// we now have a reference to cmi.interactions.n
 			// if theres 4 bits to the element path then try to see if object exists
 
-			if (cmiArray.length == 4){
+			if (cmiArray.length == 4) {
 				strleaf = "existingObjectiveHandle." + cmiArray[3];
-				var doesLeafExist = eval (strleaf);
-				if (doesLeafExist == null){
+				var doesLeafExist = eval(strleaf);
+				if (doesLeafExist == null) {
 					API.ServerSco.lastError = "201";
 					return "false";
 				}
-				else{
+				else {
 
 					// NEXT CHECK THAT THIS ELEMENT IS NOT READONLY
 					strleafstatus = "doesLeafExist.cmireadStatus";
 					var leafstatus = eval(strleafstatus);
-					if (leafstatus == "readonly"){
+					if (leafstatus == "readonly") {
 						API.ServerSco.lastError = "403";
 						return "false";
 					}
 
-                    // check the datatype and vocabulary...
-                    var datatype = doesLeafExist.cmidatatype;
-                    res = API.ServerSco.checkDataTypeAndVocab(element, value, datatype);
-                    if (res == "true"){
-                        // correct datatype...
-  			            // WE CAN NOW TRY TO SET THE FULL OBJECT REFERENCE
-					    var strleafval = "doesLeafExist.cmivalue =\"" + value + "\";";
-					    var leafVal = eval(strleafval);
-					    if (leafVal == null){
-						    // IT FAILED AT THE FINAL HURDLE...
-						    API.ServerSco.lastError = "201";
-						    return "false";
-					   }
-					   else{
-						    API.ServerSco.lastError = "0";
-						    return "true";
-					   }
-                   }
-                   else{
-                       // incorrect data type...
-			           API.ServerSco.lastError = "405";
-                       return "false";
-                   }
+					// check the datatype and vocabulary...
+					var datatype = doesLeafExist.cmidatatype;
+					res = API.ServerSco.checkDataTypeAndVocab(element, value, datatype);
+					if (res == "true") {
+						// correct datatype...
+						// WE CAN NOW TRY TO SET THE FULL OBJECT REFERENCE
+						var strleafval = "doesLeafExist.cmivalue =\"" + value + "\";";
+						var leafVal = eval(strleafval);
+						if (leafVal == null) {
+							// IT FAILED AT THE FINAL HURDLE...
+							API.ServerSco.lastError = "201";
+							return "false";
+						}
+						else {
+							API.ServerSco.lastError = "0";
+							return "true";
+						}
+					}
+					else {
+						// incorrect data type...
+						API.ServerSco.lastError = "405";
+						return "false";
+					}
 				}
 			}
-			if (cmiArray.length == 5){
+			if (cmiArray.length == 5) {
 				// check object exists
-				strbranch = "existingObjectiveHandle."+ cmiArray[3] + ";";
-				var doesLeafExist = eval (strbranch);
-				if (doesLeafExist == null){
+				strbranch = "existingObjectiveHandle." + cmiArray[3] + ";";
+				var doesLeafExist = eval(strbranch);
+				if (doesLeafExist == null) {
 					API.ServerSco.lastError = "201";
 					return "false";
 				}
 
 				// check final object exists in the array list...
-				nextstrbranch = "existingObjectiveHandle."+ cmiArray[3] + "." + cmiArray[4] + ";";
-				var doesLeafExist = eval (nextstrbranch);
-				if (doesLeafExist == null){
+				nextstrbranch = "existingObjectiveHandle." + cmiArray[3] + "." + cmiArray[4] + ";";
+				var doesLeafExist = eval(nextstrbranch);
+				if (doesLeafExist == null) {
 					API.ServerSco.lastError = "201";
 					return "false";
 				}
 
 				// check for write only
-				strread = "existingObjectiveHandle."+ cmiArray[3] + "." + cmiArray[4] + ".cmireadStatus;";
-				var isWriteOnly = eval (strread);
-				if (isWriteOnly == "readonly"){
+				strread = "existingObjectiveHandle." + cmiArray[3] + "." + cmiArray[4] + ".cmireadStatus;";
+				var isWriteOnly = eval(strread);
+				if (isWriteOnly == "readonly") {
 					API.ServerSco.lastError = "403";
 					return "false";
 				}
 
 				// see if value exists
-				strleaf = "existingObjectiveHandle."+ cmiArray[3] + "." + cmiArray[4] + ".cmivalue;";
-				var doesLeafExist = eval (strleaf);
-				if (doesLeafExist == null){
+				strleaf = "existingObjectiveHandle." + cmiArray[3] + "." + cmiArray[4] + ".cmivalue;";
+				var doesLeafExist = eval(strleaf);
+				if (doesLeafExist == null) {
 					API.ServerSco.lastError = "201";
 					return "false";
 				}
-				else{
-                    // check the datatype and vocabulary...
-                    var datatype = doesLeafExist.cmidatatype;
-                    res = API.ServerSco.checkDataTypeAndVocab(element, value, datatype);
-                    if (res == "true"){
-                        // correct datatype...
-  			            // WE CAN NOW TRY TO SET THE FULL OBJECT REFERENCE
-					    var strleafval = "doesLeafExist.cmivalue =\"" + value + "\";";
-					    var leafVal = eval(strleafval);
-					    if (leafVal == null){
-						    // IT FAILED AT THE FINAL HURDLE...
-						    API.ServerSco.lastError = "201";
-						    return "false";
-					    }
-					    else{
-						    API.ServerSco.lastError = "0";
-						    return "true";
-					    }
-                    }
-                    else{
-                       // incorrect data type...
-			           API.ServerSco.lastError = "405";
-                       return "false";
-                    }
+				else {
+					// check the datatype and vocabulary...
+					var datatype = doesLeafExist.cmidatatype;
+					res = API.ServerSco.checkDataTypeAndVocab(element, value, datatype);
+					if (res == "true") {
+						// correct datatype...
+						// WE CAN NOW TRY TO SET THE FULL OBJECT REFERENCE
+						var strleafval = "doesLeafExist.cmivalue =\"" + value + "\";";
+						var leafVal = eval(strleafval);
+						if (leafVal == null) {
+							// IT FAILED AT THE FINAL HURDLE...
+							API.ServerSco.lastError = "201";
+							return "false";
+						}
+						else {
+							API.ServerSco.lastError = "0";
+							return "true";
+						}
+					}
+					else {
+						// incorrect data type...
+						API.ServerSco.lastError = "405";
+						return "false";
+					}
 				}
 			}
-			if (cmiArray.length == 6){
+			if (cmiArray.length == 6) {
 				// check object exists
-				strbranch = "existingObjectiveHandle."+ cmiArray[3];
-				var doesBranchExist = eval (strbranch);
-				if (doesBranchExist == null){
+				strbranch = "existingObjectiveHandle." + cmiArray[3];
+				var doesBranchExist = eval(strbranch);
+				if (doesBranchExist == null) {
 					API.ServerSco.lastError = "201";
 					return "false";
 				}
@@ -1831,7 +1707,7 @@ function dealWithSettingInteractions(element, value){
 
 				// IF 5TH ARG IS NOT A NUMBER THEN THROW ERROR
 				// need to check cmiArray[4] to see if its a number
-				if (isNaN(cmiArray[4])){
+				if (isNaN(cmiArray[4])) {
 					API.ServerSco.lastError = "401";
 					return "false";
 				}
@@ -1842,117 +1718,117 @@ function dealWithSettingInteractions(element, value){
 				var theCount = "existingObjectiveHandle." + cmiArray[3] + "._count.cmivalue;";
 				var hasCount = eval(theCount);
 				// CANT FIND _COUNT FOR THIS ELEMENT, SO THROW AN ERROR...
-				if (hasCount == null){
+				if (hasCount == null) {
 					API.ServerSco.lastError = "201";
 					return "false";
 				}
 				// next need to check to see if array ref is in array bounds
-				if(cmiArray[4] > hasCount || cmiArray[4] < 0){
+				if (cmiArray[4] > hasCount || cmiArray[4] < 0) {
 					// call to array is out of bounds
 					API.ServerSco.lastError = "201";
 					return "false";
 				}
 
 				// make sure that array index 4 is either 'objectives' or 'correct_responses'
-				if (cmiArray[3] == "objectives"){
+				if (cmiArray[3] == "objectives") {
 					// next check that there is an object here at this array index...
 					var arrayIndex2Check = eval("existingObjectiveHandle." + cmiArray[3] + ".objectivesInteractionArray(" + cmiArray[4] + ")");
 					// check for null
-					if (arrayIndex2Check == null){
+					if (arrayIndex2Check == null) {
 						API.ServerSco.lastError = "201";
 						return "false";
 					}
-					else{
+					else {
 						// next check that the last element is valid...
-						finalObjectCheck = eval ("arrayIndex2Check." + cmiArray[5]);
-						if (finalObjectCheck == null){
+						finalObjectCheck = eval("arrayIndex2Check." + cmiArray[5]);
+						if (finalObjectCheck == null) {
 							API.ServerSco.lastError = "201";
 							return "false";
 						}
-						else{
+						else {
 							// call must be to a valid element in the model so...
 							// check it for readonly...
-							isWriteonly = eval ("finalObjectCheck.cmireadStatus");
-							if (isWriteonly == "readonly"){
+							isWriteonly = eval("finalObjectCheck.cmireadStatus");
+							if (isWriteonly == "readonly") {
 								API.ServerSco.lastError = "403";
 								return "false";
 							}
-							else{
+							else {
 
-                                // check the datatype and vocabulary...
-                                var datatype = finalObjectCheck.cmidatatype;
-                                res = API.ServerSco.checkDataTypeAndVocab(element, value, datatype);
-                                if (res == "true"){
-                                    // correct datatype...
-  			                        // WE CAN NOW TRY TO SET THE FULL OBJECT REFERENCE
-                                    var strleafval = "finalObjectCheck.cmivalue =\"" + value + "\";";
-					                var leafVal = eval(strleafval);
-					                if (leafVal == null){
-						                // IT FAILED AT THE FINAL HURDLE...
-						                API.ServerSco.lastError = "201";
-						                return "false";
-                                    }
-					                else{
-						               API.ServerSco.lastError = "0";
-						               return "true";
-					                }
-                               }
-                               else{
-                                   // incorrect data type...
-			                       API.ServerSco.lastError = "405";
-                                   return "false";
-                               }
+								// check the datatype and vocabulary...
+								var datatype = finalObjectCheck.cmidatatype;
+								res = API.ServerSco.checkDataTypeAndVocab(element, value, datatype);
+								if (res == "true") {
+									// correct datatype...
+									// WE CAN NOW TRY TO SET THE FULL OBJECT REFERENCE
+									var strleafval = "finalObjectCheck.cmivalue =\"" + value + "\";";
+									var leafVal = eval(strleafval);
+									if (leafVal == null) {
+										// IT FAILED AT THE FINAL HURDLE...
+										API.ServerSco.lastError = "201";
+										return "false";
+									}
+									else {
+										API.ServerSco.lastError = "0";
+										return "true";
+									}
+								}
+								else {
+									// incorrect data type...
+									API.ServerSco.lastError = "405";
+									return "false";
+								}
 							}
 						}
 					}
 				}
-				else if (cmiArray[3] == "correct_responses"){
+				else if (cmiArray[3] == "correct_responses") {
 					// next check that there is an object here at this array index...
 					var arrayIndex2Check = eval("existingObjectiveHandle." + cmiArray[3] + ".correctResponsesInteractionArray(" + cmiArray[4] + ")");
 					// check for null
-					if (arrayIndex2Check == null){
+					if (arrayIndex2Check == null) {
 						API.ServerSco.lastError = "201";
 						return "false";
 					}
-					else{
+					else {
 						// next check that the last element is valid...
-						finalObjectCheck = eval ("arrayIndex2Check." + cmiArray[5]);
-						if (finalObjectCheck == null){
+						finalObjectCheck = eval("arrayIndex2Check." + cmiArray[5]);
+						if (finalObjectCheck == null) {
 							API.ServerSco.lastError = "201";
 							return "false";
 						}
-						else{
+						else {
 							// call must be to a valid element in the model so...
 							// check it for readonly...
-							isWriteonly = eval ("finalObjectCheck.cmireadStatus");
-							if (isWriteonly == "readonly"){
+							isWriteonly = eval("finalObjectCheck.cmireadStatus");
+							if (isWriteonly == "readonly") {
 								API.ServerSco.lastError = "403";
 								return "false";
 							}
-							else{
-                                                               // check the datatype and vocabulary...
-                                                               var datatype = finalObjectCheck.cmidatatype;
-                                                               res = API.ServerSco.checkDataTypeAndVocab(element, value, datatype);
-                                                               if (res == "true"){
-                                                                   // correct datatype...
-  			                                           // WE CAN NOW TRY TO SET THE FULL OBJECT REFERENCE
-                                                                   var strleafval = "finalObjectCheck.cmivalue =\"" + value + "\";";
-					                           var leafVal = eval(strleafval);
-					                           if (leafVal == null){
-						                       // IT FAILED AT THE FINAL HURDLE...
-						                       API.ServerSco.lastError = "201";
-						                       return "false";
-                                                                   }
-					                           else{
-						                       API.ServerSco.lastError = "0";
-                                                                       return "true";
-					                           }
-                                                               }
-                                                               else{
-                                                                       // incorrect data type...
-			                                               API.ServerSco.lastError = "405";
-                                                                       return "false";
-                                                               }
+							else {
+								// check the datatype and vocabulary...
+								var datatype = finalObjectCheck.cmidatatype;
+								res = API.ServerSco.checkDataTypeAndVocab(element, value, datatype);
+								if (res == "true") {
+									// correct datatype...
+									// WE CAN NOW TRY TO SET THE FULL OBJECT REFERENCE
+									var strleafval = "finalObjectCheck.cmivalue =\"" + value + "\";";
+									var leafVal = eval(strleafval);
+									if (leafVal == null) {
+										// IT FAILED AT THE FINAL HURDLE...
+										API.ServerSco.lastError = "201";
+										return "false";
+									}
+									else {
+										API.ServerSco.lastError = "0";
+										return "true";
+									}
+								}
+								else {
+									// incorrect data type...
+									API.ServerSco.lastError = "405";
+									return "false";
+								}
 
 							}
 						}
@@ -1975,84 +1851,84 @@ function dealWithSettingInteractions(element, value){
 /*
 * LMSGetValue.  Method to allow sco to read/access CMI datamodel elements
 */
-function LMSGetValueMethod(element){
-	if(this.ServerSco.isInitialized=="true"){
+function LMSGetValueMethod(element) {
+	if (this.ServerSco.isInitialized == "true") {
 		var invalid = "false";
 		var cannotHaveChildren = "false";
 		var isNotAnArray = "false";
 
 		// this checks to make sure there is at least one dot in the value
-		if (element.indexOf(".")== -1){
+		if (element.indexOf(".") == -1) {
 			invalid = "true";
 		}
 
 		// dont bother doing this if we have already found an error...
-		if (invalid != "true"){
+		if (invalid != "true") {
 			// we then loop around the children, making sure they exist one, by one...
 			var cmiArray = element.split(".");
 			var teststring = "this";
-			for(i=0;i<cmiArray.length;i++){
-				doesExist = eval(teststring + "." + cmiArray[i]+ ";");
-				if(doesExist == null){
-					invalid="true";
+			for (i = 0; i < cmiArray.length; i++) {
+				doesExist = eval(teststring + "." + cmiArray[i] + ";");
+				if (doesExist == null) {
+					invalid = "true";
 					// check for invalid _children call
-					if (cmiArray[i]=="_children"){
+					if (cmiArray[i] == "_children") {
 						cannotHaveChildren = "true";
 					}
 					// check for invalid _count call
-					if (cmiArray[i]=="_count"){
+					if (cmiArray[i] == "_count") {
 						isNotAnArray = "true";
 					}
 					break;
 				}
-				else{
+				else {
 					teststring = teststring + "." + cmiArray[i];
 					// WE NEED TO TRAP THE OBJECTIVES...
-					if (teststring=="this.cmi.objectives"){
+					if (teststring == "this.cmi.objectives") {
 						return dealWithGettingObjectives(element);
 					}
 					// WE NEED TO TRAP THE INTERACTIONS...
-					if (teststring=="this.cmi.interactions"){
+					if (teststring == "this.cmi.interactions") {
 						return dealWithGettingInteractions(element);
 					}
 				}
 			}
-        }
+		}
 
 		// user tried to call _count on a non-array value
-		if (isNotAnArray=="true"){
+		if (isNotAnArray == "true") {
 			this.ServerSco.lastError = "203";
 			return "";
 		}
 
 		// user tried to call _children on an element that didnt support it
-		if (cannotHaveChildren=="true"){
+		if (cannotHaveChildren == "true") {
 			this.ServerSco.lastError = "202";
 			return "";
 		}
 
 		// if there was some kind of error found above, then...
-		if (invalid == "true"){
+		if (invalid == "true") {
 			this.ServerSco.lastError = "401";
 			return "";
 		}
-		else{
+		else {
 			// otherwise its a valid model reference...
-			elementObj = eval ("this."+element);
+			elementObj = eval("this." + element);
 		}
 
-   		// next we will check to make sure this element is not writeonly..
-		if (elementObj.cmireadStatus == "writeonly"){
+		// next we will check to make sure this element is not writeonly..
+		if (elementObj.cmireadStatus == "writeonly") {
 			this.ServerSco.lastError = "404";
 			return "";
 		}
-		else{
+		else {
 			// its okay and user can read it...
 			this.ServerSco.lastError = "0";
 			return elementObj.cmivalue;
 		}
 	}
-	else{
+	else {
 		// not initialized...
 		this.ServerSco.lastError = "301";
 		return "";
@@ -2064,53 +1940,53 @@ function LMSGetValueMethod(element){
 /*
 * LMSSetValue.  Method to allow sco to write data to CMI datamodel
 */
-function LMSSetValueMethod(element, value){
-	 value = unescape(value)  ;
-     if (this.ServerSco.isInitialized == "true"){
+function LMSSetValueMethod(element, value) {
+	value = unescape(value);
+	if (this.ServerSco.isInitialized == "true") {
 		var invalid = "false";
 		var cannotHaveChildren = "false";
 		var isNotAnArray = "false";
 
-                // check for sco trying to set _children & _count
-                //element is a keyword, cannot set...
-                if (element.indexOf("._children") != -1 || element.indexOf("._count") != -1){
-                        this.ServerSco.lastError = "402";
-                        return "false";
-                }
+		// check for sco trying to set _children & _count
+		//element is a keyword, cannot set...
+		if (element.indexOf("._children") != -1 || element.indexOf("._count") != -1) {
+			this.ServerSco.lastError = "402";
+			return "false";
+		}
 
 		// this checks to make sure there is at least one dot in the value
-                // if it doesnt, then it cant be a valid CMI model reference
-		if (element.indexOf(".")== -1){
+		// if it doesnt, then it cant be a valid CMI model reference
+		if (element.indexOf(".") == -1) {
 			invalid = "true";
 		}
 
 		// dont bother doing this if we have already found an error...
-		if (invalid != "true"){
+		if (invalid != "true") {
 			// we then loop around the children, making sure they exist one, by one...
 			var cmiArray = element.split(".");
 			var teststring = "this";
-			for(i=0;i<cmiArray.length;i++){
-				doesExist = eval(teststring + "." + cmiArray[i]+ ";");
-				if(doesExist == null){
-					invalid="true";
+			for (i = 0; i < cmiArray.length; i++) {
+				doesExist = eval(teststring + "." + cmiArray[i] + ";");
+				if (doesExist == null) {
+					invalid = "true";
 					// check for invalid _children call
-					if (cmiArray[i]=="_children"){
+					if (cmiArray[i] == "_children") {
 						cannotHaveChildren = "true";
 					}
 					// check for invalid _count call
-					if (cmiArray[i]=="_count"){
+					if (cmiArray[i] == "_count") {
 						isNotAnArray = "true";
 					}
 					break;
 				}
-				else{
+				else {
 					teststring = teststring + "." + cmiArray[i];
 					// WE NEED TO TRAP THE OBJECTIVES...
-					if (teststring=="this.cmi.objectives"){
+					if (teststring == "this.cmi.objectives") {
 						return dealWithSettingObjectives(element, value);
 					}
 					// WE NEED TO TRAP THE INTERACTIONS...
-					if (teststring=="this.cmi.interactions"){
+					if (teststring == "this.cmi.interactions") {
 						return dealWithSettingInteractions(element, value);
 					}
 				}
@@ -2118,106 +1994,104 @@ function LMSSetValueMethod(element, value){
 		}
 
 		// user tried to call _count on a non-array value
-		if (isNotAnArray=="true"){
+		if (isNotAnArray == "true") {
 			this.ServerSco.lastError = "203";
 			return "false";
 		}
 
 		// user tried to call _children on an element that didnt support it
-		if (cannotHaveChildren=="true"){
+		if (cannotHaveChildren == "true") {
 			this.ServerSco.lastError = "202";
 			return "false";
 		}
 
 		// if there was some kind of error found above, then...
-		if (invalid=="true"){
+		if (invalid == "true") {
 			this.ServerSco.lastError = "401";
 			return "false";
 		}
-		else{
+		else {
 			// otherwise its a valid model reference...
-			elementObj = eval ("this."+element);
+			elementObj = eval("this." + element);
 		}
 
 		// check that its writeable...
-		if (elementObj.cmireadStatus == "readonly"){
+		if (elementObj.cmireadStatus == "readonly") {
 			this.ServerSco.lastError = "403";
 			return "false";
 		}
-		else{
+		else {
 			// check the datatype and vocabulary...
 			var datatype = elementObj.cmidatatype;
 			res = this.ServerSco.checkDataTypeAndVocab(element, value, datatype);
-				if (res == "true"){
-					// correct datatype...
-					// cmi.comments need to be appended...
-					if (element == "cmi.comments"){
-						pre = this.LMSGetValue("cmi.comments");
-						setString = "this." + element + ".cmivalue =\"" + pre + value + "\";";
-					}
-					else{
-						setString = "this." + element + ".cmivalue =\"" + value + "\";";
-					}
-					var result = eval(setString);
-					this.ServerSco.lastError = "0";
-					return "true";
+			if (res == "true") {
+				// correct datatype...
+				// cmi.comments need to be appended...
+				if (element == "cmi.comments") {
+					pre = this.LMSGetValue("cmi.comments");
+					setString = "this." + element + ".cmivalue =\"" + pre + value + "\";";
 				}
-				else{
-					// incorrect data type...
-					this.ServerSco.lastError = "405";
-					return "false";
-			   }
+				else {
+					setString = "this." + element + ".cmivalue =\"" + value + "\";";
+				}
+				var result = eval(setString);
+				this.ServerSco.lastError = "0";
+				return "true";
+			}
+			else {
+				// incorrect data type...
+				this.ServerSco.lastError = "405";
+				return "false";
+			}
 		}
 	}
-	else{
+	else {
 		// not initialized...
 		this.ServerSco.lastError = "301";
 		return "false";
 	}
 }
 
-function LMSGetErrorStringMethod(errorCode){
-	switch (errorCode)
- 	{
- 		case "0":   { return "No error"; break }
-        case "101": { return "General exception"; break  }
-        case "201": { return "Invalid argument error"; break }
-        case "202": { return "Element cannot have children"; break  }
-		case "203": { return "Element not an array - Cannot have count"; break  }
-		case "301": { return "Not initialized"; break  }
-		case "401": { return "Not implemented error"; break  }
-		case "402": { return "Invalid set value, element is a keyword"; break  }
-		case "403": { return "Element is read only"; break  }
-		case "404": { return "Element is write only"; break  }
-		case "405": { return "Incorrect Data Type"; break  }
-		default:    { return ""; break }
+function LMSGetErrorStringMethod(errorCode) {
+	switch (errorCode) {
+		case "0": { return "No error"; break }
+		case "101": { return "General exception"; break }
+		case "201": { return "Invalid argument error"; break }
+		case "202": { return "Element cannot have children"; break }
+		case "203": { return "Element not an array - Cannot have count"; break }
+		case "301": { return "Not initialized"; break }
+		case "401": { return "Not implemented error"; break }
+		case "402": { return "Invalid set value, element is a keyword"; break }
+		case "403": { return "Element is read only"; break }
+		case "404": { return "Element is write only"; break }
+		case "405": { return "Incorrect Data Type"; break }
+		default: { return ""; break }
 	}
 	// just to be safe...
 	return;
 }
 
-function LMSGetLastErrorMethod(){
+function LMSGetLastErrorMethod() {
 	return this.ServerSco.lastError;
 }
 
-function LMSGetDiagnosticMethod(errorCode){
-	if (errorCode==""){
-		errorCode=this.ServerSco.lastError;
+function LMSGetDiagnosticMethod(errorCode) {
+	if (errorCode == "") {
+		errorCode = this.ServerSco.lastError;
 	}
-	switch (errorCode)
-	{
-		case "0":   { return "No error. No errors were encountered. Successful API call."; break }
-        case "101": { return "General exception. An unexpected error was encountered."; break  }
+	switch (errorCode) {
+		case "0": { return "No error. No errors were encountered. Successful API call."; break }
+		case "101": { return "General exception. An unexpected error was encountered."; break }
 		case "201": { return "Invalid argument error. A call was made to a DataModel element that does not exist."; break }
-		case "202": { return "Element cannot have children. A call was made to an Element that does not support _children"; break  }
-		case "203": { return "Element is not an array.  Cannot have count. A call was made to an Element that does not support _count."; break  }
-		case "301": { return "Not initialized. The SCO has not yet been initialized.  It needs to call LMSInitialize() first."; break  }
-		case "401": { return "Not implemented error.  A call was made to a DataModel element that is not supported."; break  }
-		case "402": { return "Invalid set value, element is a keyword.  Keyword values cannot be changed"; break  }
-		case "403": { return "Element is read only.  A call was made to set the value of a read-only element."; break  }
-		case "404": { return "Element is write only.  A call was made to get the value of a write-only element."; break  }
-		case "405": { return "Incorrect Data Type.  The syntax of a call to change an element was incorrect."; break  }
-		default:    { return ""; break }
+		case "202": { return "Element cannot have children. A call was made to an Element that does not support _children"; break }
+		case "203": { return "Element is not an array.  Cannot have count. A call was made to an Element that does not support _count."; break }
+		case "301": { return "Not initialized. The SCO has not yet been initialized.  It needs to call LMSInitialize() first."; break }
+		case "401": { return "Not implemented error.  A call was made to a DataModel element that is not supported."; break }
+		case "402": { return "Invalid set value, element is a keyword.  Keyword values cannot be changed"; break }
+		case "403": { return "Element is read only.  A call was made to set the value of a read-only element."; break }
+		case "404": { return "Element is write only.  A call was made to get the value of a write-only element."; break }
+		case "405": { return "Incorrect Data Type.  The syntax of a call to change an element was incorrect."; break }
+		default: { return ""; break }
 	}
 }
 
@@ -2231,549 +2105,547 @@ function LMSGetDiagnosticMethod(errorCode){
 * Method to check the datatype and vocabulary of an element
 * returns true or false...
 */
-function scoCheckDataTypeAndVocab (element, value, datatype){
-    switch (datatype)
- 	{
-        case "CMIBlank":   { return checkCMIBlank(value); break }
-        case "CMIBoolean": { return checkCMIBoolean(value); break  }
-        case "CMIDecimal": { return checkCMIDecimal(value); break }
-        case "CMIFeedback": { return  checkCMIFeedback(element, value); break  }
-	    case "CMIIdentifier": { return  checkCMIIdentifier(value); break  }
-	    case "CMIInteger": { return checkCMIInteger(value); break  }
-	    case "CMISInteger": { return checkCMISInteger(element, value); break  }
-	    case "CMIString255": { return checkCMIString255(value); break  }
-	    case "CMIString4096": { return checkCMIString4096(value); break  }
-	    case "CMITime": { return checkCMITime(value); break  }
-	    case "CMITimespan": { return checkCMITimespan(value); break  }
-	    case "CMIVocabularyCredit": { return checkCMIVocabularyCredit(value); break  }
-	    case "CMIVocabularyStatus": { return checkCMIVocabularyStatus(element, value); break  }
-	    case "CMIVocabularyEntry": { return checkCMIVocabularyEntry(value); break  }
-	    case "CMIVocabularyMode": { return checkCMIVocabularyMode(value); break  }
-	    case "CMIVocabularyExit": { return checkCMIVocabularyExit(value); break  }
-	    case "CMIVocabularyTimeLimitAction": { return checkCMIVocabularyTimeLimitAction(value); break  }
-	    case "CMIVocabularyInteraction": { return checkCMIVocabularyInteraction(value); break  }
-	    case "CMIVocabularyResult": { return checkCMIVocabularyResult(value); break  }
-        case "CMIDecimalOrCMIBlank": { return checkCMIDecimalOrCMIBlank(value); break  }
-	    default:    { return "true"; break }
+function scoCheckDataTypeAndVocab(element, value, datatype) {
+	switch (datatype) {
+		case "CMIBlank": { return checkCMIBlank(value); break }
+		case "CMIBoolean": { return checkCMIBoolean(value); break }
+		case "CMIDecimal": { return checkCMIDecimal(value); break }
+		case "CMIFeedback": { return checkCMIFeedback(element, value); break }
+		case "CMIIdentifier": { return checkCMIIdentifier(value); break }
+		case "CMIInteger": { return checkCMIInteger(value); break }
+		case "CMISInteger": { return checkCMISInteger(element, value); break }
+		case "CMIString255": { return checkCMIString255(value); break }
+		case "CMIString4096": { return checkCMIString4096(value); break }
+		case "CMITime": { return checkCMITime(value); break }
+		case "CMITimespan": { return checkCMITimespan(value); break }
+		case "CMIVocabularyCredit": { return checkCMIVocabularyCredit(value); break }
+		case "CMIVocabularyStatus": { return checkCMIVocabularyStatus(element, value); break }
+		case "CMIVocabularyEntry": { return checkCMIVocabularyEntry(value); break }
+		case "CMIVocabularyMode": { return checkCMIVocabularyMode(value); break }
+		case "CMIVocabularyExit": { return checkCMIVocabularyExit(value); break }
+		case "CMIVocabularyTimeLimitAction": { return checkCMIVocabularyTimeLimitAction(value); break }
+		case "CMIVocabularyInteraction": { return checkCMIVocabularyInteraction(value); break }
+		case "CMIVocabularyResult": { return checkCMIVocabularyResult(value); break }
+		case "CMIDecimalOrCMIBlank": { return checkCMIDecimalOrCMIBlank(value); break }
+		default: { return "true"; break }
 	}
 }
 
-function checkCMIDecimalOrCMIBlank(value){
+function checkCMIDecimalOrCMIBlank(value) {
 
-    var isBlank = checkCMIBlank(value);
-    var isCMIDecimal = checkCMIDecimal(value);
-    if (isBlank == "true" || isCMIDecimal == "true"){
-        if (value > 100 || value < 0){
-            return "false";
-        }
-        else{
-            return "true";
-        }
-    }else{
-        return "false";
-    }
+	var isBlank = checkCMIBlank(value);
+	var isCMIDecimal = checkCMIDecimal(value);
+	if (isBlank == "true" || isCMIDecimal == "true") {
+		if (value > 100 || value < 0) {
+			return "false";
+		}
+		else {
+			return "true";
+		}
+	} else {
+		return "false";
+	}
 }
 
-function checkCMIVocabularyResult(value){
-    var ans = checkCMIDecimal(value);
-    if (ans == "true"){
-        return "true";
-    }
-    if (value == "correct" || value == "wrong" ||
-        value == "unanticipated" || value == "neutral"){
-        return "true";
-    }
-    else{
-        return "false";
-    }
-}
-
-
-function checkCMIVocabularyInteraction(value){
-    if (value == "true-false" || value == "choice" ||
-        value == "fill-in" || value == "matching" ||
-        value == "performance" || value == "likert" ||
-        value == "sequencing" || value == "numeric"){
-        return "true";
-    }
-    else{
-        return "false";
-    }
-}
-
-function checkCMIVocabularyTimeLimitAction(value){
-    if (value == "exit,message" || value == "exit,no message" ||
-        value == "continue,message" || value == "continue,no message"){
-        return "true";
-    }
-    else{
-        return "false";
-    }
-}
-
-function checkCMIVocabularyExit(value){
-    if (value == "time-out" || value == "suspend" ||
-        value == "logout" || value == ""){
-        return "true";
-    }
-    else{
-        return "false";
-    }
-}
-
-function checkCMIVocabularyMode(value){
-    if (value == "normal" || value == "review" || value == "browse"){
-        return "true";
-    }
-    else{
-        return "false";
-    }
-}
-
-function checkCMIVocabularyEntry(value){
-    if (value == "ab-initio" || value == "resume" || value == ""){
-        return "true";
-    }
-    else{
-        return "false";
-    }
-}
-
-function checkCMIVocabularyStatus(element, value){
-    // sco cannot set lesson_status to not attempted
-    if (element == "cmi.core.lesson_status" && value == "not attempted"){
-        return false;
-    }
-    if (value == "passed" || value == "completed" ||
-        value == "failed" || value == "incomplete" ||
-        value == "browsed" || value == "not attempted"){
-        return "true";
-    }
-    else{
-        return "false";
-    }
-}
-
-function checkCMIVocabularyCredit(value){
-    if (value == "credit" || value == "no-credit"){
-        return "true";
-    }
-    else{
-        return "false";
-    }
+function checkCMIVocabularyResult(value) {
+	var ans = checkCMIDecimal(value);
+	if (ans == "true") {
+		return "true";
+	}
+	if (value == "correct" || value == "wrong" ||
+		value == "unanticipated" || value == "neutral") {
+		return "true";
+	}
+	else {
+		return "false";
+	}
 }
 
 
-function checkCMITimespan(value){
-   // must have some colons...
-   if (value.indexOf(":") == -1){
-       return "false";
-   }
-   // must contain at least 2 colons, giving 3 array elements...
-   var cmiArray = value.split(":");
-   if (cmiArray.length < 3){
-      return "false";
-   }
-   // hours must be 4,3 or 2 digits...
-   if (cmiArray[0].length < 2 || cmiArray[0].length > 4  ){
-      return "false";
-   }
-   // minutes must be 2 digits...
-   if (cmiArray[1].length != 2){
-      return "false";
-   }
-   // must be numbers...
-   if (isNaN(cmiArray[0]) || isNaN(cmiArray[1]) || isNaN(cmiArray[2])){
-      return "false";
-   }
-   // 24hr clock for hours...
-   if (parseInt(cmiArray[0]) < 0){
-      return "false";
-   }
-   // parse minutes
-   // NOTE: Seems illegal to have 99 minutes, but ADL 1.2
-   // SCORM Conformance Test Suite does this? I'll do the same...
-   // if (parseInt(cmiArray[1]) < 0 || parseInt(cmiArray[1]) > 59){
-   if (parseInt(cmiArray[1]) < 0){
-      return "false";
-   }
-   // check for decimal place...
-   if (cmiArray[2].indexOf(".") != -1){
-       var cmiDecArray = cmiArray[2].split(".");
-       // can only be 2 values here...
-       if (cmiDecArray.length != 2){
-           return "false";
-       }
-       // again they must be numbers...
-       if (isNaN(cmiDecArray[0]) || isNaN(cmiDecArray[1])){
-           return "false";
-       }
-       // only two digits allowed for seconds...
-       if (cmiDecArray[0].length != 2){
-           return "false";
-       }
-       // make sure there is less than 60 seconds here...
-       if (parseInt(cmiDecArray[0]) > 59 ){
-          return "false";
-       }
-       // only one or two digits allowed for milliseconds...
-       if (cmiDecArray[1].length > 2){
-           return "false";
-       }
-   }
-   else{
-       // no dots, so must be no milliseconds...
-       // make sure length is 2
-       if (cmiArray[2].length != 2){
-           return "false";
-       }
-       // make sure there is less than 60 seconds here...
-       if (parseInt(cmiArray[2]) > 59 ){
-          return "false";
-       }
-   }
-   // got up to here, then value okay...
-   return "true";
+function checkCMIVocabularyInteraction(value) {
+	if (value == "true-false" || value == "choice" ||
+		value == "fill-in" || value == "matching" ||
+		value == "performance" || value == "likert" ||
+		value == "sequencing" || value == "numeric") {
+		return "true";
+	}
+	else {
+		return "false";
+	}
 }
 
-function checkCMITime(value){
+function checkCMIVocabularyTimeLimitAction(value) {
+	if (value == "exit,message" || value == "exit,no message" ||
+		value == "continue,message" || value == "continue,no message") {
+		return "true";
+	}
+	else {
+		return "false";
+	}
+}
 
-   // must have some colons...
-   if (value.indexOf(":") == -1){
-       return "false";
-   }
-   // must contain at least 2 colons, giving 3 array elements...
-   var cmiArray = value.split(":");
-   if (cmiArray.length < 3){
-      return "false";
-   }
-   // hours & minutes must be 2 digits...
-   if (cmiArray[0].length != 2 || cmiArray[1].length != 2){
-      return "false";
-   }
-   // must be numbers...
-   if (isNaN(cmiArray[0]) || isNaN(cmiArray[1]) || isNaN(cmiArray[2])){
-      return "false";
-   }
-   // 24hr clock for hours...
-   if (parseInt(cmiArray[0]) < 0 || parseInt(cmiArray[0]) > 23){
-      return "false";
-   }
-   // parse minutes
-   if (parseInt(cmiArray[1]) < 0 || parseInt(cmiArray[1]) > 59){
-      return "false";
-   }
-   // check for decimal place...
-   if (cmiArray[2].indexOf(".") != -1){
-       var cmiDecArray = cmiArray[2].split(".");
-       // can only be 2 values here...
-       if (cmiDecArray.length != 2){
-           return "false";
-       }
-       // again they must be numbers...
-       if (isNaN(cmiDecArray[0]) || isNaN(cmiDecArray[1])){
-           return "false";
-       }
-       // only two digits allowed for seconds...
-       if (cmiDecArray[0].length != 2){
-           return "false";
-       }
-       // make sure there is less than 60 seconds here...
-       if (parseInt(cmiDecArray[0]) > 59 ){
-          return "false";
-       }
-       // only one or two digits allowed for milliseconds...
-       if (cmiDecArray[1].length > 2){
-           return "false";
-       }
-   }
-   else{
-       // no dots, so must be no milliseconds...
-       // make sure length is 2
-       if (cmiArray[2].length != 2){
-           return "false";
-       }
-       // make sure there is less than 60 seconds here...
-       if (parseInt(cmiArray[2]) > 59 ){
-          return "false";
-       }
-   }
-   // got up to here, then value okay...
-   return "true";
+function checkCMIVocabularyExit(value) {
+	if (value == "time-out" || value == "suspend" ||
+		value == "logout" || value == "") {
+		return "true";
+	}
+	else {
+		return "false";
+	}
+}
+
+function checkCMIVocabularyMode(value) {
+	if (value == "normal" || value == "review" || value == "browse") {
+		return "true";
+	}
+	else {
+		return "false";
+	}
+}
+
+function checkCMIVocabularyEntry(value) {
+	if (value == "ab-initio" || value == "resume" || value == "") {
+		return "true";
+	}
+	else {
+		return "false";
+	}
+}
+
+function checkCMIVocabularyStatus(element, value) {
+	// sco cannot set lesson_status to not attempted
+	if (element == "cmi.core.lesson_status" && value == "not attempted") {
+		return false;
+	}
+	if (value == "passed" || value == "completed" ||
+		value == "failed" || value == "incomplete" ||
+		value == "browsed" || value == "not attempted") {
+		return "true";
+	}
+	else {
+		return "false";
+	}
+}
+
+function checkCMIVocabularyCredit(value) {
+	if (value == "credit" || value == "no-credit") {
+		return "true";
+	}
+	else {
+		return "false";
+	}
 }
 
 
-function checkCMIString4096(value){
-    if (value.length <= 4096){
-       return "true";
-    }
-    else{
-       return "false";
-    }
+function checkCMITimespan(value) {
+	// must have some colons...
+	if (value.indexOf(":") == -1) {
+		return "false";
+	}
+	// must contain at least 2 colons, giving 3 array elements...
+	var cmiArray = value.split(":");
+	if (cmiArray.length < 3) {
+		return "false";
+	}
+	// hours must be 4,3 or 2 digits...
+	if (cmiArray[0].length < 2 || cmiArray[0].length > 4) {
+		return "false";
+	}
+	// minutes must be 2 digits...
+	if (cmiArray[1].length != 2) {
+		return "false";
+	}
+	// must be numbers...
+	if (isNaN(cmiArray[0]) || isNaN(cmiArray[1]) || isNaN(cmiArray[2])) {
+		return "false";
+	}
+	// 24hr clock for hours...
+	if (parseInt(cmiArray[0]) < 0) {
+		return "false";
+	}
+	// parse minutes
+	// NOTE: Seems illegal to have 99 minutes, but ADL 1.2
+	// SCORM Conformance Test Suite does this? I'll do the same...
+	// if (parseInt(cmiArray[1]) < 0 || parseInt(cmiArray[1]) > 59){
+	if (parseInt(cmiArray[1]) < 0) {
+		return "false";
+	}
+	// check for decimal place...
+	if (cmiArray[2].indexOf(".") != -1) {
+		var cmiDecArray = cmiArray[2].split(".");
+		// can only be 2 values here...
+		if (cmiDecArray.length != 2) {
+			return "false";
+		}
+		// again they must be numbers...
+		if (isNaN(cmiDecArray[0]) || isNaN(cmiDecArray[1])) {
+			return "false";
+		}
+		// only two digits allowed for seconds...
+		if (cmiDecArray[0].length != 2) {
+			return "false";
+		}
+		// make sure there is less than 60 seconds here...
+		if (parseInt(cmiDecArray[0]) > 59) {
+			return "false";
+		}
+		// only one or two digits allowed for milliseconds...
+		if (cmiDecArray[1].length > 2) {
+			return "false";
+		}
+	}
+	else {
+		// no dots, so must be no milliseconds...
+		// make sure length is 2
+		if (cmiArray[2].length != 2) {
+			return "false";
+		}
+		// make sure there is less than 60 seconds here...
+		if (parseInt(cmiArray[2]) > 59) {
+			return "false";
+		}
+	}
+	// got up to here, then value okay...
+	return "true";
 }
 
-function checkCMIString255(value){
-    if (value.length <= 255){
-       return "true";
-    }
-    else{
-       return "false";
-    }
-}
+function checkCMITime(value) {
 
-function checkCMISInteger(element, value){
-    if(isNaN(value)){
-        return "false";
-    }
-    else{
-        var num = parseInt(value);
-        if (num >= -32768 && num <= 32768){
-            if (element == "cmi.student_preference.audio"){
-                if (num < -1 || num > 100){
-                    return "false";
-                }
-                else{
-                    return "true";
-                }
-            }
-            else if (element == "cmi.student_preference.speed"){
-                if (num < -100 || num > 100){
-                    return "false";
-                }
-                else{
-                    return "true";
-                }
-            }
-            else if (element == "cmi.student_preference.text"){
-                if (num < -1 || num > 1){
-                    return "false";
-                }
-                else{
-                    return "true";
-                }
-            }
-            else{
-                return "true";
-            }
-        }
-        else{
-            return "false";
-        }
-    }
-}
-
-function checkCMIInteger(value){
-    if(isNaN(value)){
-        return "false";
-    }
-    else{
-        var num = parseInt(value);
-        if (num >= 0 && num <= 65536){
-            return "true";
-        }
-        else{
-            return "false";
-        }
-    }
-}
-
-function checkCMIIdentifier(value){
-    var SPACE = ' ';
-    var TAB = '\t';
-    var CRETURN = '\r';
-    var LINEFEED = '\n';
-    if (value.indexOf(SPACE) == -1 && value.indexOf(TAB) == -1
-     && value.indexOf(CRETURN) == -1 && value.indexOf(LINEFEED) == -1){
-        if (value.length > 0 && value.length < 256){
-            return "true";
-        }
-        else{
-            return "false";
-        }
-    }
-    else{
-        return "false";
-    }
-}
-
-
-
-function checkCMIFeedback(element, value){
-    // allow user to edit var at top of page to disable this checking...
-    if (looseChecking == "false"){
-        // need to find the type (if its set)
-        var cmiArray = element.split(".");
-	    // need to check cmiArray[2] to see if its a number
-	    if (isNaN(cmiArray[2])){
-            // this should be a number. However, Err on the side of caution...
-            return "false";
-	    }
-        // make sure that this interaction already exists...
-        var res = API.LMSGetValue("cmi.interactions._count");
-        if (parseInt(cmiArray[2]) >= parseInt(res)){
-            // then this interaction does not exist.. However, Err on the side of caution...
-            return "false";
-        }
-        // Up to here? - then get the type
-        var theType = "cmi.interactions.intArray("+cmiArray[2]+").type";
-        elementObj = eval("API."+theType+";");
-        if (elementObj == null){
-            return "false";
-        }
-        datatype = elementObj.cmivalue;
-
-        if (datatype == null){
-            return "false";
-        }
-        // its not null, so it equals something, so...
-        switch (datatype)
-        {
-            case "true-false":   { return checkTrueFalse(value); break }
-            case "choice":   { return checkChoice(value); break }
-            case "fill-in":   { return checkFillIn(value); break }
-            case "numeric":   { return checkCMIDecimal(value); break }
-            case "likert":   { return checkLikert(value); break }
-            case "matching":   { return checkMatching(value); break }
-            case "performance":   { return checkCMIString255(value); break }
-            case "sequencing":   { return checkSequencing(value); break }
-            // if its not been set then we should return false.  That would mean
-            // that a cmi.interaction.n.type MUST have a value and cannot be empty
-            default:   { return "false"; break }
-        }
-    }
-    else{
-        return "true";
-    }
-
-}
-
-function checkMatching(value){
-  // check for n.n
-  var TEST_VAL = /^[a-z,A-Z,0-9]{1}.{1}[a-z,A-Z,0-9]{1}$/;
-  // check for n.n,n.n,n.n etc
-  var TEST_VAL2 = /^[a-z,A-Z,0-9]{1}.{1}[a-z,A-Z,0-9]{1},{1}([a-z,A-Z,0-9]{1}.{1}[a-z,A-Z,0-9]{1},{1})*[a-z,A-Z,0-9]{1}.{1}[a-z,A-Z,0-9]{1}$/;
-  // check for {n.n,n.n,n.n etc }
-  // Bugfix Mozilla firebird didnt like this line below
-  // var TEST_VAL3 = /^{[a-z,A-Z,0-9]{1}.{1}[a-z,A-Z,0-9]{1},{1}([a-z,A-Z,0-9]{1}.{1}[a-z,A-Z,0-9]{1},{1})*[a-z,A-Z,0-9]{1}.{1}[a-z,A-Z,0-9]{1}}$/;
-  var TEST_VAL3 = /^[a-z,A-Z,0-9]{1}.{1}[a-z,A-Z,0-9]{1},{1}([a-z,A-Z,0-9]{1}.{1}[a-z,A-Z,0-9]{1},{1})*[a-z,A-Z,0-9]{1}.{1}[a-z,A-Z,0-9]{1}$/;
-  if (TEST_VAL.test(value)) {
-      return "true";
-  }
-  else if (TEST_VAL2.test(value)) {
-      return "true";
-  }
-  else if (TEST_VAL3.test(value)) {
-      return "true";
-  }
-  else{
-      return "false";
-  }
+	// must have some colons...
+	if (value.indexOf(":") == -1) {
+		return "false";
+	}
+	// must contain at least 2 colons, giving 3 array elements...
+	var cmiArray = value.split(":");
+	if (cmiArray.length < 3) {
+		return "false";
+	}
+	// hours & minutes must be 2 digits...
+	if (cmiArray[0].length != 2 || cmiArray[1].length != 2) {
+		return "false";
+	}
+	// must be numbers...
+	if (isNaN(cmiArray[0]) || isNaN(cmiArray[1]) || isNaN(cmiArray[2])) {
+		return "false";
+	}
+	// 24hr clock for hours...
+	if (parseInt(cmiArray[0]) < 0 || parseInt(cmiArray[0]) > 23) {
+		return "false";
+	}
+	// parse minutes
+	if (parseInt(cmiArray[1]) < 0 || parseInt(cmiArray[1]) > 59) {
+		return "false";
+	}
+	// check for decimal place...
+	if (cmiArray[2].indexOf(".") != -1) {
+		var cmiDecArray = cmiArray[2].split(".");
+		// can only be 2 values here...
+		if (cmiDecArray.length != 2) {
+			return "false";
+		}
+		// again they must be numbers...
+		if (isNaN(cmiDecArray[0]) || isNaN(cmiDecArray[1])) {
+			return "false";
+		}
+		// only two digits allowed for seconds...
+		if (cmiDecArray[0].length != 2) {
+			return "false";
+		}
+		// make sure there is less than 60 seconds here...
+		if (parseInt(cmiDecArray[0]) > 59) {
+			return "false";
+		}
+		// only one or two digits allowed for milliseconds...
+		if (cmiDecArray[1].length > 2) {
+			return "false";
+		}
+	}
+	else {
+		// no dots, so must be no milliseconds...
+		// make sure length is 2
+		if (cmiArray[2].length != 2) {
+			return "false";
+		}
+		// make sure there is less than 60 seconds here...
+		if (parseInt(cmiArray[2]) > 59) {
+			return "false";
+		}
+	}
+	// got up to here, then value okay...
+	return "true";
 }
 
 
-function checkSequencing(value){
-
-  // test for single a-z 0-9
-  var TEST_VAL = /^[a-z,A-Z,0-9]{1}$/;
-
-  // test for format 1,2,3,a,b,c
-  var TEST_VAL2 = /^[a-z,A-Z,0-9]{1},{1}([a-z,A-Z,0-9],)*[a-z,A-Z,0-9]{1}$/;
-
-  if (TEST_VAL.test(value)) {
-      return "true";
-  }
-  else if (TEST_VAL2.test(value)) {
-      return "true";
-  }
-  else{
-      return "false";
-  }
+function checkCMIString4096(value) {
+	if (value.length <= 4096) {
+		return "true";
+	}
+	else {
+		return "false";
+	}
 }
 
-function checkChoice(value){
-  // test for single a-z 0-9
-  var TEST_VAL = /^[a-z,A-Z,0-9]{1}$/;
+function checkCMIString255(value) {
+	if (value.length <= 255) {
+		return "true";
+	}
+	else {
+		return "false";
+	}
+}
 
-  // test for format 1,2,3,a,b,c
-  var TEST_VAL2 = /^[a-z,A-Z,0-9]{1},{1}([a-z,A-Z,0-9],)*[a-z,A-Z,0-9]{1}$/;
+function checkCMISInteger(element, value) {
+	if (isNaN(value)) {
+		return "false";
+	}
+	else {
+		var num = parseInt(value);
+		if (num >= -32768 && num <= 32768) {
+			if (element == "cmi.student_preference.audio") {
+				if (num < -1 || num > 100) {
+					return "false";
+				}
+				else {
+					return "true";
+				}
+			}
+			else if (element == "cmi.student_preference.speed") {
+				if (num < -100 || num > 100) {
+					return "false";
+				}
+				else {
+					return "true";
+				}
+			}
+			else if (element == "cmi.student_preference.text") {
+				if (num < -1 || num > 1) {
+					return "false";
+				}
+				else {
+					return "true";
+				}
+			}
+			else {
+				return "true";
+			}
+		}
+		else {
+			return "false";
+		}
+	}
+}
 
-  // test for format {1,2,3,a,b,c}
-  // Bugfix Mozilla firebird didnt like this line below
-  //var TEST_VAL3 = /^{[a-z,A-Z,0-9]{1},{1}([a-z,A-Z,0-9],)*[a-z,A-Z,0-9]{1}}$/;
-  var TEST_VAL3 = /^[a-z,A-Z,0-9]{1},{1}([a-z,A-Z,0-9],)*[a-z,A-Z,0-9]{1}$/;
-  
-  if (TEST_VAL.test(value)) {
-      return "true";
-  }
-  else if (TEST_VAL2.test(value)) {
-      return "true";
-  }
-  else if (TEST_VAL3.test(value)) {
-      return "true";
-  }
-  else{
-      return "false";
-  }
+function checkCMIInteger(value) {
+	if (isNaN(value)) {
+		return "false";
+	}
+	else {
+		var num = parseInt(value);
+		if (num >= 0 && num <= 65536) {
+			return "true";
+		}
+		else {
+			return "false";
+		}
+	}
+}
+
+function checkCMIIdentifier(value) {
+	var SPACE = ' ';
+	var TAB = '\t';
+	var CRETURN = '\r';
+	var LINEFEED = '\n';
+	if (value.indexOf(SPACE) == -1 && value.indexOf(TAB) == -1
+		&& value.indexOf(CRETURN) == -1 && value.indexOf(LINEFEED) == -1) {
+		if (value.length > 0 && value.length < 256) {
+			return "true";
+		}
+		else {
+			return "false";
+		}
+	}
+	else {
+		return "false";
+	}
 }
 
 
-function checkFillIn(value){
-    return checkCMIString255(value);
+
+function checkCMIFeedback(element, value) {
+	// allow user to edit var at top of page to disable this checking...
+	if (looseChecking == "false") {
+		// need to find the type (if its set)
+		var cmiArray = element.split(".");
+		// need to check cmiArray[2] to see if its a number
+		if (isNaN(cmiArray[2])) {
+			// this should be a number. However, Err on the side of caution...
+			return "false";
+		}
+		// make sure that this interaction already exists...
+		var res = API.LMSGetValue("cmi.interactions._count");
+		if (parseInt(cmiArray[2]) >= parseInt(res)) {
+			// then this interaction does not exist.. However, Err on the side of caution...
+			return "false";
+		}
+		// Up to here? - then get the type
+		var theType = "cmi.interactions.intArray(" + cmiArray[2] + ").type";
+		elementObj = eval("API." + theType + ";");
+		if (elementObj == null) {
+			return "false";
+		}
+		datatype = elementObj.cmivalue;
+
+		if (datatype == null) {
+			return "false";
+		}
+		// its not null, so it equals something, so...
+		switch (datatype) {
+			case "true-false": { return checkTrueFalse(value); break }
+			case "choice": { return checkChoice(value); break }
+			case "fill-in": { return checkFillIn(value); break }
+			case "numeric": { return checkCMIDecimal(value); break }
+			case "likert": { return checkLikert(value); break }
+			case "matching": { return checkMatching(value); break }
+			case "performance": { return checkCMIString255(value); break }
+			case "sequencing": { return checkSequencing(value); break }
+			// if its not been set then we should return false.  That would mean
+			// that a cmi.interaction.n.type MUST have a value and cannot be empty
+			default: { return "false"; break }
+		}
+	}
+	else {
+		return "true";
+	}
+
+}
+
+function checkMatching(value) {
+	// check for n.n
+	var TEST_VAL = /^[a-z,A-Z,0-9]{1}.{1}[a-z,A-Z,0-9]{1}$/;
+	// check for n.n,n.n,n.n etc
+	var TEST_VAL2 = /^[a-z,A-Z,0-9]{1}.{1}[a-z,A-Z,0-9]{1},{1}([a-z,A-Z,0-9]{1}.{1}[a-z,A-Z,0-9]{1},{1})*[a-z,A-Z,0-9]{1}.{1}[a-z,A-Z,0-9]{1}$/;
+	// check for {n.n,n.n,n.n etc }
+	// Bugfix Mozilla firebird didnt like this line below
+	// var TEST_VAL3 = /^{[a-z,A-Z,0-9]{1}.{1}[a-z,A-Z,0-9]{1},{1}([a-z,A-Z,0-9]{1}.{1}[a-z,A-Z,0-9]{1},{1})*[a-z,A-Z,0-9]{1}.{1}[a-z,A-Z,0-9]{1}}$/;
+	var TEST_VAL3 = /^[a-z,A-Z,0-9]{1}.{1}[a-z,A-Z,0-9]{1},{1}([a-z,A-Z,0-9]{1}.{1}[a-z,A-Z,0-9]{1},{1})*[a-z,A-Z,0-9]{1}.{1}[a-z,A-Z,0-9]{1}$/;
+	if (TEST_VAL.test(value)) {
+		return "true";
+	}
+	else if (TEST_VAL2.test(value)) {
+		return "true";
+	}
+	else if (TEST_VAL3.test(value)) {
+		return "true";
+	}
+	else {
+		return "false";
+	}
 }
 
 
-function checkTrueFalse(value){
-    if (value == "0" || value == "1" || value == "t" || value == "f" || value == "T" || value == "F"){
-        return "true";
-    }
-    else{
-        return "false";
-    }
+function checkSequencing(value) {
+
+	// test for single a-z 0-9
+	var TEST_VAL = /^[a-z,A-Z,0-9]{1}$/;
+
+	// test for format 1,2,3,a,b,c
+	var TEST_VAL2 = /^[a-z,A-Z,0-9]{1},{1}([a-z,A-Z,0-9],)*[a-z,A-Z,0-9]{1}$/;
+
+	if (TEST_VAL.test(value)) {
+		return "true";
+	}
+	else if (TEST_VAL2.test(value)) {
+		return "true";
+	}
+	else {
+		return "false";
+	}
+}
+
+function checkChoice(value) {
+	// test for single a-z 0-9
+	var TEST_VAL = /^[a-z,A-Z,0-9]{1}$/;
+
+	// test for format 1,2,3,a,b,c
+	var TEST_VAL2 = /^[a-z,A-Z,0-9]{1},{1}([a-z,A-Z,0-9],)*[a-z,A-Z,0-9]{1}$/;
+
+	// test for format {1,2,3,a,b,c}
+	// Bugfix Mozilla firebird didnt like this line below
+	//var TEST_VAL3 = /^{[a-z,A-Z,0-9]{1},{1}([a-z,A-Z,0-9],)*[a-z,A-Z,0-9]{1}}$/;
+	var TEST_VAL3 = /^[a-z,A-Z,0-9]{1},{1}([a-z,A-Z,0-9],)*[a-z,A-Z,0-9]{1}$/;
+
+	if (TEST_VAL.test(value)) {
+		return "true";
+	}
+	else if (TEST_VAL2.test(value)) {
+		return "true";
+	}
+	else if (TEST_VAL3.test(value)) {
+		return "true";
+	}
+	else {
+		return "false";
+	}
 }
 
 
-function checkLikert(value){
-  if (value.length == 0){
-      return "true";
-  }
-  if (value.length > 1){
-      return "false";
-  }
-  var TEST_VAL = /^[a-z,A-Z,0-9]{1}$/;
-  if (TEST_VAL.test(value)) {
-      return "true";
-  }
-  else{
-      return "false";
-  }
+function checkFillIn(value) {
+	return checkCMIString255(value);
 }
 
 
-function checkCMIDecimal(value){
-   if (isNaN(value)){
-        return "false";
-   }
-   else{
-        return "true";
-   }
+function checkTrueFalse(value) {
+	if (value == "0" || value == "1" || value == "t" || value == "f" || value == "T" || value == "F") {
+		return "true";
+	}
+	else {
+		return "false";
+	}
 }
 
-function checkCMIBoolean(value){
-   if (value == "true" || value == "false"){
-        return "true";
-   }
-   else{
-        return "false";
-   }
+
+function checkLikert(value) {
+	if (value.length == 0) {
+		return "true";
+	}
+	if (value.length > 1) {
+		return "false";
+	}
+	var TEST_VAL = /^[a-z,A-Z,0-9]{1}$/;
+	if (TEST_VAL.test(value)) {
+		return "true";
+	}
+	else {
+		return "false";
+	}
 }
 
-function checkCMIBlank(value){
-   if (value != ""){
-       return "false";
-   }
-   else{
-       return "true";
-   }
+
+function checkCMIDecimal(value) {
+	if (isNaN(value)) {
+		return "false";
+	}
+	else {
+		return "true";
+	}
+}
+
+function checkCMIBoolean(value) {
+	if (value == "true" || value == "false") {
+		return "true";
+	}
+	else {
+		return "false";
+	}
+}
+
+function checkCMIBlank(value) {
+	if (value != "") {
+		return "false";
+	}
+	else {
+		return "true";
+	}
 }
 
 
@@ -2787,13 +2659,13 @@ function checkCMIBlank(value){
 
 
 
-function CMIModel (){
+function CMIModel() {
 	this._version = new CMIComponent("_version", "3.4", "readonly", "");
 	this.core = new CMICoreModel;
 	this.suspend_data = new CMIComponent("suspend_data", "", "both", "CMIString4096");
-	this.launch_data = new CMIComponent("launch_data","","readonly", "CMIString4096");
-	this.comments = new CMIComponent("comments","","both", "CMIString4096");
-	this.comments_from_lms = new CMIComponent("comments_from_lms","","readonly", "CMIString4096");
+	this.launch_data = new CMIComponent("launch_data", "", "readonly", "CMIString4096");
+	this.comments = new CMIComponent("comments", "", "both", "CMIString4096");
+	this.comments_from_lms = new CMIComponent("comments_from_lms", "", "readonly", "CMIString4096");
 	this.objectives = new ObjectivesModel;
 	this.student_data = new StudentDataModel;
 	this.student_preference = new StudentPreferenceModel;
@@ -2801,14 +2673,14 @@ function CMIModel (){
 }
 
 
-function CMICoreModel(){
+function CMICoreModel() {
 	this._children = new CMIComponent("_children", "student_id,student_name,lesson_location,credit,lesson_status,entry,score,total_time,lesson_mode,exit,session_time", "readonly", "CMIString255");
 	this.student_id = new CMIComponent("student_id", "", "readonly", "CMIIdentifier");
 	this.student_name = new CMIComponent("student_name", "", "readonly", "CMIString255");
 	this.lesson_location = new CMIComponent("lesson_location", "", "both", "CMIString255");
 	this.credit = new CMIComponent("credit", "", "readonly", "CMIVocabularyCredit");
 	this.lesson_status = new CMIComponent("lesson_status", "", "both", "CMIVocabularyStatus");
-	this.entry = new CMIComponent("entry","","readonly", "CMIVocabularyEntry");
+	this.entry = new CMIComponent("entry", "", "readonly", "CMIVocabularyEntry");
 	this.score = new CMIScore;
 	this.total_time = new CMIComponent("total_time", "", "readonly", "CMITimespan");
 	this.lesson_mode = new CMIComponent("lesson_mode", "", "readonly", "CMIVocabularyMode");
@@ -2817,15 +2689,15 @@ function CMICoreModel(){
 }
 
 
-function CMIScore(){
-	this._children = new  CMIComponent("_children", "raw,min,max", "readonly", "CMIString255");
+function CMIScore() {
+	this._children = new CMIComponent("_children", "raw,min,max", "readonly", "CMIString255");
 	this.raw = new CMIComponent("raw", "", "both", "CMIDecimalOrCMIBlank");
 	this.max = new CMIComponent("max", "", "both", "CMIDecimalOrCMIBlank");
 	this.min = new CMIComponent("min", "", "both", "CMIDecimalOrCMIBlank");
 }
 
 
-function StudentPreferenceModel(){
+function StudentPreferenceModel() {
 	this._children = new CMIComponent("_children", "audio,language,speed,text", "readonly", "CMIString255");
 	this.audio = new CMIComponent("audio", "0", "both", "CMISInteger");
 	this.language = new CMIComponent("language", "", "both", "CMIString255");
@@ -2834,7 +2706,7 @@ function StudentPreferenceModel(){
 }
 
 
-function StudentDataModel(){
+function StudentDataModel() {
 	this._children = new CMIComponent("_count", "mastery_score,max_time_allowed,time_limit_action", "readonly", "CMIString255");
 	this.mastery_score = new CMIComponent("mastery_score", "", "readonly", "CMIDecimal");
 	this.max_time_allowed = new CMIComponent("max_time_allowed", "", "readonly", "CMITimespan");
@@ -2847,39 +2719,39 @@ function StudentDataModel(){
 *  The CMI objectives model
 */
 
-function ObjectivesModel(){
+function ObjectivesModel() {
 	this._children = new CMIComponent("_children", "id,score,status", "readonly", "CMIString255");
 	this._count = new CMIComponent("_count", 0, "readonly", "CMIInteger");
 	this.objArray = ObjectiveArrayModel;
 	this.objArr = new Array();
 }
 
-function ObjectiveArrayModel(index){
-	if(index>this._count.cmivalue-1){
-		if (index == this._count.cmivalue){
+function ObjectiveArrayModel(index) {
+	if (index > this._count.cmivalue - 1) {
+		if (index == this._count.cmivalue) {
 			// then create new one...
 			this.objArr[index] = new singleObjectiveModel();
 			this._count.cmivalue = this._count.cmivalue + 1;
 			return this.objArr[index];
 		}
-		else{
+		else {
 			return "false";
 		}
 	}
-	else{
+	else {
 		// we must be talking about this one so return object..
 		return this.objArr[index];
 	}
 }
 
 
-function singleObjectiveModel(){
+function singleObjectiveModel() {
 	this.id = new CMIComponent("id", "", "both", "CMIIdentifier");
 	this.score = new objectiveScoreModel;
 	this.status = new CMIComponent("status", "", "both", "CMIVocabularyStatus");
 }
 
-function objectiveScoreModel(){
+function objectiveScoreModel() {
 	this._children = new CMIComponent("_children", "raw,min,max", "readonly", "CMIString255");
 	this.raw = new CMIComponent("raw", "", "both", "CMIDecimalOrCMIBlank");
 	this.min = new CMIComponent("min", "", "both", "CMIDecimalOrCMIBlank");
@@ -2892,7 +2764,7 @@ function objectiveScoreModel(){
 *  The CMI interactions model
 */
 
-function InteractionsModel(){
+function InteractionsModel() {
 	this._children = new CMIComponent("_children", "id,objectives,time,type,correct_responses,weighting,student_response,result,latency", "readonly", "CMIString255");
 	this._count = new CMIComponent("_count", 0, "readonly", "CMIInteger");
 	this.intArray = InteractionsArrayModel;
@@ -2900,27 +2772,27 @@ function InteractionsModel(){
 }
 
 
-function InteractionsArrayModel(index){
+function InteractionsArrayModel(index) {
 
-	if(index>this._count.cmivalue-1){
-		if (index == this._count.cmivalue){
+	if (index > this._count.cmivalue - 1) {
+		if (index == this._count.cmivalue) {
 			// then create new one...
 			this.intArr[index] = new singleInteractionModel();
 			this._count.cmivalue = this._count.cmivalue + 1;
 			return this.intArr[index];
 		}
-		else{
+		else {
 			return "false";
 		}
 	}
-	else{
+	else {
 		// we must be talking about this one so return object..
 		return this.intArr[index];
 	}
 }
 
 
-function singleInteractionModel(){
+function singleInteractionModel() {
 	this.id = new CMIComponent("id", "", "writeonly", "CMIIdentifier");
 	this.objectives = new ObjectivesInteractionModel;
 	this.time = new CMIComponent("time", "", "writeonly", "CMITime");
@@ -2933,65 +2805,65 @@ function singleInteractionModel(){
 }
 
 
-function ObjectivesInteractionModel(){
+function ObjectivesInteractionModel() {
 	this._count = new CMIComponent("_count", 0, "readonly", "CMIInteger");
 	this.objectivesInteractionArray = SingleObjectivesInteractionModel;
 	this.objectivesInteractionArr = new Array();
 }
 
 
-function SingleObjectivesInteractionModel(index){
-	if(index>this._count.cmivalue-1){
-		if (index == this._count.cmivalue){
+function SingleObjectivesInteractionModel(index) {
+	if (index > this._count.cmivalue - 1) {
+		if (index == this._count.cmivalue) {
 			// then create new one...
 			this.objectivesInteractionArr[index] = new SingleItemObjectivesInteractionModel();
 			this._count.cmivalue = this._count.cmivalue + 1;
 			return this.objectivesInteractionArr[index];
 		}
-		else{
+		else {
 			return "false";
 		}
 	}
-	else{
+	else {
 		// we must be talking about this one so return object..
 		return this.objectivesInteractionArr[index];
 	}
 }
 
 
-function SingleItemObjectivesInteractionModel(){
+function SingleItemObjectivesInteractionModel() {
 	this.id = new CMIComponent("id", "", "writeonly", "CMIIdentifier");
 }
 
 
 
-function CorrectResponsesInteractionModel(){
+function CorrectResponsesInteractionModel() {
 	this._count = new CMIComponent("_count", 0, "readonly", "CMIInteger");
 	this.correctResponsesInteractionArray = SingleCorrectResponsesInteractionModel;
 	this.correctResponsesInteractionArr = new Array();
 }
 
 
-function SingleCorrectResponsesInteractionModel(index){
-	if(index>this._count.cmivalue-1){
-		if (index == this._count.cmivalue){
+function SingleCorrectResponsesInteractionModel(index) {
+	if (index > this._count.cmivalue - 1) {
+		if (index == this._count.cmivalue) {
 			// then create new one...
 			this.correctResponsesInteractionArr[index] = new SingleItemCorrectResponsesInteractionModel();
 			this._count.cmivalue = this._count.cmivalue + 1;
 			return this.correctResponsesInteractionArr[index];
 		}
-		else{
+		else {
 			return "false";
 		}
 	}
-	else{
+	else {
 		// we must be talking about this one so return object..
 		return this.correctResponsesInteractionArr[index];
 	}
 }
 
 
-function SingleItemCorrectResponsesInteractionModel(){
+function SingleItemCorrectResponsesInteractionModel() {
 	this.pattern = new CMIComponent("pattern", "", "writeonly", "CMIFeedback");
 }
 
@@ -2999,17 +2871,17 @@ function SingleItemCorrectResponsesInteractionModel(){
 *
 *
 */
-function showCurrentModelState(infoOrForm){
+function showCurrentModelState(infoOrForm) {
 
 	var divider = "";
 	var titles = "";
-	if (infoOrForm == "info"){
+	if (infoOrForm == "info") {
 		divider = "\n";
-                equals = "=";
+		equals = "=";
 		titles = "Current client CMI Datamodel\n\n";
 	}
-	else{
-                equals = "~r@l@ad~";
+	else {
+		equals = "~r@l@ad~";
 		divider = "^r@l@ad^";
 		titles = "";
 	}
@@ -3035,35 +2907,35 @@ function showCurrentModelState(infoOrForm){
 
 	var s = "";
 	var objectivesCount = API.cmi.objectives._count.cmivalue;
-	for (count=0; count < objectivesCount; count++){
+	for (count = 0; count < objectivesCount; count++) {
 		objHandle = API.cmi.objectives.objArray(count);
 		idval = objHandle.id.cmivalue;
 		scoreRaw = objHandle.score.raw.cmivalue;
 		scoreMax = objHandle.score.max.cmivalue;
 		scoreMin = objHandle.score.min.cmivalue;
-                statval = objHandle.status.cmivalue;
+		statval = objHandle.status.cmivalue;
 		s = s + "cmi.objectives." + count + ".id" + equals + idval + divider;
 		s = s + "cmi.objectives." + count + ".score.raw" + equals + scoreRaw + divider;
 		s = s + "cmi.objectives." + count + ".score.max" + equals + scoreMax + divider;
 		s = s + "cmi.objectives." + count + ".score.min" + equals + scoreMin + divider;
-                s = s + "cmi.objectives." + count + ".status" + equals + statval + divider;
+		s = s + "cmi.objectives." + count + ".status" + equals + statval + divider;
 	}
 
 
-    v = "cmi.student_data.mastery_score" + equals + API.cmi.student_data.mastery_score.cmivalue + divider;
-    w = "cmi.student_data.max_time_allowed" + equals + API.cmi.student_data.max_time_allowed.cmivalue + divider;
-    x = "cmi.student_data.time_limit_action" + equals + API.cmi.student_data.time_limit_action.cmivalue + divider;
+	v = "cmi.student_data.mastery_score" + equals + API.cmi.student_data.mastery_score.cmivalue + divider;
+	w = "cmi.student_data.max_time_allowed" + equals + API.cmi.student_data.max_time_allowed.cmivalue + divider;
+	x = "cmi.student_data.time_limit_action" + equals + API.cmi.student_data.time_limit_action.cmivalue + divider;
 
-    y = "cmi.student_preference.audio" + equals + API.cmi.student_preference.audio.cmivalue + divider;
-    z = "cmi.student_preference.language" + equals + API.cmi.student_preference.language.cmivalue + divider;
-    zz = "cmi.student_preference.speed" + equals + API.cmi.student_preference.speed.cmivalue + divider;
-    zzz = "cmi.student_preference.text" + equals + API.cmi.student_preference.text.cmivalue + divider;
+	y = "cmi.student_preference.audio" + equals + API.cmi.student_preference.audio.cmivalue + divider;
+	z = "cmi.student_preference.language" + equals + API.cmi.student_preference.language.cmivalue + divider;
+	zz = "cmi.student_preference.speed" + equals + API.cmi.student_preference.speed.cmivalue + divider;
+	zzz = "cmi.student_preference.text" + equals + API.cmi.student_preference.text.cmivalue + divider;
 
 	t = "cmi.interactions._count" + equals + API.cmi.interactions._count.cmivalue + divider;
 
 	var u = "";
 	var interactionsCount = API.cmi.interactions._count.cmivalue
-	for (intcount=0; intcount < interactionsCount; intcount++){
+	for (intcount = 0; intcount < interactionsCount; intcount++) {
 		intHandle = API.cmi.interactions.intArray(intcount);
 
 		idval = intHandle.id.cmivalue;
@@ -3072,19 +2944,19 @@ function showCurrentModelState(infoOrForm){
 		interObjCount = intHandle.objectives._count.cmivalue;
 		u = u + "cmi.interactions." + intcount + ".objectives._count" + equals + interObjCount + divider;
 
-		for (objcount=0; objcount < interObjCount; objcount++){
-			 interactionObjectiveHandle = intHandle.objectives.objectivesInteractionArray(objcount);
-			 objid = interactionObjectiveHandle.id.cmivalue;
-			 u = u + "cmi.interactions." + intcount + ".objectives." + objcount + ".id" + equals + objid + divider;
+		for (objcount = 0; objcount < interObjCount; objcount++) {
+			interactionObjectiveHandle = intHandle.objectives.objectivesInteractionArray(objcount);
+			objid = interactionObjectiveHandle.id.cmivalue;
+			u = u + "cmi.interactions." + intcount + ".objectives." + objcount + ".id" + equals + objid + divider;
 		}
 
 		srCount = intHandle.correct_responses._count.cmivalue;
 		u = u + "cmi.interactions." + intcount + ".correct_responses._count" + equals + srCount + divider;
 
-		for (objcount=0; objcount < srCount; objcount++){
-			 interactionSRHandle = intHandle.correct_responses.correctResponsesInteractionArray(objcount);
-			 patternid = interactionSRHandle.pattern.cmivalue;
-			 u = u + "cmi.interactions." + intcount + ".correct_responses." + objcount + ".pattern" + equals + patternid + divider;
+		for (objcount = 0; objcount < srCount; objcount++) {
+			interactionSRHandle = intHandle.correct_responses.correctResponsesInteractionArray(objcount);
+			patternid = interactionSRHandle.pattern.cmivalue;
+			u = u + "cmi.interactions." + intcount + ".correct_responses." + objcount + ".pattern" + equals + patternid + divider;
 		}
 
 
@@ -3107,7 +2979,7 @@ function showCurrentModelState(infoOrForm){
 		u = u + "cmi.interactions." + intcount + ".latency" + equals + latencyval + divider;
 	}
 
-	var alertString = titles+a+b+c+d+e+f+g+h+i+j+k+l+m+n+o+p+q+r+s+v+w+x+y+z+zz+zzz+t+u;
+	var alertString = titles + a + b + c + d + e + f + g + h + i + j + k + l + m + n + o + p + q + r + s + v + w + x + y + z + zz + zzz + t + u;
 	return alertString;
 
 }
@@ -3115,6 +2987,6 @@ function showCurrentModelState(infoOrForm){
 /*
 * a function used in debug mode to see the current cmi model
 */
-function viewModel(){
+function viewModel() {
 	return showCurrentModelState("info");
 }
