@@ -6,7 +6,7 @@
     $courses_data = $inputs -> coursesData;
     $query = "UPDATE `students` SET `courses_data` = '".$courses_data."' WHERE `students`.`studentID` = $studentID";
     if(execute($db, $query)){
-      echo json_encode(true);
+      echo json_encode($query);
     }else{
       echo json_encode(false); 
     }

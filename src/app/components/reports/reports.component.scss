@@ -1,0 +1,37 @@
+* {
+  margin: 0px;
+}
+
+.reports-container {
+  .course-img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-size: 100%;
+    background-position: center;
+    margin: auto;
+  }
+
+  /deep/.mat-expansion-panel-body {
+    padding: 0px;
+  }
+
+  .report-content {
+    width: 100%;
+    min-height: 350px;
+    background-color: #f5f5f5;
+    border-top: 1px solid #CCC;
+  }
+  .no-data{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: x-large;
+    color: #9E9E9E;
+  }
+  .data-cell{
+    border-bottom: 1px solid #ddd;
+    padding: 30px;
+    font-size: 16px;
+  }
+}

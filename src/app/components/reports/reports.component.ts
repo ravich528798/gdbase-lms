@@ -15,20 +15,22 @@ export class ReportsComponent implements OnInit {
   public userId:string;
   public currentUser:any;
   public courses:[any];
+  public decodeURI: any;
   constructor(
     private route: ActivatedRoute,
     private http: HttpClient,
   ) { }
 
   ngOnInit() {
+    this.decodeURI = decodeURI;
     this.userId = this.route.snapshot.paramMap.get('userId');
     this.getUser()
       .subscribe(
         res=>{
           this.currentUser = res[0];
           try{
-            this.currentUser.userdata = JSON.parse(this.currentUser.userdata);
-            this.currentUser.courses_data = JSON.parse(this.currentUser.courses_data);
+            this.currentUser.userdata = JSON.parse(this.unescapeSingleQuote(this.currentUser.userdata));
+            this.currentUser.courses_data = JSON.parse(this.unescapeSingleQuote(this.currentUser.courses_data));
           }
           catch(err){
             console.log(err);
@@ -45,12 +47,23 @@ export class ReportsComponent implements OnInit {
         }
       )
   }
+  escapeSignleQuote(str){
+    return str.replace(/\'/g,"\\'");
+  }
 
+  unescapeSingleQuote(str){
+    return str.replace(/\\'/g,"'");
+  }
   getUser = (): Observable<any> => this.http.post<any>(URL_GET_USER, {
     action: 'studentID',
     payload: this.userId
   });
 
   getEnrolledCourses = (courseIDs): Observable<any> => this.http.post<any>(URL_GET_ENROLLED_COURSES, { ids: courseIDs });
+
+  
+  parseJson(string) {
+    return JSON.parse(string);
+  }
 
 }

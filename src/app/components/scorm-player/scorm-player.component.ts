@@ -31,11 +31,13 @@ export class ScormPlayerComponent implements OnInit {
     this.getUser().subscribe(res => {
       this.userData = res[0];
       this.coursesData = {};
-      try{
-        this.coursesData =  JSON.parse(this.userData.courses_data);
-      }
-      catch (error){
-        console.log(error);
+      if(this.userData.courses_data){
+        try{
+          this.coursesData =  JSON.parse(this.unescapeSingleQuote(this.userData.courses_data));
+        }
+        catch (error){
+          console.log(error);
+        }
       }
       this.win['GLMSReady'] = true;
       this.win['Utils'].launchSCO({
@@ -60,7 +62,7 @@ export class ScormPlayerComponent implements OnInit {
     this.coursesData = this.addTimePathToLog(this.coursesData, msg, msgType);
     const payload = {
       studentID: this.userData.studentID,
-      coursesData: JSON.stringify(this.coursesData)
+      coursesData: this.escapeSignleQuote(JSON.stringify(this.coursesData))
     }
     this.http.post(URL_GLMS_COMMIT, payload)
       .subscribe(res => {}, err => {console.log(err)});
@@ -75,6 +77,14 @@ export class ScormPlayerComponent implements OnInit {
       }
     }
     return courseData;
+  }
+
+  escapeSignleQuote(str){
+    return str.replace(/\'/g,"\\'");
+  }
+
+  unescapeSingleQuote(str){
+    return str.replace(/\\'/g,"'");
   }
 
   addTimePathToLog(data, msg, msgType) {
