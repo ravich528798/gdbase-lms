@@ -14,8 +14,8 @@ export class ScormPlayerComponent implements OnInit {
   public userData: any;
   public coursesData: any;
 
-  private courseID: string = '201810291054555bd6d8ef0235a';
-  private launchPath: string = `courses/quiz/index_lms_html5.html`;
+  private courseID: string;
+  private launchPath: string;
 
   constructor(
     private route: ActivatedRoute,
@@ -27,9 +27,17 @@ export class ScormPlayerComponent implements OnInit {
   ngOnInit() {
     this.win['getUser'] = this.getUser;
     this.win['GLMSCommit'] = this.GLMSCommit;
+    this.courseID = this.route.snapshot.paramMap.get('courseId');
+    this.launchPath = `${location.origin}/courses/${this.courseID}/index_lms_html5.html`
     this.getUser().subscribe(res => {
       this.userData = res[0];
-      this.coursesData = this.userData.courses_data ? this.userData.courses_data : {};
+      this.coursesData = {};
+      try{
+        this.coursesData =  JSON.parse(this.userData.courses_data);
+      }
+      catch (error){
+        console.log(error);
+      }
       this.win['GLMSReady'] = true;
       this.win['Utils'].launchSCO({
         path: this.launchPath,
@@ -51,14 +59,12 @@ export class ScormPlayerComponent implements OnInit {
       this.coursesData[this.courseID].cmi = this.win['API'].cmi;
     }
     this.coursesData = this.addTimePathToLog(this.coursesData, msg, msgType);
-    this.http.post(URL_GLMS_COMMIT, {
+    const payload = {
       studentID: this.userData.studentID,
-      coursesData: this.coursesData
-    }).subscribe(res => {
-      console.log(res);
-    }, err => {
-      console.log(err);
-    })
+      coursesData: JSON.stringify(this.coursesData)
+    }
+    this.http.post(URL_GLMS_COMMIT, payload)
+      .subscribe(res => {}, err => {console.log(err)});
   }
 
   buildCourseData(courseData, cmi) {

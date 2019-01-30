@@ -40,7 +40,4 @@ export class StundentCoursesComponent implements OnInit {
   parseJson(string) {
     return JSON.parse(string);
   }
-  openPlayer(){
-    this.router.navigateByUrl('player')
-  }
 }

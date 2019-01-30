@@ -54,7 +54,7 @@ export const LMSRouter = [{
     ]
 },
 {
-    path: 'player',
+    path: 'player/:courseId',
     component: ScormPlayerComponent
 }
 ]

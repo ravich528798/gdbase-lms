@@ -5,6 +5,8 @@ console.log("GLMS Loaded");
 
 	this.GLMSReady = false;
 
+	this.openSCONewWindow = false;
+
 	// Should we skip the automatic manifest check?
 	this.skipManifestCheck = true;
 
@@ -20,11 +22,38 @@ console.log("GLMS Loaded");
 	// Shall we close SCO on LMSFinish?
 	this.closeOnFinish = true;
 
+	// Methond to calculate window height and width
+	this.getViewport = function(){
+		let viewPortWidth;
+		let viewPortHeight;
+		// the more standards compliant browsers (mozilla/netscape/opera/IE7) use window.innerWidth and window.innerHeight
+		// eslint-disable-next-line 
+		if (typeof window.innerWidth != 'undefined') {
+			viewPortWidth = window.innerWidth;
+			viewPortHeight = window.innerHeight;
+		}
+		// IE6 in standards compliant mode (i.e. with a valid doctype as the first line in the document)
+		// eslint-disable-next-line 
+		else if (typeof document.documentElement != 'undefined' && typeof document.documentElement.clientWidth != 'undefined' && document.documentElement.clientWidth != 0) {
+			viewPortWidth = document.documentElement.clientWidth;
+			viewPortHeight = document.documentElement.clientHeight;
+		}
+		// older versions of IE
+		else {
+			viewPortWidth = document.getElementsByTagName('body')[0].clientWidth;
+			viewPortHeight = document.getElementsByTagName('body')[0].clientHeight;
+		}
+		return {
+			width: viewPortWidth,
+			height: viewPortHeight
+		}
+	}
+
 	// The width of the SCO window when launched
-	this.wWidth = 1024;
+	this.wWidth = this.getViewport().width;
 
 	// The height of the SCO window when launched
-	this.wHeight = 768;
+	this.wHeight = this.getViewport().height;
 
 	// SCO window default features
 	this.wToolbar = false;
@@ -308,11 +337,20 @@ console.log("GLMS Loaded");
 			}
 		},
 		openWindow: function (winURL, winName, winW, winH, winOpts) {
-			winOptions = winOpts + ",width=" + winW + ",height=" + winH + ",resizable=1";
-			newWin = window.open(winURL, winName, winOptions);
-			newWin.moveTo(0, 0);
-			newWin.focus();
-			return newWin;
+			if(openSCONewWindow){
+				winOptions = winOpts + ",width=" + winW + ",height=" + winH + ",resizable=1";
+				newWin = window.open(winURL, winName, winOptions);
+				newWin.moveTo(0, 0);
+				newWin.focus();
+				return newWin;
+			}else{
+				var iframe = document.createElement('iframe');
+				iframe.setAttribute('src', winURL);
+				iframe.setAttribute('width', winW);
+				iframe.setAttribute('height', winH);
+				document.getElementsByTagName('app-scorm-player')[0].append(iframe);
+				return iframe.contentWindow|| iframe;
+			}
 		},
 		log: function (msg, msgType) {
 			if (window.GLMSCommit && GLMSReady) {

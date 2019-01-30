@@ -14,7 +14,7 @@
               <p mat-line style="color: #6c757d;"[innerHTML]="decodeURI(parseJson(course.course_data).description)"></p>
             </div>
             <div class="col-sm-4 text-right">
-              <a [routerLink]="['/player', userData]" target="blank" OpenLinkInNewWindowDirective>
+              <a [routerLink]="['/player', course.course_id]" target="blank" OpenLinkInNewWindowDirective>
                 <button mat-raised-button color="primary" class="btn-xs mt-1">
                   <mat-icon>play_circle_filled</mat-icon>Launch Course
                 </button>
