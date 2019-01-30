@@ -179,7 +179,7 @@
                   <p class="m-3">Last Visited: {{today | date:'fullDate'}}</p>
                   <div class="row mb-3">
                     <div class="col-lg-4">
-                      <button mat-raised-button color="primary" class="btn-xs">
+                      <button mat-raised-button color="primary" class="btn-xs" (click)="openUserReports(row.studentID)">
                         <mat-icon>description</mat-icon> View Reports
                       </button>
                     </div>

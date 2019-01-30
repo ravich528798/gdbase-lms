@@ -5,10 +5,6 @@
     $action = $inputs -> action;
     $payload = $inputs -> payload;
     $query = null;
-    if($action == 'email'){
-      $query = "SELECT * FROM students WHERE email = '$payload'";
-    }else{
-      $query = "SELECT * FROM students WHERE username = '$payload'";
-    }
+    $query = "SELECT * FROM students WHERE $action = '$payload'";
     echo json_encode($db -> query($query) -> fetchAll(PDO::FETCH_ASSOC));
   }

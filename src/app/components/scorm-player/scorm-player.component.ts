@@ -19,7 +19,6 @@ export class ScormPlayerComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private router: Router,
     private http: HttpClient,
     @Inject(WindowWrapper) private win: Window
   ) { }

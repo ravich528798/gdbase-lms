@@ -11,7 +11,7 @@ import { Router } from '@angular/router';
   styleUrls: ['./stundent-courses.component.scss']
 })
 export class StundentCoursesComponent implements OnInit {
-  public courses;
+  public courses:[any];
   public courseURL = URL_COURSES;
   public decodeURI: any;
   public userData:any;

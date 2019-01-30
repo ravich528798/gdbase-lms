@@ -6,6 +6,7 @@ import { Observable } from 'rxjs/Observable';
 import { URL_GET_ALL_USERS, URL_DELETE_USER, URL_CHECK_USERNAME_AVAILABILITY, URL_CHECK_EMAIL_AVAILABILITY, URL_ADD_USER } from '../../api';
 import { FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { debounceTime, map, take, catchError } from "rxjs/operators";
+import { Router } from '@angular/router';
 
 interface UserData {
   firstname: string;
@@ -61,7 +62,12 @@ export class UsersTabComponent implements OnInit {
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild('adduserFromRoot') adduserFrom;
 
-  constructor(private http: HttpClient, public dialog: MatDialog, private fb: FormBuilder, public snackBar: MatSnackBar) {
+  constructor(
+    public snackBar: MatSnackBar,
+    public dialog: MatDialog,
+    private http: HttpClient,
+    private fb: FormBuilder,
+    private router: Router) {
     this.dataSource = new MatTableDataSource();
   }
 
@@ -195,6 +201,10 @@ export class UsersTabComponent implements OnInit {
       verticalPosition: 'bottom',
       horizontalPosition: 'right'
     });
+  }
+
+  openUserReports(userId){
+    this.router.navigate(['admin/reports', userId]);
   }
 }
 
