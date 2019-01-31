@@ -3,7 +3,7 @@
   <mat-card class="no-padding mat-card">
     <div class="container-fluid" style="padding-top: 15px;">
       <div class="col-sm-12" class="addcourseForm">
-        <form name="addcourse" [formGroup]="addCourseFG" #addcourseFromRoot="ngForm">
+        <form name="addcourse" [formGroup]="addCourseFG" #addCourseFromRoot="ngForm">
           <div class="container-fluid">
             <div class="row mb-3">
               <div class="col-sm-5 pl-0 pt-5">
@@ -26,7 +26,7 @@
                 </mat-form-field>
               </div>
               <div class="col-sm-2 pr-0">
-                <app-photo-upload [form]="addCourseFG"></app-photo-upload>
+                <app-photo-upload [form]="addCourseFG" #photoUpload></app-photo-upload>
               </div>
             </div>
             <div class="row mb-3" style="height:220px;">

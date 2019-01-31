@@ -17,7 +17,6 @@ export class StundentCoursesComponent implements OnInit {
   public userData:any;
   constructor(
     private http: HttpClient,
-    private router: Router
   ) { }
 
   ngOnInit() {

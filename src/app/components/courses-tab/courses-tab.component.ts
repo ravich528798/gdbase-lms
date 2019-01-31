@@ -1,9 +1,11 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, NgForm } from '@angular/forms';
 import { Constants } from 'src/app/utils/constants';
 import { HttpClient, HttpRequest, HttpEvent, HttpEventType } from '@angular/common/http';
 import { URL_UPLOAD_SCORM, URL_VALIDATE_SCORM, URL_CREATE_COURSE } from 'src/app/api';
 import { toMB } from 'src/app/utils/helpers';
+import { MatSnackBar } from '@angular/material';
+import { PhotoUploadComponent } from '../photo-upload/photo-upload.component';
 
 @Component({
   selector: 'app-courses-tab',
@@ -21,10 +23,12 @@ export class CoursesTabComponent implements OnInit {
   public uploadedSize: string;
   private courseId: string;
   private uploadReq: any;
-  @ViewChild('addCourseFromRoot') addCourseFrom: FormGroup;
+  @ViewChild('addCourseFromRoot') addCourseForm: NgForm;
   @ViewChild('dropArea') dropArea: HTMLDivElement;
+  @ViewChild('photoUpload') courseImgTag : PhotoUploadComponent;
 
   constructor(
+    public snackBar: MatSnackBar,
     private _fb: FormBuilder,
     private http: HttpClient
   ) { }
@@ -139,13 +143,16 @@ export class CoursesTabComponent implements OnInit {
             author: this.addCourseFG.get('author').value.replace(/\'/g,"&#39;")
           })
         }
-        console.log(postData);
         this.http.post(URL_CREATE_COURSE, postData)
           .subscribe(res => {
-            console.log(res);
+            this.openSnackBar('Course published successfully');
+            this.addCourseForm.resetForm();
+            this.addCourseFG.reset();
+            this.courseImgTag.removePicture();
+            this.scormUploadStage = 0;
           },
             err => {
-              alert('Something Went wrong please try again');
+              this.openSnackBar('Something Went wrong please try again');
               console.log(err);
             }
           )
@@ -155,5 +162,13 @@ export class CoursesTabComponent implements OnInit {
     } else {
       console.log(this.addCourseFG);
     }
+  }
+
+  openSnackBar(msg) {
+    this.snackBar.open(msg, "", {
+      duration: 5000,
+      verticalPosition: 'bottom',
+      horizontalPosition: 'right'
+    });
   }
 }

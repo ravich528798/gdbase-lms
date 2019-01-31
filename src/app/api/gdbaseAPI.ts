@@ -6,7 +6,9 @@ export const URL_API = `${Domain}/server`;
 
 export const URL_LOGIN = `${URL_API}/login.php`;
 
-export const URL_DELETE_USER = `${URL_API}/delete_user.php`;
+export const URL_DELETE_USER = `${URL_API}/delete-user.php`;
+
+export const URL_DELETE_COURSE = `${URL_API}/delete-course.php`;
 
 export const URL_GET_ACTIVE_USERS = `${URL_API}/get_active_users.php`;
 

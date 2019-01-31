@@ -4,7 +4,7 @@ import { MatPaginator, MatSort, MatTableDataSource, MatDialog, MatDialogRef, MAT
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { Observable } from 'rxjs/Observable';
 import { URL_GET_ALL_USERS, URL_DELETE_USER, URL_CHECK_USERNAME_AVAILABILITY, URL_CHECK_EMAIL_AVAILABILITY, URL_ADD_USER } from '../../api';
-import { FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors, Form, NgForm } from '@angular/forms';
 import { debounceTime, map, take, catchError } from "rxjs/operators";
 import { Router } from '@angular/router';
 
@@ -60,7 +60,7 @@ export class UsersTabComponent implements OnInit {
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
-  @ViewChild('adduserFromRoot') adduserFrom;
+  @ViewChild('adduserFromRoot') adduserFrom: NgForm;
 
   constructor(
     public snackBar: MatSnackBar,
@@ -205,6 +205,9 @@ export class UsersTabComponent implements OnInit {
 
   openUserReports(userId){
     this.router.navigate(['admin/reports', userId]);
+  }
+  parseJson(string) {
+    return JSON.parse(string);
   }
 }
 

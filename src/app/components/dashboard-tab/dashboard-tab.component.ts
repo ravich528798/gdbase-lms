@@ -1,8 +1,8 @@
 import { Component, OnInit, ViewChild, Inject } from '@angular/core';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { HttpClient } from '@angular/common/http';
-import { URL_GET_ALL_USERS, URL_GET_ACTIVE_USERS, URL_GET_ALL_COURSES, URL_COURSES } from '../../api';
-import { MatTableDataSource, MatPaginator, MatSort, MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material';
+import { URL_GET_ALL_USERS, URL_GET_ACTIVE_USERS, URL_GET_ALL_COURSES, URL_COURSES, URL_DELETE_COURSE } from '../../api';
+import { MatTableDataSource, MatPaginator, MatSort, MatDialogRef, MAT_DIALOG_DATA, MatDialog, MatSnackBar } from '@angular/material';
 import { Router } from '@angular/router';
 import { EnrollUserComponent } from '../enroll-user/enroll-user.component';
 
@@ -39,6 +39,7 @@ export class DashboardTabComponent implements OnInit {
     public router: Router,
     public dialog: MatDialog,
     private http: HttpClient,
+    public snackBar: MatSnackBar,
   ) { }
 
   ngOnInit() {
@@ -73,8 +74,8 @@ export class DashboardTabComponent implements OnInit {
   }
   openDeleteConfirmDialog(row): void {
     const deleteDialogRef = this.dialog.open(ConfirmDeleteCourseDialog, {
-      width: '250px',
-      data: { course_name: row.course_name }
+      width: '30vw',
+      data: { course_name: row.course_name, course_id: row.course_id, deleteCourse: this.deleteCourse.bind(this) }
     });
 
     deleteDialogRef.beforeClose().subscribe(res => {
@@ -95,6 +96,32 @@ export class DashboardTabComponent implements OnInit {
       data: course
     });
   }
+
+  deleteCourse(courseID, courseName){
+    this.http.post(URL_DELETE_COURSE, {courseId: courseID})
+      .subscribe(
+        res => {
+          if(res === 'DELETED'){
+            this.dataSource.data = this.dataSource.data.filter(course => course.course_id != courseID);
+            this.openSnackBar(`Deleted ${courseName}`);
+          }else{
+            this.openSnackBar(`Something went wrong. Please try again`);
+          }
+        },
+        err => {
+          this.openSnackBar(`Something went wrong. Please try again`);
+          console.log(err);
+        }
+      )
+  }
+
+  openSnackBar(msg) {
+    this.snackBar.open(msg, "", {
+      duration: 5000,
+      verticalPosition: 'bottom',
+      horizontalPosition: 'right'
+    });
+  }
 }
 @Component({
   selector: 'confrim-delete-dialog',
@@ -112,7 +139,7 @@ export class ConfirmDeleteCourseDialog {
   }
 
   onYesClick(data): void {
-    data.deleteUser(data.user);
+    data.deleteCourse(data.course_id, data.course_name);
   }
 
 }

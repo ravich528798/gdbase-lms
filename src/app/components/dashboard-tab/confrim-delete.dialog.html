@@ -1,4 +1,4 @@
-<h2 mat-dialog-title>Delete {{data.course_name}}</h2>
+<h2 mat-dialog-title [innerHTML]="'Delete ' + data.course_name"></h2>
 <mat-dialog-content>Are you sure?</mat-dialog-content>
 <mat-dialog-actions>
   <button mat-button mat-dialog-close cdkFocusInitial (click)="onNoClick()">No</button>

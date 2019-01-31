@@ -1,5 +1,5 @@
 <?php
-  function deleteFolder(){
+  function deleteFolder($course_id){
     $dir = dirname(__DIR__).'/courses/'.$course_id;
     $it = new RecursiveDirectoryIterator($dir, RecursiveDirectoryIterator::SKIP_DOTS);
     $files = new RecursiveIteratorIterator($it, RecursiveIteratorIterator::CHILD_FIRST);
@@ -29,4 +29,4 @@
       }
   }
   return true;
-    }
+}

@@ -169,7 +169,7 @@
                         <h4>{{row.firstname}}</h4>
                         <p>{{row.email}}</p>
                         <small>Enrolled to
-                          <b>10 courses</b>
+                          <b>{{parseJson(row.userdata).enrolled ? parseJson(row.userdata).enrolled.length : 0 }} courses</b>
                         </small>
                       </div>
                     </div>

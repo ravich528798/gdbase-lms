@@ -32,6 +32,11 @@ export class PhotoUploadComponent {
     }
   }
 
+  removePicture(){
+    this.courseImg = null;
+    this.form.controls['courseImg'].setValue(null);
+  }
+
   openSnackBar(msg) {
     this.snackBar.open(msg, "", {
       duration: 5000,
