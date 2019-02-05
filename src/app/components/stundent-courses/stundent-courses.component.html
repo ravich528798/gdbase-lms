@@ -10,7 +10,7 @@
               <div class="course-img" *ngIf="parseJson(course.course_data).course_img" [ngStyle]="{'background-image': 'url('+parseJson(course.course_data).course_img+')'}"></div>
             </div>
             <div class="col-sm-7 text-left">
-              <h4 mat-line>{{course.course_name}}</h4>
+              <h4 mat-line [innerHTML]="course.course_name"></h4>
               <p mat-line style="color: #6c757d;"[innerHTML]="decodeURI(parseJson(course.course_data).description)"></p>
             </div>
             <div class="col-sm-4 text-right">

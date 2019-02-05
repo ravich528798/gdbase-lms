@@ -1,4 +1,4 @@
-<h2 mat-dialog-title>Assign students to {{courseData.course_name}}</h2>
+<h2 mat-dialog-title>Assign students to <span [innerHTML]="courseData.course_name"></span></h2>
 <mat-form-field appearance="outline" style="width: 100%;">
   <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Search for students" type="text">
   <mat-icon matSuffix>search</mat-icon>
