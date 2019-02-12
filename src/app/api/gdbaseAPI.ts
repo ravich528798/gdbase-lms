@@ -22,6 +22,10 @@ export const URL_ADD_USER = `${URL_API}/add-user.php`;
 
 export const URL_GET_USER = `${URL_API}/get-user.php`;
 
+export const URL_UPDATE_PROFILE = `${URL_API}/update-profile.php`;
+
+export const URL_UPDATE_USER_DATA = `${URL_API}/update-user-data.php`;
+
 export const URL_CHANGE_PASSWORD = `${URL_API}/change-password.php`;
 
 export const URL_SEND_PASSWORD_REST_MAIL = `${URL_API}/password-reset-mail.php`;
@@ -41,3 +45,9 @@ export const URL_ENROLL_USERS = `${URL_API}/enrollUsers.php`;
 export const URL_GET_ENROLLED_COURSES = `${URL_API}/get-enrolled-courses.php`;
 
 export const URL_GLMS_COMMIT = `${URL_API}/glms-commit.php`;
+
+export const URL_CHECK_PASSWORD = `${URL_API}/check-password.php`;
+
+export const URL_CHANGE_PASSOWRD = `${URL_API}/change-password.php`;
+
+

@@ -55,17 +55,17 @@
                   <p class="m-3">Last Visited: {{today | date:'fullDate'}}</p>
                   <div class="row mb-3">
                     <div class="col-lg-4">
-                      <button mat-raised-button color="primary" class="btn-xs" (click)="openUserReports(row.studentID)">
+                      <button mat-raised-button color="primary" class="btn-xs gd-primary-gradient" (click)="openUserReports(row.studentID)">
                         <mat-icon>description</mat-icon> View Reports
                       </button>
                     </div>
                     <div class="col-lg-4">
-                      <button mat-raised-button color="primary" class="btn-xs">
+                      <button mat-raised-button color="primary" class="btn-xs gd-primary-gradient">
                         <mat-icon>add_to_queue</mat-icon> Enroll Course
                       </button>
                     </div>
                     <div class="col-lg-4">
-                      <button mat-raised-button color="primary" class="btn-xs" (click)="openDeleteConfirmDialog()">
+                      <button mat-raised-button color="primary" class="btn-xs gd-primary-gradient" (click)="openDeleteConfirmDialog()">
                         <mat-icon>delete</mat-icon> Delete User
                       </button>
                     </div>
@@ -196,7 +196,7 @@
                 </mat-form-field>
               </div>
               <div class="col-xs-12 col-sm-12 col-md-3 col-lg-2">
-                <button mat-raised-button color="primary" class="btn-xs btn-block" [disabled]="firstname.invalid || lastname.invalid || username.invalid || email.invalid || newPassword.invalid || confirmPassword.invalid || mobileNumber.invalid"
+                <button mat-raised-button color="primary" class="btn-xs btn-block gd-primary-gradient" [disabled]="firstname.invalid || lastname.invalid || username.invalid || email.invalid || newPassword.invalid || confirmPassword.invalid || mobileNumber.invalid"
                   (click)="addNewUser()">
                   <mat-icon>add</mat-icon> Add User
                 </button>

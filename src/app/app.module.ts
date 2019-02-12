@@ -14,7 +14,7 @@ import { LoginComponent } from './components/login/login.component';
 import { AdminShellComponent } from './components/admin-shell/admin-shell.component';
 import { DashboardTabComponent, ConfirmDeleteCourseDialog } from './components/dashboard-tab/dashboard-tab.component';
 import { UsersTabComponent, ConfirmDeleteDialog } from './components/users-tab/users-tab.component';
-import { ManageTabComponent } from './components/manage-tab/manage-tab.component';
+import { ManageTabComponent, ChangePasswordDialog } from './components/manage-tab/manage-tab.component';
 import { CoursesTabComponent } from './components/courses-tab/courses-tab.component';
 import { GlobalInterceptor } from './config/HttpInterceptor';
 import { ResetPasswordBottomsheetComponent } from './components/reset-password-bottomsheet/reset-password-bottomsheet.component';
@@ -64,9 +64,10 @@ const lmsRoutes: Routes = LMSRouter;
     PhotoUploadComponent,
     ReportsComponent,
     ScormPlayerComponent,
-    OpenLinkInNewWindowDirective
+    OpenLinkInNewWindowDirective,
+    ChangePasswordDialog
   ],
-  entryComponents: [ConfirmDeleteDialog,ConfirmDeleteCourseDialog, ResetPasswordBottomsheetComponent, EnrollUserComponent],
+  entryComponents: [ConfirmDeleteDialog,ConfirmDeleteCourseDialog, ResetPasswordBottomsheetComponent, EnrollUserComponent, ChangePasswordDialog],
   providers: [
     {
       provide: HTTP_INTERCEPTORS,

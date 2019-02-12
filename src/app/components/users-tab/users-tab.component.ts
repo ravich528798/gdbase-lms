@@ -4,7 +4,7 @@ import { MatPaginator, MatSort, MatTableDataSource, MatDialog, MatDialogRef, MAT
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { Observable } from 'rxjs/Observable';
 import { URL_GET_ALL_USERS, URL_DELETE_USER, URL_CHECK_USERNAME_AVAILABILITY, URL_CHECK_EMAIL_AVAILABILITY, URL_ADD_USER } from '../../api';
-import { FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors, Form, NgForm } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors, NgForm } from '@angular/forms';
 import { debounceTime, map, take, catchError } from "rxjs/operators";
 import { Router } from '@angular/router';
 
@@ -21,16 +21,6 @@ interface UserData {
 interface ConfirmDeleteDialogData {
   username: string;
   user:any;
-}
-const defaultValues = {
-  firstname: '',
-  lastname: '',
-  username: '',
-  email: '',
-  newPassword: '',
-  confirmPassword: '',
-  userType: 'student',
-  mobileNumber: ''
 }
 @Component({
   selector: 'app-users-tab',

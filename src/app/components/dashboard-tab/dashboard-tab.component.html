@@ -16,7 +16,7 @@
         </div>
         <div class="row">
           <div class="col-sm-12 no-padding text-right" style="height: 50px;line-height: 50px;">
-            <button mat-raised-button color="primary" class="btn-xs" (click)="router.navigateByUrl('admin/users')">
+            <button mat-raised-button color="primary" class="btn-xs gd-primary-gradient" (click)="router.navigateByUrl('admin/users')">
               <mat-icon>add</mat-icon> ADD USERS</button>
           </div>
         </div>
@@ -37,7 +37,7 @@
         </div>
         <div class="row">
           <div class="col-sm-12 no-padding text-right" style="height: 50px;line-height: 50px;">
-            <button mat-raised-button color="primary" class="btn-xs" (click)="router.navigateByUrl('admin/courses')">
+            <button mat-raised-button color="primary" class="btn-xs gd-primary-gradient" (click)="router.navigateByUrl('admin/courses')">
               <mat-icon>add</mat-icon> ADD COURSES</button>
           </div>
         </div>
@@ -104,18 +104,18 @@
                         <div class="row mb-3">
                           <div class="col-lg-4">
                             <a [href]="courseURL + '/' +row.course_id + '/story.html'" target="blank">
-                              <button mat-raised-button color="primary" class="btn-xs">
+                              <button mat-raised-button color="primary" class="btn-xs gd-primary-gradient">
                                 <mat-icon>play_circle_filled</mat-icon> Preview Course
                               </button>
                             </a>
                           </div>
                           <div class="col-lg-4">
-                            <button mat-raised-button color="primary" class="btn-xs" (click)="enrollUser(row)">
+                            <button mat-raised-button color="primary" class="btn-xs gd-primary-gradient" (click)="enrollUser(row)">
                               <mat-icon>group_add</mat-icon> Enroll Users
                             </button>
                           </div>
                           <div class="col-lg-4">
-                            <button mat-raised-button color="primary" class="btn-xs" (click)="openDeleteConfirmDialog(row)">
+                            <button mat-raised-button color="primary" class="btn-xs gd-primary-gradient" (click)="openDeleteConfirmDialog(row)">
                               <mat-icon>delete</mat-icon> Delete Course
                             </button>
                           </div>

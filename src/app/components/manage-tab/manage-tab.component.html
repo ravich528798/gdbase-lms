@@ -1,2 +1,159 @@
-<h3>ERROR_LOADING_USER_PROFILE</h3>
+<div class="manage-tab">
+  <div class="cover-photo">
+
+  </div>
+  <div class="profile-details-container">
+    <div class="profile-photo">
+      <div class="row">
+        <div class="col-lg-2">
+         <form [formGroup]="editDP" #editDPRoot="ngForm" *ngIf="userdata">
+            <app-photo-upload #photoUpload [form]="editDP" formControl="profilePicture" tooltip="Change Profile Pictrue"
+            [placeholder]="placeholder" (updateDP)="updateDP($event)">
+          </app-photo-upload>
+         </form>
+        </div>
+        <div class="col-lg-10">
+          <div class="names" *ngIf="userdata">
+            <h2>{{userdata.firstname}} {{userdata.lastname}}</h2>
+            <small><b>username:</b> {{userdata.username}}</small>
+          </div>
+        </div>
+      </div>
+      <mat-card class="no-padding mat-card">
+        <form [formGroup]="editProfile" #editProfileRoot="ngForm">
+          <div class="row">
+            <div class="col-lg-8"></div>
+            <div class="col-lg-4 text-right">
+              <button mat-raised-button color="primary" class="btn gd-primary-gradient btn-xs" (click)="onEdit()" *ngIf="!inEditMode && userdata">
+                <mat-icon>settings</mat-icon>
+                Edit Profile
+              </button>
+              <div class="row">
+                <div class="col-lg-6">
+                  <button mat-raised-button color="default" class="btn btn-xs" (click)="cancleEdit()" *ngIf="inEditMode && userdata">
+                    <mat-icon>clear</mat-icon>
+                    Cancel
+                  </button>
+                </div>
+                <div class="col-lg-6 text-right">
+                  <button mat-raised-button color="primary" class="btn gd-primary-gradient btn-xs" (click)="saveForm()"
+                    *ngIf="inEditMode && userdata">
+                    <mat-icon>save</mat-icon>
+                    Save Profile
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <br>
+          <div class="row row-info">
+            <div class="col-lg-2 info-type">
+              <b>First Name:</b>
+            </div>
+            <div class="col-lg-10">
+              <p class="info" *ngIf="!inEditMode && userdata">
+                {{userdata.firstname}}
+              </p>
+              <mat-form-field *ngIf="inEditMode && userdata" appearance="outline">
+                <input matInput placeholder="First name" required name="firstname" formControlName="firstname">
+                <mat-error *ngIf="firstname.touched && !firstname.valid">
+                  First name is required
+                </mat-error>
+              </mat-form-field>
+            </div>
+            <hr>
+          </div>
+          <div class="row row-info">
+            <div class="col-lg-2 info-type">
+              <b>Last Name:</b>
+            </div>
+            <div class="col-lg-10">
+              <p class="info" *ngIf="!inEditMode && userdata">
+                {{userdata.lastname}}
+              </p>
+              <mat-form-field *ngIf="inEditMode && userdata" appearance="outline">
+                <input matInput placeholder="Last name" required name="lastname" formControlName="lastname">
+                <mat-error *ngIf="lastname.touched && !lastname.valid">
+                  Last name is required
+                </mat-error>
+              </mat-form-field>
+            </div>
+            <hr>
+          </div>
+          <div class="row row-info">
+            <div class="col-lg-2 info-type">
+              <b>Username:</b>
+            </div>
+            <div class="col-lg-10">
+              <p class="info" *ngIf="!inEditMode && userdata">
+                {{userdata.username}}
+              </p>
+              <div class="info-edit">
+                <mat-form-field *ngIf="inEditMode && userdata" appearance="outline">
+                  <input matInput placeholder="Username" required name="username" formControlName="username">
+                  <mat-error *ngIf="username.errors && username.errors.unique === false">
+                    {{username.value}} already taken
+                  </mat-error>
+                  <mat-error *ngIf="username.value === ''">
+                    Username is required
+                  </mat-error>
+                </mat-form-field>
+              </div>
+            </div>
+          </div>
+          <div class="row row-info">
+            <div class="col-lg-2 info-type">
+              <b>Email:</b>
+            </div>
+            <div class="col-lg-10">
+              <p class="info" *ngIf="!inEditMode && userdata">
+                {{userdata.email}}
+              </p>
+              <div class="info-edit">
+                <mat-form-field *ngIf="inEditMode && userdata" appearance="outline">
+                  <input matInput type="email" placeholder="Email Address" required name="email" formControlName="email"
+                    pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$">
+                  <mat-error *ngIf="email.errors && email.errors.unique === false">
+                    Email address already exits
+                  </mat-error>
+                  <mat-error *ngIf="email.value === ''|| (email.errors && email.errors.pattern)">
+                    Please enter a valid email address
+                  </mat-error>
+                </mat-form-field>
+              </div>
+            </div>
+          </div>
+          <div class="row row-info">
+            <div class="col-lg-2 info-type">
+              <b>Mobile:</b>
+            </div>
+            <div class="col-lg-10">
+              <p class="info" *ngIf="!inEditMode && userdata">
+                {{userdata.mobile}}
+              </p>
+              <div class="info-edit">
+                <mat-form-field *ngIf="inEditMode && userdata" appearance="outline">
+                  <input matInput type="tel" placeholder="Mobile Number" name="mobileNumber" formControlName="mobileNumber"
+                    minlength="0">
+                  <mat-error *ngIf="mobileNumber.touched && mobileNumber.errors && mobileNumber.errors.matched === false">
+                    Enter valid mobile number <i>eg: +33 410 20 30 40 or 04 01 02 03 04 </i>
+                  </mat-error>
+                </mat-form-field>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-2 info-type">
+              <b>Password:</b>
+            </div>
+            <div class="col-lg-10 pt-4">
+              <button mat-raised-button class="gd-primary-gradient" (click)="changePassword()">Change Password</button>
+            </div>
+          </div>
+        </form>
+      </mat-card>
+    </div>
+  </div>
+</div>
+<br>
 <br>
