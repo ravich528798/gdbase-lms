@@ -1,3 +1,113 @@
-<p>
-  stundent-dashboard works!
-</p>
+<div class="container-fluid">
+  <h3 class="mb-3">Dashboard</h3>
+  <div class="row">
+    <div class="col-sm-4">
+      <mat-card>
+        <div class="row">
+          <div class="col-sm-3">
+            <mat-icon lg>history</mat-icon>
+          </div>
+          <div class="col-sm-8 text-right">
+            <h1>
+              <b>{{ currentCourses ? InProgressCourses :  0}}</b>
+            </h1>
+            <p>Courses in Progress</p>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-12 no-padding text-right" style="height: 50px;line-height: 50px;">
+            <button mat-raised-button color="primary" class="btn-xs" [ngClass]="{'gd-primary-gradient': currentCourses ? InProgressCourses !== 0 : false }" [disabled]="currentCourses ? InProgressCourses == 0 && LastViewed : true" (click)="openCourse(LastViewed)">
+              <mat-icon>play_circle_filled</mat-icon> Resume Course</button>
+          </div>
+        </div>
+      </mat-card>
+    </div>
+    <div class="col-sm-4">
+      <mat-card>
+        <div class="row">
+          <div class="col-sm-3">
+            <mat-icon lg>check_circle</mat-icon>
+          </div>
+          <div class="col-sm-8 text-right">
+            <h1>
+              <b>{{currentCourses ? CompletedCourses :  0}}</b>
+            </h1>
+            <p>Completed Courses</p>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-12 no-padding text-right" style="height: 50px;line-height: 50px;">
+            <button mat-raised-button color="primary" class="btn-xs gd-primary-gradient" (click)="router.navigateByUrl('student/mycourses')">
+              <mat-icon>format_list_bulleted</mat-icon> View Courses</button>
+          </div>
+        </div>
+      </mat-card>
+    </div>
+    <div class="col-sm-4">
+      <mat-card>
+        <div class="row">
+          <div class="col-sm-3">
+            <mat-icon lg>video_label</mat-icon>
+          </div>
+          <div class="col-sm-8 text-right">
+            <h1>
+              <b>{{dataSource.data.length}}</b>
+            </h1>
+            <p>All Courses</p>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-12 no-padding text-right" style="height: 50px;line-height: 50px;">
+            <button mat-raised-button color="primary" class="btn-xs gd-primary-gradient" (click)="router.navigateByUrl('student/mycourses')">
+              <mat-icon>format_list_bulleted</mat-icon> View Courses</button>
+          </div>
+        </div>
+      </mat-card>
+    </div>
+  </div>
+  <br>
+  <div class="row">
+    <mat-card style="width: 97%;height: 370px;" class="no-padding">
+        <div class="container-fluid" style="padding-top: 15px;">
+            <div class="row mb-3">
+              <div class="col-sm-8">
+                <h5>
+                  <b>Your Courses</b>
+                </h5>
+              </div>
+              <div class="col-sm-4">
+                <mat-form-field appearance="outline">
+                  <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Search for courses" type="text">
+                  <mat-icon matSuffix>search</mat-icon>
+                </mat-form-field>
+              </div>
+            </div>
+          </div>
+          <table mat-table [dataSource]="dataSource" matSort multiTemplateDataRows>
+            <!-- name Column -->
+            <ng-container matColumnDef="name">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Course Name </th>
+              <td mat-cell *matCellDef="let row" [innerHTML]="row.course_name"></td>
+            </ng-container>
+            <!-- date Column -->
+            <ng-container matColumnDef="date">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Date Enrolled </th>
+              <td mat-cell *matCellDef="let row">{{getEnrolledDate(row.course_data) | date:'medium'}}</td>
+            </ng-container>
+            <!-- Author Column -->
+            <ng-container matColumnDef="author">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Course Author </th>
+              <td mat-cell *matCellDef="let row" [innerHTML]="parseJson(row.course_data).author"></td>
+            </ng-container>
+            <!-- Status -->
+            <ng-container matColumnDef="status">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>Course Progress</th>
+              <td mat-cell *matCellDef="let row" style="text-transform:capitalize">{{getSCORMdata(row.course_id) ? getSCORMdata(row.course_id).core.lesson_status.cmivalue : 'Not Started'}}</td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="user-element-row" style="cursor:pointer" (click)="openCourse(row.course_id)"></tr>
+          </table>
+          <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" showFirstLastButtons></mat-paginator>
+    </mat-card>
+  </div>
+</div>

@@ -31,9 +31,11 @@ export class ScormPlayerComponent implements OnInit {
     this.getUser().subscribe(res => {
       this.userData = res[0];
       this.coursesData = {};
+      this.coursesData.last_viewed = this.courseID; 
       if(this.userData.courses_data){
         try{
           this.coursesData =  JSON.parse(this.unescapeSingleQuote(this.userData.courses_data));
+          this.coursesData.last_viewed = this.courseID; 
         }
         catch (error){
           console.log(error);

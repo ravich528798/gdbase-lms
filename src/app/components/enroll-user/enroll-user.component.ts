@@ -25,7 +25,17 @@ export class EnrollUserComponent implements OnInit {
   ngOnInit() {
     this.getAllUsers().subscribe(data => {
       if (this.courseData.course_data.enrolled) {
-        this.allUsers = data.filter(user => this.courseData.course_data.enrolled.indexOf(user.username) === -1);
+        this.allUsers = data.filter(user => {
+          let isUnique = true;
+          this.courseData.course_data.enrolled.forEach(i => {
+            if(typeof i === 'string'){
+              if(i === user.username) isUnique = false;
+            }else{
+              if(i.username === user.username) isUnique = false;
+            }
+          });
+          return isUnique;
+        });
       } else {
         this.allUsers = data;
       }
@@ -53,10 +63,13 @@ export class EnrollUserComponent implements OnInit {
         if (!this.courseData.course_data.enrolled) {
           this.courseData.course_data.enrolled = [];
         }
-        this.courseData.course_data.enrolled.push(user.username);
+        this.courseData.course_data.enrolled.push({
+          username: user.username,
+          enrolledOn: new Date().getTime()
+        });
       }
     });
-    this.enrollUsers(this.courseData)
+    this.enrollUsers(JSON.stringify(this.courseData))
       .subscribe(res => {
         if (res === 'UPDATED') {
           this.dialogRef.close();

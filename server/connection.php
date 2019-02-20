@@ -1,5 +1,5 @@
 <?php
-$db = new PDO("mysql:host=localhost;dbname=gdbase_lms;port:3306","root","");
+$db = new PDO("mysql:host=localhost;dbname=gdbaqsej_lms;port:3306","root","");
 // try {
 //     $db = new PDO("mysql:host=localhost;dbname=gdbase_lms;port:3306", "root", "");
 //     $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);

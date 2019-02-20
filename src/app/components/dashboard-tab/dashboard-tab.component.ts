@@ -5,12 +5,7 @@ import { URL_GET_ALL_USERS, URL_GET_ACTIVE_USERS, URL_GET_ALL_COURSES, URL_COURS
 import { MatTableDataSource, MatPaginator, MatSort, MatDialogRef, MAT_DIALOG_DATA, MatDialog, MatSnackBar } from '@angular/material';
 import { Router } from '@angular/router';
 import { EnrollUserComponent } from '../enroll-user/enroll-user.component';
-
-interface CourseData {
-  course_id: string;
-  course_name: string;
-  course_data: any;
-}
+import { CourseData } from 'src/app/utils/interfaces';
 
 @Component({
   selector: 'app-dashboard-tab',
@@ -79,7 +74,7 @@ export class DashboardTabComponent implements OnInit {
     });
 
     deleteDialogRef.beforeClose().subscribe(res => {
-      if (res) {
+    if (res) {
         deleteDialogRef.disableClose = true;
       }
     })
