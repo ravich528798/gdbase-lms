@@ -147,10 +147,9 @@
                 <mat-form-field appearance="outline">
                     <mat-label>Password</mat-label>
                   <input matInput type="password" placeholder="Create new password" required name="newPassword"
-                    formControlName="newPassword" (change)="clearMatchedPassword()">
-                    <mat-error *ngIf="newPassword.errors && newPassword.errors.matched === false">
-                      Password must be atleast 6 charecters long with at least 1 uppercase and lowercase alphabetical
-                      character and a special character
+                    formControlName="newPassword" (change)="clearMatchedPassword()" minlength="6">
+                    <mat-error *ngIf="newPassword.errors && newPassword.errors.minlength">
+                      Password must be minimum 6 charecters long
                     </mat-error>
                     <mat-error *ngIf="newPassword.value === ''">
                       Please provide a new password
@@ -196,7 +195,7 @@
                 </mat-form-field>
               </div>
               <div class="col-xs-12 col-sm-12 col-md-3 col-lg-2">
-                <button mat-raised-button color="primary" class="btn-xs btn-block gd-primary-gradient" [disabled]="firstname.invalid || lastname.invalid || username.invalid || email.invalid || newPassword.invalid || confirmPassword.invalid || mobileNumber.invalid"
+                <button mat-raised-button color="primary" class="btn-xs btn-block" [ngClass]="{'gd-primary-gradient': firstname.valid && lastname.valid && username.valid && email.valid && newPassword.valid && confirmPassword.valid && mobileNumber.valid}" [disabled]="firstname.invalid || lastname.invalid || username.invalid || email.invalid || newPassword.invalid || confirmPassword.invalid || mobileNumber.invalid"
                   (click)="addNewUser()">
                   <mat-icon>add</mat-icon> Add User
                 </button>

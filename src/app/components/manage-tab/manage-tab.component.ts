@@ -19,7 +19,6 @@ export class ManageTabComponent implements OnInit {
   public userdata: any;
   public userInnerData: any = {};
   public placeholder: string = "assets/img/userplaceholder.svg";
-  private pattern = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{6,})");
   private mobileNumPattern = new RegExp(/^(?:(?:\+)(33|32)|0)\s*[1-9](?:[\s.-]*\d{2}){4}$/);
 
   constructor(
@@ -186,7 +185,6 @@ export class ChangePasswordDialog {
   public firstFormGroup: FormGroup;
   public secondFormGroup: FormGroup;
   public validCurrentPassword: boolean;
-  private pattern = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{6,})");
 
   @ViewChild('stepper') _stepper: MatStepper;
   constructor(
@@ -206,8 +204,7 @@ export class ChangePasswordDialog {
     });
     this.secondFormGroup = this._formBuilder.group({
       newPassword: ['',
-        Validators.required,
-        PatternValidator.validate(this.pattern)
+        Validators.required
       ],
       confirmPassword: ['',
         Validators.required,

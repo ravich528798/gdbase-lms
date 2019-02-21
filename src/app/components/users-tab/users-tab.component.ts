@@ -45,7 +45,7 @@ export class UsersTabComponent implements OnInit {
   // create user form 
   public addUserFG: FormGroup;
 
-  private pattern = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{6,})");
+  // private pattern = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{6,})");
   private mobileNumPattern = new RegExp(/^(?:(?:\+)(33|32)|0)\s*[1-9](?:[\s.-]*\d{2}){4}$/);
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -69,6 +69,7 @@ export class UsersTabComponent implements OnInit {
   }
 
   clearMatchedPassword() {
+    console.log(this.addUserFG);
     this.confirmPassword.setValue('');
   }
   get firstname() {
@@ -126,8 +127,9 @@ export class UsersTabComponent implements OnInit {
         AlreadyExistsValidator.validate(this.http, URL_CHECK_EMAIL_AVAILABILITY)
       ],
       newPassword: ['',
-        Validators.required,
-        PatternValidator.validate(this.pattern)
+        Validators.required
+        // Validators.minLength(6)
+        // PatternValidator.validate(this.pattern)
       ],
       confirmPassword: ['',
         Validators.required,
