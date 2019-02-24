@@ -87,3 +87,11 @@ tr.user-element-row:not(.user-expanded-row):active {
     padding-top: 7px;
   }
 }
+
+.EnrollUserComponentClass{
+  height: 0vh !important;
+  /deep/.mat-dialog-container{
+    position: relative;
+    background-color: red;
+  }
+}

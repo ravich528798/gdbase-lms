@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild, Inject, Injectable } from '@angular/core'
 import { HttpClient } from '@angular/common/http';
 import { MatPaginator, MatSort, MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatSnackBar } from '@angular/material';
 import { animate, state, style, transition, trigger } from '@angular/animations';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { URL_GET_ALL_USERS, URL_DELETE_USER, URL_CHECK_USERNAME_AVAILABILITY, URL_CHECK_EMAIL_AVAILABILITY, URL_ADD_USER } from '../../api';
 import { FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors, NgForm } from '@angular/forms';
 import { debounceTime, map, take, catchError } from "rxjs/operators";

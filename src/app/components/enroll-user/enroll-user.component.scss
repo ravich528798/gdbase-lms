@@ -1,3 +1,11 @@
 .row{
   width: 100%;
 }
+
+.EnrollUserComponentClass{
+  height: 0vh !important;
+  /deep/.mat-dialog-container{
+    position: relative;
+    background-color: red;
+  }
+}

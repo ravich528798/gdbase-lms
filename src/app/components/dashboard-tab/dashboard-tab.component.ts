@@ -86,6 +86,7 @@ export class DashboardTabComponent implements OnInit {
 
   enrollUser(course) {
     const dialogRef = this.dialog.open(EnrollUserComponent, {
+      panelClass:'EnrollUserComponentClass',
       width: '50vw',
       height: '90vh',
       data: course
