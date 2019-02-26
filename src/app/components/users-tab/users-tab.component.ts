@@ -69,7 +69,6 @@ export class UsersTabComponent implements OnInit {
   }
 
   clearMatchedPassword() {
-    console.log(this.addUserFG);
     this.confirmPassword.setValue('');
   }
   get firstname() {

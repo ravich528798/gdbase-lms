@@ -86,34 +86,41 @@ export class CoursesTabComponent implements OnInit {
         reportProgress: true
       })
       this.http.request(this.uploadReq)
-        .subscribe((event: HttpEvent<any>) => {
-          switch (event.type) {
-            case HttpEventType.Sent:
-              this.scormUploadStage = 1;
-              break;
-            case HttpEventType.ResponseHeader:
-              console.log('Headers received ->', event.headers);
-              break;
-            case HttpEventType.UploadProgress:
-              const percentDone = Math.round(100 * event.loaded / event.total);
-              this.uplaodProgress = percentDone;
-              this.uploadedSize = `${Math.round(toMB(event.loaded))}mb of ${Math.round(toMB(event.total))}mb Uploaded`;
-              break;
-            case HttpEventType.DownloadProgress:
-              console.log(`Downloading ${Math.round(toMB(event.loaded))}MB downloaded`);
-              break;
-            case HttpEventType.Response:
-              console.log(event.body);
-              if (event.body.split('-')[0] !== "UPLOADED") {
-                event.body == 'NOT_A_ZIP' ? this.uplaodError = 'SCORM file must be zipped before uploading' : '';
-                this.scormUploadStage = 0;
-              } else {
-                this.courseId = event.body.split('-')[1];
-                this.scormUploadStage = 2;
-                setTimeout(() => { this.validateScorm(this.courseId); }, 2000);
-              }
+        .subscribe(
+          (event: HttpEvent<any>) => {
+            switch (event.type) {
+              case HttpEventType.Sent:
+                this.scormUploadStage = 1;
+                break;
+              case HttpEventType.ResponseHeader:
+                console.log('Headers received ->', event.headers);
+                break;
+              case HttpEventType.UploadProgress:
+                const percentDone = Math.round(100 * event.loaded / event.total);
+                this.uplaodProgress = percentDone;
+                this.uploadedSize = `${Math.round(toMB(event.loaded))}mb of ${Math.round(toMB(event.total))}mb Uploaded`;
+                break;
+              case HttpEventType.DownloadProgress:
+                console.log(`Downloading ${Math.round(toMB(event.loaded))}MB downloaded`);
+                break;
+              case HttpEventType.Response:
+                console.log(event.body);
+                if (event.body.split('-')[0] !== "UPLOADED") {
+                  event.body == 'NOT_A_ZIP' ? this.uplaodError = 'SCORM file must be zipped before uploading' : '';
+                  this.scormUploadStage = 0;
+                } else {
+                  this.courseId = event.body.split('-')[1];
+                  this.scormUploadStage = 2;
+                  setTimeout(() => { this.validateScorm(this.courseId); }, 2000);
+                }
+            }
+          },
+          error => {
+            console.log(error);
+            this.scormUploadStage = 0;
+            this.openSnackBar('Upload Failed unexpectedly. Please try again.');
           }
-        });
+        );
     }
   }
 
