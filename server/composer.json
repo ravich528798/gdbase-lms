@@ -1,0 +1,6 @@
+{
+    "require": {
+        "dilab/resumable.php": "^0.1.4",
+        "phpmailer/phpmailer": "^6.0"
+    }
+}

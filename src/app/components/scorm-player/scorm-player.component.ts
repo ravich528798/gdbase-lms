@@ -1,5 +1,5 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
 import { URL_GET_USER, URL_GLMS_COMMIT } from 'src/app/api';
 import { HttpClient } from '@angular/common/http';
@@ -55,7 +55,7 @@ export class ScormPlayerComponent implements OnInit {
     payload: localStorage.getItem('gdbaseLMSToken').split("|")[0]
   });
 
-  GLMSCommit = (msg, msgType) => {
+  GLMSCommit = (msg:string, msgType:string) => {
     if (!this.coursesData[this.courseID]) {
       this.coursesData = this.buildCourseData(this.coursesData, this.win['API'].cmi);
     } else {

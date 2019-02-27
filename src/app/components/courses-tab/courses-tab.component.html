@@ -35,7 +35,7 @@
             <div class="row mb-3">
               <!-- stage 0 -->
               <div id="drop-area" class="text-center" [ngClass]="{'highlight':insideDropArea}" #dropArea (dragenter)="dragenter($event)"
-                (dragleave)="dragleave($event)" (dragover)="dragover($event)" (drop)="drop($event)" *ngIf="scormUploadStage === 0">
+                (dragleave)="dragleave($event)" (dragover)="dragover($event)" *ngIf="scormUploadStage === 0">
                 <mat-icon>backup</mat-icon>
                 <p>Drop SCORM 1.2 ZIP file here</p>
                 <small>Max file size 1GB</small>

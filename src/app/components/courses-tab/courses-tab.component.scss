@@ -30,11 +30,12 @@ mat-card {
   border-radius: 0px 0px 5px 5px;
 }
 
-#drop-area, {
+#drop-area {
   border: 2px dashed #ccc;
   border-radius: 20px;
   width: 100%;
   padding: 5%;
+  cursor: pointer;
 
   .mat-icon {
     font-size: 5rem;
@@ -44,7 +45,7 @@ mat-card {
   }
 }
 
-#drop-area.highlight {
+#drop-area.highlight, #drop-area:hover {
   border-color: $primary;
   color:$primary;
   .mat-icon{

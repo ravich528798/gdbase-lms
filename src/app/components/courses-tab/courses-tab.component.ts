@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, Inject } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, NgForm } from '@angular/forms';
 import { Constants } from 'src/app/utils/constants';
 import { HttpClient, HttpRequest, HttpEvent, HttpEventType } from '@angular/common/http';
@@ -6,7 +6,12 @@ import { URL_UPLOAD_SCORM, URL_VALIDATE_SCORM, URL_CREATE_COURSE } from 'src/app
 import { toMB } from 'src/app/utils/helpers';
 import { MatSnackBar } from '@angular/material';
 import { PhotoUploadComponent } from '../photo-upload/photo-upload.component';
+import { WindowWrapper } from 'src/app/directives/WindowWrapper';
+import { Resumable, Window, ResumableFile } from 'src/app/utils/interfaces';
 
+interface DropArea{
+  nativeElement: HTMLDivElement
+}
 @Component({
   selector: 'app-courses-tab',
   templateUrl: './courses-tab.component.html',
@@ -21,20 +26,31 @@ export class CoursesTabComponent implements OnInit {
   public uplaodError: string;
   public ScromZIPName: string;
   public uploadedSize: string;
+  public scormUploader: Resumable;
   private courseId: string;
+  private acceptedFileTypes: string[];
   private uploadReq: any;
   @ViewChild('addCourseFromRoot') addCourseForm: NgForm;
-  @ViewChild('dropArea') dropArea: HTMLDivElement;
-  @ViewChild('photoUpload') courseImgTag : PhotoUploadComponent;
+  @ViewChild('dropArea') dropArea: DropArea;
+  @ViewChild('photoUpload') courseImgTag: PhotoUploadComponent;
 
   constructor(
     public snackBar: MatSnackBar,
     private _fb: FormBuilder,
-    private http: HttpClient
-  ) { }
+    private http: HttpClient,
+    @Inject(WindowWrapper) private window: Window
+  ) {
+    this.acceptedFileTypes = ['application/zip', 'application/x-zip-compressed', 'multipart/x-zip', 'application/x-compressed'];
+  }
 
   ngOnInit() {
     this.createFromGroup();
+    const lookForDropArea = setInterval(() => {
+      if (this.dropArea) {
+        clearInterval(lookForDropArea);
+        this.initResumableJS();
+      }
+    })
   }
 
   createFromGroup() {
@@ -54,77 +70,127 @@ export class CoursesTabComponent implements OnInit {
     return this.addCourseFG.get('author')
   }
 
-  dragenter(e) {
+  dragenter(e: Event) {
     e.preventDefault();
     e.stopPropagation();
     this.insideDropArea = true;
     this.uplaodError = "";
   }
-  dragleave(e) {
+  dragleave(e: Event) {
     e.preventDefault();
     e.stopPropagation();
     this.insideDropArea = false;
   }
-  dragover(e) {
+  dragover(e: Event) {
     e.preventDefault();
     e.stopPropagation();
     this.insideDropArea = true;
   }
-  drop(e) {
-    e.preventDefault();
-    e.stopPropagation();
-    this.insideDropArea = false;
-    let dt = e.dataTransfer;
-    let files = dt.files;
-    if (files.length > 0) {
-      let formData = new FormData();
-      for (var i = 0, file; file = files[i]; ++i) {
-        this.ScromZIPName = file.name;
-        formData.append('scormFile', file);
+
+  initResumableJS() {
+    const {
+      Resumable
+    } = this.window;
+    this.scormUploader = new Resumable({
+      target: URL_UPLOAD_SCORM,
+      testChunks: true
+    });
+    this.scormUploader.assignBrowse(this.dropArea.nativeElement);
+    this.scormUploader.assignDrop(this.dropArea.nativeElement);
+    this.window['scormUploader'] = this.scormUploader;
+
+    /**
+     * Initializing callback events
+     */
+
+    // Fires when the file is first added
+    this.scormUploader.on('fileAdded', (ResumableFile) => {
+      this.uplaodError = null;
+      this.insideDropArea = false;
+      this.scormUploadStage = 1;
+      if(!this.acceptedFileTypes.includes(ResumableFile.file.type)){
+        this.resetScormUploadStage('SCORM file must be zipped before uploading');
+      }else{
+        this.scormUploader.upload();
       }
-      this.uploadReq = new HttpRequest('POST', URL_UPLOAD_SCORM, formData, {
-        reportProgress: true
-      })
-      this.http.request(this.uploadReq)
-        .subscribe(
-          (event: HttpEvent<any>) => {
-            switch (event.type) {
-              case HttpEventType.Sent:
-                this.scormUploadStage = 1;
-                break;
-              case HttpEventType.ResponseHeader:
-                console.log('Headers received ->', event.headers);
-                break;
-              case HttpEventType.UploadProgress:
-                const percentDone = Math.round(100 * event.loaded / event.total);
-                this.uplaodProgress = percentDone;
-                this.uploadedSize = `${Math.round(toMB(event.loaded))}mb of ${Math.round(toMB(event.total))}mb Uploaded`;
-                break;
-              case HttpEventType.DownloadProgress:
-                console.log(`Downloading ${Math.round(toMB(event.loaded))}MB downloaded`);
-                break;
-              case HttpEventType.Response:
-                console.log(event.body);
-                if (event.body.split('-')[0] !== "UPLOADED") {
-                  event.body == 'NOT_A_ZIP' ? this.uplaodError = 'SCORM file must be zipped before uploading' : '';
-                  this.scormUploadStage = 0;
-                } else {
-                  this.courseId = event.body.split('-')[1];
-                  this.scormUploadStage = 2;
-                  setTimeout(() => { this.validateScorm(this.courseId); }, 2000);
-                }
-            }
-          },
-          error => {
-            console.log(error);
-            this.scormUploadStage = 0;
-            this.openSnackBar('Upload Failed unexpectedly. Please try again.');
-          }
-        );
+    })
+
+    this.scormUploader.on('progress', () => {
+			const percentDone = Math.round(this.scormUploader.progress() * 100);
+      this.uplaodProgress = percentDone;
+      this.uploadedSize = `${Math.round(toMB(this.scormUploader.getSize() * this.scormUploader.progress()))}mb of ${Math.round(toMB(this.scormUploader.getSize()))}mb Uploaded`;
+		});
+
+    // Fires while the upload is in progress
+    this.scormUploader.on('fileSuccess', (file:ResumableFile, message:string) => {
+      alert('uploaded');
+		});
+  }
+
+  resetScormUploadStage(errMsg?:string){
+    this.scormUploadStage = 0;
+    this.uplaodError = errMsg;
+    this.insideDropArea = false;
+    if(this.scormUploader.files.length > 0){
+      this.scormUploader.files.forEach(file => this.scormUploader.removeFile(file));
     }
   }
 
-  validateScorm(courseId) {
+  // drop(e) {
+  //   e.preventDefault();
+  //   e.stopPropagation();
+  //   this.insideDropArea = false;
+  //   let dt = e.dataTransfer;
+  //   let files = dt.files;
+  //   if (files.length > 0) {
+  //     let formData = new FormData();
+  //     for (var i = 0, file; file = files[i]; ++i) {
+  //       this.ScromZIPName = file.name;
+  //       formData.append('scormFile', file);
+  //     }
+  //     this.uploadReq = new HttpRequest('POST', URL_UPLOAD_SCORM, formData, {
+  //       reportProgress: true
+  //     })
+  //     this.http.request(this.uploadReq)
+  //       .subscribe(
+  //         (event: HttpEvent<any>) => {
+  //           switch (event.type) {
+  //             case HttpEventType.Sent:
+  //               this.scormUploadStage = 1;
+  //               break;
+  //             case HttpEventType.ResponseHeader:
+  //               console.log('Headers received ->', event.headers);
+  //               break;
+  //             case HttpEventType.UploadProgress:
+  //               const percentDone = Math.round(100 * event.loaded / event.total);
+  //               this.uplaodProgress = percentDone;
+  //               this.uploadedSize = `${Math.round(toMB(event.loaded))}mb of ${Math.round(toMB(event.total))}mb Uploaded`;
+  //               break;
+  //             case HttpEventType.DownloadProgress:
+  //               console.log(`Downloading ${Math.round(toMB(event.loaded))}MB downloaded`);
+  //               break;
+  //             case HttpEventType.Response:
+  //               console.log(event.body);
+  //               if (event.body.split(': ')[0] !== "UPLOADED") {
+  //                 event.body == 'NOT_A_ZIP' ? this.uplaodError = 'SCORM file must be zipped before uploading' : '';
+  //                 this.scormUploadStage = 0;
+  //               } else {
+  //                 this.courseId = event.body.split('-')[1];
+  //                 this.scormUploadStage = 2;
+  //                 setTimeout(() => { this.validateScorm(this.courseId); }, 2000);
+  //               }
+  //           }
+  //         },
+  //         error => {
+  //           console.log(error);
+  //           this.scormUploadStage = 0;
+  //           this.openSnackBar('Upload Failed unexpectedly. Please try again.');
+  //         }
+  //       );
+  //   }
+  // }
+
+  validateScorm(courseId:string) {
     this.http.post(URL_VALIDATE_SCORM, courseId)
       .subscribe(res => {
         if (res === "ValidManifest") {
@@ -142,22 +208,22 @@ export class CoursesTabComponent implements OnInit {
       if (this.scormUploadStage === 3) {
         let postData = {
           course_id: this.courseId,
-          course_name: this.addCourseFG.get('courseTitle').value.replace(/\'/g,"&#39;"),
+          course_name: this.addCourseFG.get('courseTitle').value.replace(/\'/g, "&#39;"),
           course_data: JSON.stringify({
             course_img: this.addCourseFG.get('courseImg').value ? this.addCourseFG.get('courseImg').value : null,
-            description: encodeURI(this.addCourseFG.get('courseDesp').value).replace(/\'/g,"&#39;"),
+            description: encodeURI(this.addCourseFG.get('courseDesp').value).replace(/\'/g, "&#39;"),
             dateCreated: Date.now(),
-            author: this.addCourseFG.get('author').value.replace(/\'/g,"&#39;")
+            author: this.addCourseFG.get('author').value.replace(/\'/g, "&#39;")
           })
         }
         this.http.post(URL_CREATE_COURSE, postData)
           .subscribe(res => {
-            this.openSnackBar('Course published successfully');
-            this.addCourseForm.resetForm();
-            this.addCourseFG.reset();
-            this.courseImgTag.removePicture();
-            this.scormUploadStage = 0;
-          },
+              this.openSnackBar('Course published successfully');
+              this.addCourseForm.resetForm();
+              this.addCourseFG.reset();
+              this.courseImgTag.removePicture();
+              this.scormUploadStage = 0;
+            },
             err => {
               this.openSnackBar('Something Went wrong please try again');
               console.log(err);
