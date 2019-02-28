@@ -32,6 +32,8 @@ export const URL_SEND_PASSWORD_REST_MAIL = `${URL_API}/password-reset-mail.php`;
 
 export const URL_UPLOAD_SCORM = `${URL_API}/upload-scorm.php`;
 
+export const URL_EXTRACT_UPLOADED_SCORM = `${URL_API}/extract-scorm.php`;
+
 export const URL_VALIDATE_SCORM = `${URL_API}/validate-scorm.php`;
 
 export const URL_CREATE_COURSE = `${URL_API}/create-course.php`;
