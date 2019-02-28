@@ -447,7 +447,7 @@ export interface Resumable {
   getSize(): number;
   handleChangeEvent(e: Event): void;
   handleDropEvent(e: Event): void;
-  isUploading(): void;
+  isUploading(): boolean;
   on(event: string, callback: (file:ResumableFile, event:Event | string) => void): void;
   opts: opts;
   pause(): void;
@@ -561,5 +561,6 @@ interface Query {}
 interface Headers {}
 
 export interface Window {
-  Resumable(opts: opts): void
+  navigator: any;
+  Resumable(opts: opts): void;
 }

@@ -51,6 +51,8 @@
                 <mat-progress-spinner *ngIf="uplaodProgress === 100" color="accent" mode="indeterminate"></mat-progress-spinner>
                 <br>
                 <p *ngIf="uplaodProgress === 100">Extracting SCORM Package...</p>
+                <mat-error *ngIf="uplaodError">{{uplaodError}}</mat-error>
+                <button mat-raised-button color="warm" class="btn" (click)="retryUpload()" *ngIf="networkLost">Retry upload</button>
               </div>
               <!-- stage 2 -->
               <div class="progress-container text-center" *ngIf="scormUploadStage === 2">

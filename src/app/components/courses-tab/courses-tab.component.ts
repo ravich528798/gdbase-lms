@@ -27,6 +27,7 @@ export class CoursesTabComponent implements OnInit {
   public ScromZIPName: string;
   public uploadedSize: string;
   public scormUploader: Resumable;
+  public networkLost: boolean = false;
   private courseId: string;
   private acceptedFileTypes: string[];
   private uploadReq: any;
@@ -116,14 +117,20 @@ export class CoursesTabComponent implements OnInit {
     })
 
     this.scormUploader.on('progress', () => {
-      const percentDone = Math.round(this.scormUploader.progress() * 100);
-      this.uplaodProgress = percentDone;
-      this.uploadedSize = `${Math.round(toMB(this.scormUploader.getSize() * this.scormUploader.progress()))}mb of ${Math.round(toMB(this.scormUploader.getSize()))}mb Uploaded`;
+      if(this.scormUploader.isUploading()){
+        this.networkLost = false;
+        const percentDone = Math.round(this.scormUploader.progress() * 100);
+        this.uplaodProgress = percentDone;
+        this.uploadedSize = `${Math.round(toMB(this.scormUploader.getSize() * this.scormUploader.progress()))}mb of ${Math.round(toMB(this.scormUploader.getSize()))}mb Uploaded`;
+      }else{
+        console.log("Not Uploading::", this.scormUploader.progress());
+        this.openSnackBar("Something went wrong while uploading!");
+      }
     });
 
     // Fires while the upload is in progress
     this.scormUploader.on('fileSuccess', (file: ResumableFile, msg: string) => {
-      console.log(msg);
+      console.log("fileSuccess Method::", msg);
       if (msg.split(': ')[0] !== "UPLOADED") {
         this.resetScormUploadStage('Upload Failed unexpectedly. Please try again.');
       } else {
@@ -131,6 +138,28 @@ export class CoursesTabComponent implements OnInit {
         setTimeout(() => { this.extractScorm(this.courseId); }, 2000);
       }
     });
+
+    // Fires When SomeError occur while uploading
+    this.scormUploader.on('fileError', (file: ResumableFile, msg:string) => {
+        if(this.window.navigator.onLine){
+          this.resetScormUploadStage("Unexpected Error! Please upload the same file again to resume upload.")
+        }else{
+          console.log("fileError Method:: ", msg, this.window.navigator);
+          this.networkLost = true;
+          this.uplaodError = 'Network Disconnected. Please reconnect and try again.';
+        }
+    })
+  }
+
+  retryUpload(){
+    if(this.scormUploader.files[0]){
+      this.uplaodError = null;
+       this.networkLost = false;
+      this.scormUploader.files[0].retry();
+    }else{
+      this.networkLost = false;
+      this.resetScormUploadStage("Unable to recover. Please upload the same file again to resume upload.")
+    }
   }
 
   resetScormUploadStage(errMsg?: string) {

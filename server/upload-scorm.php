@@ -16,4 +16,6 @@ $resumable->setFilename($courseID);
 $resumable->process();
 if($resumable->isUploadComplete()){
     echo "UPLOADED: ".$courseID;
+}else{
+    echo "FILED: ".$courseID;
 }
