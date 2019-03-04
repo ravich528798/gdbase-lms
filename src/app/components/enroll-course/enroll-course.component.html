@@ -1,3 +1,24 @@
-<p>
-  enroll-course works!
-</p>
+<h2 mat-dialog-title>Assign courses to <span [innerHTML]="currentUser.firstname + ' ' + currentUser.lastname"></span></h2>
+<mat-form-field appearance="outline" style="width: 100%;">
+  <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Search for courses" type="text">
+  <mat-icon matSuffix>search</mat-icon>
+</mat-form-field>
+<mat-dialog-content style="height: 55vh;">
+  <mat-selection-list #selectedCourses>
+    <mat-list-option *ngFor="let course of courses" (click)="toggleSelected(course)" [selected]="course.selected">
+      <p>
+        <span [innerHTML]="course.course_name"></span>
+      </p>
+    </mat-list-option>
+  </mat-selection-list>
+</mat-dialog-content>
+<mat-dialog-actions style="border-top:1px solid silver">
+  <div class="row">
+    <div class="col-sm-5">
+      <button mat-button mat-raised-button mat-dialog-close class="btn-block">Cancel</button>
+    </div>
+    <div class="col-sm-5">
+      <button mat-raised-button color="primary" (click)="postEnroll()" class="btn-block" [disabled]="enrollDisable">Enroll</button>
+    </div>
+  </div>
+</mat-dialog-actions>

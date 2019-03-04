@@ -67,7 +67,7 @@ const lmsRoutes: Routes = LMSRouter;
     OpenLinkInNewWindowDirective,
     ChangePasswordDialog
   ],
-  entryComponents: [ConfirmDeleteDialog,ConfirmDeleteCourseDialog, ResetPasswordBottomsheetComponent, EnrollUserComponent, ChangePasswordDialog],
+  entryComponents: [ConfirmDeleteDialog,ConfirmDeleteCourseDialog, ResetPasswordBottomsheetComponent, EnrollUserComponent, EnrollCourseComponent, ChangePasswordDialog],
   providers: [
     {
       provide: HTTP_INTERCEPTORS,

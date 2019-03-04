@@ -8,8 +8,8 @@
         <div class="container-fluid">
           <div class="row">
             <div class="col-sm-1 text-center">
-              <mat-icon mat-list-icon *ngIf="!parseJson(course.course_data).course_img">folder</mat-icon>
-              <div class="course-img" *ngIf="parseJson(course.course_data).course_img" [ngStyle]="{'background-image': 'url('+parseJson(course.course_data).course_img+')'}"></div>
+              <mat-icon mat-list-icon *ngIf="!currentUser.courses_data ||  !parseJson(course.course_data).course_img">folder</mat-icon>
+              <div class="course-img" *ngIf="currentUser.courses_data && parseJson(course.course_data).course_img" [ngStyle]="{'background-image': 'url('+parseJson(course.course_data).course_img+')'}"></div>
             </div>
             <div class="col-sm-7 text-left">
               <div class="col-sm-7 text-left">
@@ -20,9 +20,9 @@
           </div>
         </div>
       </mat-expansion-panel-header>
-      <div class="report-content" [ngClass]="{'no-data': !currentUser.courses_data[course.course_id]}">
-        <p *ngIf="!currentUser.courses_data[course.course_id]">Course has not been attempted yet.</p>
-        <div class="container-fluid data-list" *ngIf="currentUser.courses_data[course.course_id]">
+      <div class="report-content" [ngClass]="{'no-data': !currentUser.courses_data || !currentUser.courses_data[course.course_id]}">
+        <p *ngIf="!currentUser.courses_data || !currentUser.courses_data[course.course_id]">Course has not been attempted yet.</p>
+        <div class="container-fluid data-list" *ngIf="currentUser.courses_data && currentUser.courses_data[course.course_id]">
           <div class="row">
             
             <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12 data-cell">
