@@ -1,5 +1,5 @@
 import { Component, OnInit, Inject, ViewChild } from '@angular/core';
-import { URL_GET_ALL_COURSES } from 'src/app/api';
+import { URL_GET_ALL_COURSES, URL_ENROLL_USERS, URL_ENROLL_COURSES } from 'src/app/api';
 import { HttpClient } from '@angular/common/http';
 import { CourseData, CurrentUser, Userdata } from 'src/app/utils/interfaces';
 import { MatDialogRef, MatSnackBar, MAT_DIALOG_DATA, MatSelectionList } from '@angular/material';
@@ -55,7 +55,7 @@ export class EnrollCourseComponent implements OnInit {
     return this.http.get(URL_GET_ALL_COURSES);
   }
 
-   applyFilter(value) {
+  applyFilter(value) {
     this.courses = this.allCourses;
     this.courses = this.allCourses.filter(course => (course.course_name).toLowerCase().indexOf(value.toLowerCase()) !== -1)
   }
@@ -74,12 +74,38 @@ export class EnrollCourseComponent implements OnInit {
           this.currentUser.userdata = {
             enrolled: []
           }
+        }else if(!this.currentUser.userdata.enrolled){
+          this.currentUser.userdata.enrolled = [];
         }
         this.currentUser.userdata.enrolled.push(course.course_id);
       }
     })
-
     console.log(this.currentUser);
+    this.http.post(URL_ENROLL_COURSES, this.currentUser)
+      .subscribe(
+        res => {
+          if (res) {
+            this.parentCurrentUser.userdata = JSON.stringify(this.currentUser.userdata);
+            this.dialogRef.close();
+            this.openSnackBar(`Courses Enrolled Successfully to ${this.currentUser.firstname} ${this.currentUser.lastname}`);
+          } else {
+            console.log(res);
+            this.openSnackBar(`Something went wrong. Please try again`);
+          }
+        },
+        err => {
+          console.log(err);
+          this.openSnackBar(`Something went wrong. Please try again`);
+        }
+      )
+  }
+
+  openSnackBar(msg) {
+    this.snackBar.open(msg, "", {
+      duration: 5000,
+      verticalPosition: 'bottom',
+      horizontalPosition: 'right'
+    });
   }
 
 }
