@@ -7,6 +7,7 @@ import { URL_GET_ALL_USERS, URL_DELETE_USER, URL_CHECK_USERNAME_AVAILABILITY, UR
 import { FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors, NgForm } from '@angular/forms';
 import { debounceTime, map, take, catchError } from "rxjs/operators";
 import { Router } from '@angular/router';
+import { EnrollCourseComponent } from '../enroll-course/enroll-course.component';
 
 interface UserData {
   firstname: string;
@@ -194,11 +195,27 @@ export class UsersTabComponent implements OnInit {
     });
   }
 
+  enrollCourses(user) {
+    const dialogRef = this.dialog.open(EnrollCourseComponent, {
+      panelClass:'EnrollCourseComponentClass',
+      width: '50vw',
+      height: '90vh',
+      data: user
+    });
+  }
+
   openUserReports(userId){
     this.router.navigate(['admin/reports', userId]);
   }
   parseJson(string) {
-    return JSON.parse(string);
+    try{
+      return JSON.parse(string);
+    }catch (err){
+      console.log(string);
+      console.log("");
+      console.log(err);
+    }
+    return null;
   }
 }
 

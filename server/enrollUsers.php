@@ -39,7 +39,7 @@
       echo json_encode(print_r($db -> errorInfo()));
     }
   }else{
-    echo "FUCK";
+    echo "ERROR";
   }
 }else{
   echo $_SERVER['REQUEST_METHOD']."<br>";
@@ -80,7 +80,7 @@
       echo json_encode(print_r($db -> errorInfo()));
     }
   }else{
-    echo "FUCK";
+    echo "ERROR";
   }
   
 }

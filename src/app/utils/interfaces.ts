@@ -8,8 +8,13 @@ export interface CurrentUser {
   password: string;
   usertype: string;
   token: string;
-  userdata: string;
+  userdata: any | string;
   courses_data: string;
+}
+
+export interface Userdata {
+  enrolled: string[];
+  dp:string;
 }
 
 export interface CourseData {
