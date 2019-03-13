@@ -18,7 +18,7 @@ export class ManageTabComponent implements OnInit {
   public editDP: FormGroup;
   public userdata: any;
   public userInnerData: any = {};
-  public placeholder: string = "assets/img/userplaceholder.svg";
+  public placeholder: string = "assets/img/user.svg";
   private mobileNumPattern = new RegExp(/^(?:(?:\+)(33|32)|0)\s*[1-9](?:[\s.-]*\d{2}){4}$/);
 
   constructor(
