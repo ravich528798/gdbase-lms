@@ -1,6 +1,6 @@
 import { GLOBALS } from "../utils";
 
-export const Domain = GLOBALS.environment === 'dev'? 'http://localhost/gdbase-lms':'https://training.gdbase.be';
+export const Domain = GLOBALS.environment === 'dev'? 'http://localhost/gdbase-lms':'https://comoacademy.be';
 
 export const URL_API = `${Domain}/server`;
 

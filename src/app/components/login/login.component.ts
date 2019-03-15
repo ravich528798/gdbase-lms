@@ -35,7 +35,7 @@ export class LoginComponent implements OnInit {
   constructor(private http: HttpClient, private router: Router, private fb: FormBuilder, private resetPasswordSheet: MatBottomSheet) { }
 
   ngOnInit() {
-    document.querySelector('video').muted = false;
+    // document.querySelector('video').muted = false;
     this.loginError = false;
     this.loginFG = this.fb.group({
       username: ['',

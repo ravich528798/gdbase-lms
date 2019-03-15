@@ -4,7 +4,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background-image: linear-gradient(to right, #43e97b 0%, #38f9d7 100%);
+  background-image: linear-gradient(-225deg, #22E1FF 0%, #1D8FE1 48%, #625EB1 100%);
 }
 
 .login-holder{
@@ -31,3 +31,8 @@
   margin-top: 3vh;
 }
 
+.login-right{
+  background-image: url('../../../assets/img/login_bg.jpg');
+  background-size: contain;
+  background-position: center;
+}
