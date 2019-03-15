@@ -40,8 +40,8 @@ tr.user-detail-row {
 }
 
 .user-expanded-row {
-  background-color: rgba(255, 102, 0, 0.1);
-  border-left: 3px solid #2afd00;
+  background-color: lighten($color: $primary, $amount: 45);
+  border-left: 3px solid $primary;
   
 }
 

@@ -1,12 +1,11 @@
 @import '~@angular/material/theming';
-$gd-colors:("base": #126C75, "cyan": #36cde8, "hover": #18bc9c, "white": #FFFFFF);
-$primary: #126C75;
+$gd-colors:("base": #1e88e5, "cyan": #36cde8, "hover": #18bc9c, "white": #FFFFFF);
+$primary: #1e88e5;
 $default: #FFFFFF;
 $gd-colors-arr:('gd-primary': map-get($gd-colors, 'base'), 'gd-cyan': map-get($gd-colors, 'cyan'), 'gd-hover': map-get($gd-colors, 'hover'), 'gd-white': map-get($gd-colors, 'white'));
 
 .gd-primary-gradient {
-  background: linear-gradient(to bottom, rgba(255,255,255,0.15) 0%, rgba(0,0,0,0.15) 100%), radial-gradient(at top center, rgba(255,255,255,0.40) 0%, rgba(0,0,0,0.40) 120%) #989898; 
- background-blend-mode: multiply,multiply;
+  background-image: linear-gradient(to top, #4481eb 0%, #04befe 100%);
   color: white !important;
 }
 
@@ -109,4 +108,8 @@ a {
   padding: 8px 16px;
   background-color: $default;
   box-shadow: 0 3px 5px -1px rgba(0,0,0,.2), 0 6px 10px 0 rgba(0,0,0,.14), 0 1px 18px 0 rgba(0,0,0,.12);
+}
+
+.mat-input-underline {
+  background-color: white;
 }

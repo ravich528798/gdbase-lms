@@ -3,8 +3,8 @@
 $custom-typography: mat-typography-config($font-family: "CircularStd");
 
 @include mat-core($custom-typography);
-$gd-primary: mat-palette($mat-amber, 900);
-$gd-accent : mat-palette($mat-amber, 900);
+$gd-primary: mat-palette($mat-blue, 600);
+$gd-accent : mat-palette($mat-blue, 600);
 $gd-warn : mat-palette($mat-red);
 $gd-theme: mat-light-theme($gd-primary, $gd-accent, $gd-warn);
 @include angular-material-theme($gd-theme);
